@@ -14,19 +14,21 @@ var (
 )
 
 var steps = map[string]step{
-	"deps":    executeDeps,
-	"embed":   executeEmbed,
-	"scripts": executeScripts,
-	"styles":  executeStyles,
-	"fmt":     executeFmt,
-	"vet":     executeVet,
-	"lint":    executeLint,
-	"test":    executeTest,
-	"build":   executeBuild,
-	"install": executeInstall,
-	"bindata": executeBindata,
-	"clean":   executeClean,
+	"deps":     executeDeps,
+	"vendor":   executeVendor,
+	"lint":     executeLint,
+	"fmt":      executeFmt,
+	"vet":      executeVet,
+	"generate": executeGenerate,
+	"scripts":  executeScripts,
+	"styles":   executeStyles,
+	"test":     executeTest,
+	"build":    executeBuild,
+	"install":  executeInstall,
+	"bindata":  executeBindata,
 }
+
+type step func() error
 
 func init() {
 	os.Setenv("GO15VENDOREXPERIMENT", "1")
@@ -50,12 +52,9 @@ func main() {
 	}
 }
 
-type step func() error
-
 func executeDeps() error {
 	deps := []string{
 		"github.com/jteeuwen/go-bindata/...",
-		"github.com/Masterminds/glide",
 		"github.com/tdewolff/minify/cmd/minify",
 	}
 
@@ -71,13 +70,60 @@ func executeDeps() error {
 		}
 	}
 
-	return run(
-		gopath("glide"),
-		"install")
+	return nil
 }
 
-func executeEmbed() error {
-	return nil
+func executeVendor() error {
+	err := run(
+		"go",
+		"get",
+		"-u",
+		"github.com/Masterminds/glide")
+
+	if err != nil {
+		return err
+	}
+
+	return run(
+		gopath("glide"),
+		"update")
+}
+
+func executeLint() error {
+	err := run(
+		"go",
+		"get",
+		"-u",
+		"github.com/golang/lint")
+
+	if err != nil {
+		return err
+	}
+
+	return run(
+		gopath("golint"),
+		"./...")
+}
+
+func executeFmt() error {
+	return run(
+		"go",
+		"fmt",
+		"./...")
+}
+
+func executeVet() error {
+	return run(
+		"go",
+		"vet",
+		"./...")
+}
+
+func executeGenerate() error {
+	return run(
+		"go",
+		"generate",
+		"./...")
 }
 
 func executeScripts() error {
@@ -161,7 +207,7 @@ func executeStyles() error {
 		},
 		{
 			[]string{
-			// "cmd/harbord/assets/styles/harbor/basics.js",
+			// "cmd/harbord/assets/styles/harbor/basics.css",
 			},
 			"cmd/harbord/static/styles/harbor.css",
 			"cmd/harbord/static/styles/harbor.min.css",
@@ -212,35 +258,6 @@ func executeStyles() error {
 	return nil
 }
 
-func executeFmt() error {
-	return run(
-		"go",
-		"fmt",
-		"./...")
-}
-
-func executeVet() error {
-	return run(
-		"go",
-		"vet",
-		"./...")
-}
-
-func executeLint() error {
-	err := run(
-		"go",
-		"get",
-		"github.com/golang/lint")
-
-	if err != nil {
-		return err
-	}
-
-	return run(
-		gopath("golint"),
-		"./...")
-}
-
 func executeTest() error {
 	ldf := fmt.Sprintf(
 		"-X main.version=%s",
@@ -251,8 +268,7 @@ func executeTest() error {
 		"test",
 		"-ldflags",
 		ldf,
-		"github.com/webhippie/harbor/pkg/...",
-		"github.com/webhippie/harbor/cmd/...")
+		"github.com/webhippie/harbor/...")
 }
 
 func executeBuild() error {
@@ -261,12 +277,8 @@ func executeBuild() error {
 		output string
 	}{
 		{
-			"github.com/webhippie/harbor/cmd/harborctl",
-			"harborctl",
-		},
-		{
-			"github.com/webhippie/harbor/cmd/harbord",
-			"harbord",
+			"github.com/webhippie/harbor",
+			"harbor",
 		},
 	}
 
@@ -297,10 +309,7 @@ func executeInstall() error {
 		input string
 	}{
 		{
-			"github.com/webhippie/harbor/cmd/harborctl",
-		},
-		{
-			"github.com/webhippie/harbor/cmd/harbord",
+			"github.com/webhippie/harbor",
 		},
 	}
 
@@ -330,8 +339,8 @@ func executeBindata() error {
 		output string
 	}{
 		{
-			"cmd/harbord/static/...",
-			"cmd/harbord/bindata.go",
+			"static/...",
+			"bindata.go",
 		},
 	}
 
@@ -343,47 +352,6 @@ func executeBindata() error {
 			path.input)
 
 		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func executeClean() error {
-	err := filepath.Walk(".", func(path string, f os.FileInfo, err error) error {
-		suffixes := []string{
-			".out",
-		}
-
-		for _, suffix := range suffixes {
-			if strings.HasSuffix(path, suffix) {
-				if err := os.Remove(path); err != nil {
-					return err
-				}
-			}
-		}
-
-		return nil
-	})
-
-	if err != nil {
-		return err
-	}
-
-	files := []string{
-		"harborctl",
-		"harborctl.exe",
-		"harbord",
-		"harbord.exe",
-	}
-
-	for _, file := range files {
-		if _, err := os.Stat(file); err != nil {
-			continue
-		}
-
-		if err := os.Remove(file); err != nil {
 			return err
 		}
 	}
