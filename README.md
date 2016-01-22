@@ -1,6 +1,6 @@
-# Harbor
+# Harbor: API
 
-[![Build Status](http://github.dronehippie.de/api/badges/webhippie/harbor/status.svg)](http://github.dronehippie.de/webhippie/harbor)
+[![Build Status](http://github.dronehippie.de/api/badges/harborapp/harbor-api/status.svg)](http://github.dronehippie.de/harborapp/harbor-api)
 ![Release Status](https://img.shields.io/badge/status-beta-yellow.svg?style=flat)
 
 Harbor will be a pretty simple web interface and authentication method for the
@@ -9,12 +9,12 @@ new docker distribution, the new opensource private docker registry.
 
 ## Install
 
-Make sure you have a working Go environment, for further reference or a guide
-take a look at the [install instructions](http://golang.org/doc/install.html)
+TBD
 
-```bash
-go get github.com/webhippie/harbor
-```
+
+## Usage
+
+TBD
 
 
 ## Contributing

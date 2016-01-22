@@ -1,22 +1,21 @@
 clone:
-  path: github.com/webhippie/harbor
+  path: github.com/webhippie/harbor-api
 
 build:
-  image: golang:1.5
+  test:
+    image: golang:1.5
+    commands:
+      - make deps
+      - make build
+      - make test
 
-  commands:
-    - make deps
-    - make build
-    - make test
-    - make release
-
-publish:
-  github_release:
-    api_key: $$GITHUB_APIKEY
-    files:
-      - dist/*
+  dist:
+    image: golang:1.5
+    commands:
+      - make release
     when:
-      event: tag
+      repo: harborapp/harbor-api
+      branch: master
 
 notify:
   email:
