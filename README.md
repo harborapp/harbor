@@ -1,5 +1,7 @@
 # Harbor: API
 
+[![Join the chat at https://gitter.im/harborapp/harbor-api](https://badges.gitter.im/harborapp/harbor-api.svg)](https://gitter.im/harborapp/harbor-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](http://github.dronehippie.de/api/badges/harborapp/harbor-api/status.svg)](http://github.dronehippie.de/harborapp/harbor-api)
 ![Release Status](https://img.shields.io/badge/status-beta-yellow.svg?style=flat)
 
