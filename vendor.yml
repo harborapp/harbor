@@ -11,6 +11,8 @@ vendors:
   rev: 5215b55f46b2b919f50a1df0eaa5886afe4e3b3d
 - path: github.com/denisenkom/go-mssqldb
   rev: 8d4984e8baccbf5bfadd7f7e366fd61b7ccac38b
+- path: github.com/drone/gin-location
+  rev: e1daf416045dd20ce962f566fdc79aee41111f21
 - path: github.com/elazarl/go-bindata-assetfs
   rev: 57eb5e1fc594ad4b0b1dbea7b286d299e0cb43c2
 - path: github.com/erikstmartin/go-testdb
@@ -37,8 +39,6 @@ vendors:
   rev: 792786c7400a136282c1664665ae0a8db921c6c2
 - path: github.com/qor/inflection
   rev: 3272df6c21d04180007eb3349844c89a3856bc25
-- path: github.com/russross/meddler
-  rev: f742b0f9424f3bfaffe189e921d734608929e84f
 - path: github.com/stretchr/testify
   rev: bcd9e3389dd03b0b668d11f4d462a6af6c2dfd60
 - path: golang.org/x/crypto
