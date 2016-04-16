@@ -23,4 +23,10 @@ _testmain.go
 *.test
 *.prof
 
-/.drone.sec.yml
+coverage.out
+.drone.sec.yml
+
+/storage
+/dist
+/bin
+/vendor

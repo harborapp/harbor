@@ -1,16 +1,79 @@
 package model
 
 import (
-	"github.com/russross/meddler"
+	"fmt"
+	"time"
+
+	"github.com/Machiel/slugify"
+	"github.com/asaskevich/govalidator"
+	"github.com/jinzhu/gorm"
 )
 
-type Team struct {
-	ID      int64  `json:"id" meddler:"id,pk"`
-	Name    string `json:"name" meddler:"name"`
-	Hidden  bool   `json:"hidden" meddler:"hidden"`
-	Created int64  `json:"created_at" meddler:"created_at"`
-	Updated int64  `json:"updated_at" meddler:"updated_at"`
+// Teams is simply a collection of registry structs.
+type Teams []*Team
 
-	Users      []*User      `json:"users"`
-	Namespaces []*Namespace `json:"namespaces"`
+// Team represents a registry model definition.
+type Team struct {
+	ID         int        `json:"id" gorm:"primary_key"`
+	Slug       string     `json:"slug" sql:"unique_index"`
+	Name       string     `json:"name" sql:"unique_index"`
+	Public     bool       `json:"private" sql:"default:false"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	Users      Users      `json:"users,omitempty" gorm:"many2many:team_users;"`
+	Namespaces Namespaces `json:"namespaces,omitempty" gorm:"many2many:team_namespaces;"`
+}
+
+// BeforeSave invokes required actions before persisting.
+func (u *Team) BeforeSave(db *gorm.DB) (err error) {
+	if u.Slug == "" {
+		for i := 0; true; i++ {
+			if i == 0 {
+				u.Slug = slugify.Slugify(u.Name)
+			} else {
+				u.Slug = slugify.Slugify(
+					fmt.Sprintf("%s-%d", u.Name, i),
+				)
+			}
+
+			notFound := db.Where(
+				"slug = ?",
+				u.Slug,
+			).Not(
+				"id",
+				u.ID,
+			).First(
+				&Team{},
+			).RecordNotFound()
+
+			if notFound {
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// Validate does some validation to be able to store the record.
+func (u *Team) Validate(db *gorm.DB) {
+	if !govalidator.StringLength(u.Name, "1", "255") {
+		db.AddError(fmt.Errorf("Name should be longer than 1 and shorter than 255"))
+	}
+
+	if u.Name != "" {
+		notFound := db.Where(
+			"name = ?",
+			u.Name,
+		).Not(
+			"id",
+			u.ID,
+		).First(
+			&Team{},
+		).RecordNotFound()
+
+		if !notFound {
+			db.AddError(fmt.Errorf("Name is already present"))
+		}
+	}
 }
