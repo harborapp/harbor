@@ -17,8 +17,8 @@ type Repository struct {
 	ID          int        `json:"id" gorm:"primary_key"`
 	Namespace   *Namespace `json:"namespace,omitempty"`
 	NamespaceID int        `json:"namespace_id" sql:"index"`
-	Slug        string     `json:"slug" sql:"unique_index"`
-	Name        string     `json:"name" sql:"unique_index"`
+	Slug        string     `json:"slug"`
+	Name        string     `json:"name"`
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 	Tags        Tags       `json:"tags,omitempty"`

@@ -1,4 +1,4 @@
-package controller
+package api
 
 import (
 	"net/http"
@@ -12,7 +12,7 @@ func GetIndex(c *gin.Context) {
 	c.JSON(
 		http.StatusOK,
 		gin.H{
-			"api":     "Solder",
+			"api":     "Harbor API",
 			"version": config.Version,
 		},
 	)

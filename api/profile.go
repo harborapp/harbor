@@ -1,12 +1,12 @@
-package controller
+package api
 
 import (
 	"net/http"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
-	"github.com/harborapp/harbor-api/router/middleware/context"
 	"github.com/harborapp/harbor-api/router/middleware/session"
+	"github.com/harborapp/harbor-api/store"
 )
 
 // GetProfile displays the current profile.
@@ -39,9 +39,10 @@ func PatchProfile(c *gin.Context) {
 		return
 	}
 
-	err := context.Store(c).Save(
-		&record,
-	).Error
+	err := store.UpdateUser(
+		c,
+		record,
+	)
 
 	if err != nil {
 		c.JSON(

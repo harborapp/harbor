@@ -17,8 +17,8 @@ type Namespace struct {
 	ID           int          `json:"id" gorm:"primary_key"`
 	Registry     *Registry    `json:"registry,omitempty"`
 	RegistryID   int          `json:"registry_id" sql:"index"`
-	Slug         string       `json:"slug" sql:"unique_index"`
-	Name         string       `json:"name" sql:"unique_index"`
+	Slug         string       `json:"slug"`
+	Name         string       `json:"name"`
 	Public       bool         `json:"private" sql:"default:false"`
 	CreatedAt    time.Time    `json:"created_at"`
 	UpdatedAt    time.Time    `json:"updated_at"`

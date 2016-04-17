@@ -35,10 +35,16 @@ vendors:
   rev: ee05b128a739a0fb76c7ebd3ae4810c1de808d6d
 - path: github.com/mattn/go-sqlite3
   rev: aeb3180df56de252b6cfcd64985272010c920ab7
+- path: github.com/o1egl/gormrus
+  rev: 57710b0229272260f1fa2b31838a0dc4baa22a0a
 - path: github.com/pmezard/go-difflib
   rev: 792786c7400a136282c1664665ae0a8db921c6c2
 - path: github.com/qor/inflection
   rev: 3272df6c21d04180007eb3349844c89a3856bc25
+- path: github.com/qor/qor
+  rev: 704a44a30dc7ffdbb96c63384eca38f3af3f1c56
+- path: github.com/qor/validations
+  rev: 87c1296c75e72a8f3247beab65c48c50b7b66a7a
 - path: github.com/stretchr/testify
   rev: bcd9e3389dd03b0b668d11f4d462a6af6c2dfd60
 - path: golang.org/x/crypto
