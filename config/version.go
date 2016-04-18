@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-const (
+var (
 	// VersionMajor is the current major version
 	VersionMajor = 0
 
@@ -13,9 +13,7 @@ const (
 
 	// VersionPatch is the current patch version
 	VersionPatch = 0
-)
 
-var (
 	// VersionDev indicates the current commit
 	VersionDev = "dev"
 
