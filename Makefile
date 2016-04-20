@@ -17,6 +17,9 @@ RELEASES ?= $(BIN)/$(EXECUTABLE)-linux-amd64 \
 
 PACKAGES ?= $(shell go list ./... | grep -v /vendor/)
 
+GENERATE ?= github.com/harborapp/harbor-api/assets \
+	github.com/harborapp/harbor-api/template
+
 ifneq ($(DRONE_TAG),)
 	VERSION ?= $(DRONE_TAG)
 else
@@ -42,9 +45,8 @@ vendor:
 	govend -vtlu
 
 generate:
-	go get -u github.com/vektra/mockery/...
 	go get -u github.com/jteeuwen/go-bindata/...
-	go generate $(PACKAGES)
+	go generate $(GENERATE)
 
 fmt:
 	go fmt $(PACKAGES)
