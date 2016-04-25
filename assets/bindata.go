@@ -87,7 +87,7 @@ func imagesFaviconIco() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "images/favicon.ico", size: 15086, mode: os.FileMode(420), modTime: time.Unix(1460458975, 0)}
+	info := bindataFileInfo{name: "images/favicon.ico", size: 15086, mode: os.FileMode(420), modTime: time.Unix(1460986901, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -107,7 +107,7 @@ func scriptsApplicationJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "scripts/application.js", size: 0, mode: os.FileMode(420), modTime: time.Unix(1453478690, 0)}
+	info := bindataFileInfo{name: "scripts/application.js", size: 0, mode: os.FileMode(420), modTime: time.Unix(1460986901, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -127,47 +127,47 @@ func scriptsVendorJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "scripts/vendor.js", size: 0, mode: os.FileMode(420), modTime: time.Unix(1453478690, 0)}
+	info := bindataFileInfo{name: "scripts/vendor.js", size: 0, mode: os.FileMode(420), modTime: time.Unix(1460986901, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _stylesApplicationCss = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x01\x00\x00\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00")
+var _stylesApplicationCSS = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x01\x00\x00\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00")
 
-func stylesApplicationCssBytes() ([]byte, error) {
+func stylesApplicationCSSBytes() ([]byte, error) {
 	return bindataRead(
-		_stylesApplicationCss,
+		_stylesApplicationCSS,
 		"styles/application.css",
 	)
 }
 
-func stylesApplicationCss() (*asset, error) {
-	bytes, err := stylesApplicationCssBytes()
+func stylesApplicationCSS() (*asset, error) {
+	bytes, err := stylesApplicationCSSBytes()
 	if err != nil {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "styles/application.css", size: 0, mode: os.FileMode(420), modTime: time.Unix(1453478690, 0)}
+	info := bindataFileInfo{name: "styles/application.css", size: 0, mode: os.FileMode(420), modTime: time.Unix(1460986901, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _stylesVendorCss = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x01\x00\x00\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00")
+var _stylesVendorCSS = []byte("\x1f\x8b\x08\x00\x00\x09\x6e\x88\x00\xff\x01\x00\x00\xff\xff\x00\x00\x00\x00\x00\x00\x00\x00")
 
-func stylesVendorCssBytes() ([]byte, error) {
+func stylesVendorCSSBytes() ([]byte, error) {
 	return bindataRead(
-		_stylesVendorCss,
+		_stylesVendorCSS,
 		"styles/vendor.css",
 	)
 }
 
-func stylesVendorCss() (*asset, error) {
-	bytes, err := stylesVendorCssBytes()
+func stylesVendorCSS() (*asset, error) {
+	bytes, err := stylesVendorCSSBytes()
 	if err != nil {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "styles/vendor.css", size: 0, mode: os.FileMode(420), modTime: time.Unix(1453478690, 0)}
+	info := bindataFileInfo{name: "styles/vendor.css", size: 0, mode: os.FileMode(420), modTime: time.Unix(1460986901, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -227,8 +227,8 @@ var _bindata = map[string]func() (*asset, error){
 	"images/favicon.ico":     imagesFaviconIco,
 	"scripts/application.js": scriptsApplicationJs,
 	"scripts/vendor.js":      scriptsVendorJs,
-	"styles/application.css": stylesApplicationCss,
-	"styles/vendor.css":      stylesVendorCss,
+	"styles/application.css": stylesApplicationCSS,
+	"styles/vendor.css":      stylesVendorCSS,
 }
 
 // AssetDir returns the file names below a certain
@@ -280,8 +280,8 @@ var _bintree = &bintree{nil, map[string]*bintree{
 		"vendor.js":      &bintree{scriptsVendorJs, map[string]*bintree{}},
 	}},
 	"styles": &bintree{nil, map[string]*bintree{
-		"application.css": &bintree{stylesApplicationCss, map[string]*bintree{}},
-		"vendor.css":      &bintree{stylesVendorCss, map[string]*bintree{}},
+		"application.css": &bintree{stylesApplicationCSS, map[string]*bintree{}},
+		"vendor.css":      &bintree{stylesVendorCSS, map[string]*bintree{}},
 	}},
 }}
 
