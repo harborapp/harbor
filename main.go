@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"runtime"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/harborapp/harbor-api/cmd"
 	"github.com/harborapp/harbor-api/config"
+	"github.com/sanbornm/go-selfupdate/selfupdate"
 )
 
 var (
