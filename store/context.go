@@ -4,7 +4,9 @@ import (
 	"golang.org/x/net/context"
 )
 
-const key = "store"
+const (
+	key = "store"
+)
 
 // Setter defines a context that enables setting values.
 type Setter interface {
