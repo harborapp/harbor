@@ -7,6 +7,7 @@ import (
 
 //go:generate mockery -all -case=underscore
 
+// Store implements all required data-layer functions for Harbor.
 type Store interface {
 	// GetNamespaces retrieves all available namespaces from the database.
 	GetNamespaces() (*model.Namespaces, error)

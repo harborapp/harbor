@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	updates string = "http://dl.webhippie.de/"
+	updates = "http://dl.webhippie.de/"
 )
 
 func main() {
@@ -73,6 +73,7 @@ func main() {
 	app.Run(os.Args)
 }
 
+// Update handles automated binary updates in the background.
 func Update() {
 	if config.VersionDev == "dev" {
 		fmt.Fprintf(os.Stderr, "Updates are disabled for development versions.\n")
