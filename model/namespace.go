@@ -57,6 +57,21 @@ func (u *Namespace) BeforeSave(db *gorm.DB) (err error) {
 	return nil
 }
 
+// AfterDelete invokes required actions after deletion.
+func (u *Namespace) AfterDelete(tx *gorm.DB) error {
+	for _, repository := range u.Repositories {
+		if err := tx.Delete(repository).Error; err != nil {
+			return err
+		}
+	}
+
+	if err := tx.Model(u).Association("Teams").Clear().Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // Validate does some validation to be able to store the record.
 func (u *Namespace) Validate(db *gorm.DB) {
 	if !govalidator.StringLength(u.Name, "1", "255") {

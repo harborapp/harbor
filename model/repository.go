@@ -55,6 +55,17 @@ func (u *Repository) BeforeSave(db *gorm.DB) (err error) {
 	return nil
 }
 
+// AfterDelete invokes required actions after deletion.
+func (u *Repository) AfterDelete(tx *gorm.DB) error {
+	for _, tag := range u.Tags {
+		if err := tx.Delete(tag).Error; err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // Validate does some validation to be able to store the record.
 func (u *Repository) Validate(db *gorm.DB) {
 	if !govalidator.StringLength(u.Name, "1", "255") {

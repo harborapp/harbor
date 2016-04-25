@@ -54,6 +54,11 @@ func (u *Tag) BeforeSave(db *gorm.DB) (err error) {
 	return nil
 }
 
+// AfterDelete invokes required actions after deletion.
+func (u *Tag) AfterDelete(tx *gorm.DB) error {
+	return nil
+}
+
 // Validate does some validation to be able to store the record.
 func (u *Tag) Validate(db *gorm.DB) {
 	if !govalidator.StringLength(u.Name, "1", "255") {

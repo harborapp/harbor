@@ -54,6 +54,17 @@ func (u *Registry) BeforeSave(db *gorm.DB) (err error) {
 	return nil
 }
 
+// AfterDelete invokes required actions after deletion.
+func (u *Registry) AfterDelete(tx *gorm.DB) error {
+	for _, namespace := range u.Namespaces {
+		if err := tx.Delete(namespace).Error; err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // Validate does some validation to be able to store the record.
 func (u *Registry) Validate(db *gorm.DB) {
 	if !govalidator.StringLength(u.Name, "1", "255") {
