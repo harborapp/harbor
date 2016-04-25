@@ -18,14 +18,14 @@ type server struct {
 
 var (
 	// Update represents the flag to enable or disable auto updates.
-	Update   bool
+	Update bool
 
 	// Debug represents the flag to enable or disable debug logging.
-	Debug    bool
+	Debug bool
 
 	// Database represents the current database connection details.
 	Database = &database{}
 
 	// Server represents the informations about the server bindings.
-	Server   = &server{}
+	Server = &server{}
 )
