@@ -1,10 +1,10 @@
 package cmd
 
 import (
+	"github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
 	"github.com/harborapp/harbor-api/config"
 	"github.com/harborapp/harbor-api/router"
-	"github.com/harborapp/harbor-api/server"
 )
 
 // Server provides the sub-command to start the API server.
@@ -85,8 +85,26 @@ func Server() cli.Command {
 			},
 		},
 		Action: func(c *cli.Context) {
-			srv := server.Load()
-			srv.Run(router.Load())
+
+			logrus.Infof("starting server on %s", config.Server.Addr)
+
+			if config.Server.Cert != "" && config.Server.Key != "" {
+				logrus.Fatal(
+					http.ListenAndServeTLS(
+						config.Server.Addr,
+						config.Server.Cert,
+						config.Server.Key,
+						router.Load(),
+					),
+				)
+			} else {
+				logrus.Fatal(
+					http.ListenAndServe(
+						config.Server.Addr,
+						router.Load(),
+					),
+				)
+			}
 		},
 	}
 }
