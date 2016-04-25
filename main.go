@@ -10,6 +10,10 @@ import (
 	"github.com/harborapp/harbor-api/config"
 )
 
+var (
+	updates string = "http://dl.webhippie.de/"
+)
+
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
@@ -19,6 +23,21 @@ func main() {
 	app.Author = "Thomas Boerger <thomas@webhippie.de>"
 	app.Usage = "A docker distribution management system"
 
+	app.Flags = []cli.Flag{
+		cli.BoolTFlag{
+			Name:        "update, u",
+			Usage:       "Enable auto update",
+			EnvVar:      "HARBOR_UPDATE",
+			Destination: &config.Debug,
+		},
+		cli.BoolFlag{
+			Name:        "debug",
+			Usage:       "Activate debug information",
+			EnvVar:      "HARBOR_DEBUG",
+			Destination: &config.Debug,
+		},
+	}
+
 	app.Before = func(c *cli.Context) error {
 		logrus.SetOutput(os.Stdout)
 
@@ -26,6 +45,10 @@ func main() {
 			logrus.SetLevel(logrus.DebugLevel)
 		} else {
 			logrus.SetLevel(logrus.InfoLevel)
+		}
+
+		if c.BoolT("update") {
+			Update()
 		}
 
 		return nil
@@ -46,4 +69,26 @@ func main() {
 	}
 
 	app.Run(os.Args)
+}
+
+func Update() {
+	if config.VersionDev == "dev" {
+		fmt.Fprintf(os.Stderr, "Updates are disabled for development versions.\n")
+	} else {
+		updater := &selfupdate.Updater{
+			CurrentVersion: fmt.Sprintf(
+				"%d.%d.%d",
+				config.VersionMajor,
+				config.VersionMinor,
+				config.VersionPatch,
+			),
+			ApiURL:  updates,
+			BinURL:  updates,
+			DiffURL: updates,
+			Dir:     "updates/",
+			CmdName: "harbor-api",
+		}
+
+		go updater.BackgroundRun()
+	}
 }
