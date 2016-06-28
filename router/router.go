@@ -57,12 +57,12 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 			assets.Load(),
 		)
 
-		root.GET("/favicon.ico", web.GetFavicon)
-		root.GET("", web.GetIndex)
+		root.GET("/favicon.ico", web.Favicon)
+		root.GET("", web.Index)
 
 		base := root.Group("/api")
 		{
-			base.GET("", api.GetIndex)
+			base.GET("", api.IndexInfo)
 
 			//
 			// Profile
@@ -71,8 +71,8 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 			{
 				profile.Use(session.MustCurrent())
 
-				profile.GET("", api.GetProfile)
-				profile.PATCH("", api.PatchProfile)
+				profile.GET("", api.ProfileShow)
+				profile.PATCH("", api.ProfileUpdate)
 			}
 		}
 	}
