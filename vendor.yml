@@ -11,6 +11,8 @@ vendors:
   rev: 5215b55f46b2b919f50a1df0eaa5886afe4e3b3d
 - path: github.com/denisenkom/go-mssqldb
   rev: c5885153c18c8e4cdde7608f3fa65c2df212d3cb
+- path: github.com/dgrijalva/jwt-go
+  rev: f0777076321ab64f6efc15a82d9d23b98539b943
 - path: github.com/drone/gin-location
   rev: e1daf416045dd20ce962f566fdc79aee41111f21
 - path: github.com/elazarl/go-bindata-assetfs
@@ -23,6 +25,8 @@ vendors:
   rev: 3654d25ec346ee8ce71a68431025458d52a38ac0
 - path: github.com/golang/protobuf
   rev: 0c1f6d65b5a189c2250d10e71a5506f06f9fa0a0
+- path: github.com/gorilla/securecookie
+  rev: ff356348f74133a59d3e93aa24b5b4551b6fe90d
 - path: github.com/jinzhu/gorm
   rev: c1c4f9f86e732a042aac9f37e025893d6d6cabec
 - path: github.com/jinzhu/inflection
