@@ -85,6 +85,55 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				profile.GET("/self", api.ProfileShow)
 				profile.PATCH("/self", api.ProfileUpdate)
 			}
+
+			//
+			// Users
+			//
+			users := base.Group("/users")
+			{
+				users.Use(session.MustUsers("display"))
+
+				users.GET("", api.UserIndex)
+				users.GET("/:user", session.SetUser(), api.UserShow)
+				users.DELETE("/:user", session.SetUser(), session.MustUsers("delete"), api.UserDelete)
+				users.PATCH("/:user", session.SetUser(), session.MustUsers("change"), api.UserUpdate)
+				users.POST("", session.MustUsers("change"), api.UserCreate)
+			}
+
+			userTeams := base.Group("/users/:user/teams")
+			{
+				userTeams.Use(session.MustTeams("change"))
+				userTeams.Use(session.SetUser())
+
+				userTeams.GET("", api.UserTeamIndex)
+				userTeams.PATCH("", api.UserTeamAppend)
+				userTeams.DELETE("", api.UserTeamDelete)
+			}
+
+			//
+			// Teams
+			//
+			teams := base.Group("/teams")
+			{
+				teams.Use(session.MustTeams("display"))
+
+				teams.GET("", api.TeamIndex)
+				teams.GET("/:team", session.SetTeam(), api.TeamShow)
+				teams.DELETE("/:team", session.SetTeam(), session.MustTeams("delete"), api.TeamDelete)
+				teams.PATCH("/:team", session.SetTeam(), session.MustTeams("change"), api.TeamUpdate)
+				teams.POST("", session.MustTeams("change"), api.TeamCreate)
+			}
+
+			teamUsers := base.Group("/teams/:team/users")
+			{
+				teamUsers.Use(session.MustTeams("change"))
+				teamUsers.Use(session.SetTeam())
+
+				teamUsers.GET("", api.TeamUserIndex)
+				teamUsers.PATCH("", api.TeamUserAppend)
+				teamUsers.DELETE("", api.TeamUserDelete)
+			}
+
 		}
 	}
 

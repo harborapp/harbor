@@ -12,7 +12,7 @@ func (db *data) GetUsers() (*model.Users, error) {
 	err := db.Order(
 		"username ASC",
 	).Find(
-		&records,
+		records,
 	).Error
 
 	return records, err
@@ -21,21 +21,21 @@ func (db *data) GetUsers() (*model.Users, error) {
 // CreateUser creates a new user.
 func (db *data) CreateUser(record *model.User) error {
 	return db.Create(
-		&record,
+		record,
 	).Error
 }
 
 // UpdateUser updates a user.
 func (db *data) UpdateUser(record *model.User) error {
 	return db.Save(
-		&record,
+		record,
 	).Error
 }
 
 // DeleteUser deletes a user.
 func (db *data) DeleteUser(record *model.User) error {
 	return db.Delete(
-		&record,
+		record,
 	).Error
 }
 
@@ -50,10 +50,69 @@ func (db *data) GetUser(id string) (*model.User, *gorm.DB) {
 		"slug = ?",
 		id,
 	).Model(
-		&record,
+		record,
 	).First(
-		&record,
+		record,
 	)
 
 	return record, res
+}
+
+// GetUserTeams retrieves teams for a user.
+func (db *data) GetUserTeams(params *model.UserTeamParams) (*model.Teams, error) {
+	user, _ := db.GetUser(params.User)
+
+	records := &model.Teams{}
+
+	err := db.Model(
+		user,
+	).Association(
+		"Teams",
+	).Find(
+		records,
+	).Error
+
+	return records, err
+}
+
+// GetUserHasTeam checks if a specific team is assigned to a user.
+func (db *data) GetUserHasTeam(params *model.UserTeamParams) bool {
+	user, _ := db.GetUser(params.User)
+	team, _ := db.GetTeam(params.Team)
+
+	count := db.Model(
+		user,
+	).Association(
+		"Teams",
+	).Find(
+		team,
+	).Count()
+
+	return count > 0
+}
+
+func (db *data) CreateUserTeam(params *model.UserTeamParams) error {
+	user, _ := db.GetUser(params.User)
+	team, _ := db.GetTeam(params.Team)
+
+	return db.Model(
+		user,
+	).Association(
+		"Teams",
+	).Append(
+		team,
+	).Error
+}
+
+func (db *data) DeleteUserTeam(params *model.UserTeamParams) error {
+	user, _ := db.GetUser(params.User)
+	team, _ := db.GetTeam(params.Team)
+
+	return db.Model(
+		user,
+	).Association(
+		"Teams",
+	).Delete(
+		team,
+	).Error
 }
