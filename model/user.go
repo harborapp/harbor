@@ -32,6 +32,7 @@ type User struct {
 	Teams     Teams     `json:"teams,omitempty" gorm:"many2many:team_users;"`
 }
 
+// AfterFind invokes required after loading a record from the database.
 func (u *User) AfterFind(db *gorm.DB) {
 	u.Avatar = gravatar.SecureUrlDefault(u.Email, gravatar.IdentIcon)
 }
