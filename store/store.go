@@ -38,4 +38,43 @@ type Store interface {
 
 	// GetUser retrieves a specific user from the database.
 	GetUser(string) (*model.User, *gorm.DB)
+
+	// GetUserTeams retrieves teams for a user.
+	GetUserTeams(*model.UserTeamParams) (*model.Teams, error)
+
+	// GetUserHasTeam checks if a specific team is assigned to a user.
+	GetUserHasTeam(*model.UserTeamParams) bool
+
+	// CreateUserTeam assigns a team to a specific user.
+	CreateUserTeam(*model.UserTeamParams) error
+
+	// DeleteUserTeam removes a team from a specific user.
+	DeleteUserTeam(*model.UserTeamParams) error
+
+	// GetTeams retrieves all available teams from the database.
+	GetTeams() (*model.Teams, error)
+
+	// CreateTeam creates a new team.
+	CreateTeam(*model.Team) error
+
+	// UpdateTeam updates a team.
+	UpdateTeam(*model.Team) error
+
+	// DeleteTeam deletes a team.
+	DeleteTeam(*model.Team) error
+
+	// GetTeam retrieves a specific team from the database.
+	GetTeam(string) (*model.Team, *gorm.DB)
+
+	// GetTeamUsers retrieves users for a team.
+	GetTeamUsers(*model.TeamUserParams) (*model.Users, error)
+
+	// GetTeamHasUser checks if a specific user is assigned to a team.
+	GetTeamHasUser(*model.TeamUserParams) bool
+
+	// CreateTeamUser assigns a user to a specific team.
+	CreateTeamUser(*model.TeamUserParams) error
+
+	// DeleteTeamUser removes a user from a specific team.
+	DeleteTeamUser(*model.TeamUserParams) error
 }
