@@ -7,8 +7,8 @@ import (
 	"github.com/harborapp/harbor-api/config"
 )
 
-// GetIndex represents the API index.
-func GetIndex(c *gin.Context) {
+// IndexInfo represents the API index.
+func IndexInfo(c *gin.Context) {
 	c.JSON(
 		http.StatusOK,
 		gin.H{
