@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/codegangsta/cli"
@@ -82,12 +83,18 @@ func Server() cli.Command {
 				Name:        "storage",
 				Value:       "storage/",
 				Usage:       "Folder for storing uploads",
-				EnvVar:      "SOLDER_SERVER_STORAGE",
+				EnvVar:      "HARBOR_SERVER_STORAGE",
 				Destination: &config.Server.Storage,
+			},
+			cli.DurationFlag{
+				Name:        "expire",
+				Value:       time.Hour * 24,
+				Usage:       "Session expire duration",
+				EnvVar:      "HARBOR_SESSION_EXPIRE",
+				Destination: &config.Session.Expire,
 			},
 		},
 		Action: func(c *cli.Context) {
-
 			logrus.Infof("starting server on %s", config.Server.Addr)
 
 			if config.Server.Cert != "" && config.Server.Key != "" {
