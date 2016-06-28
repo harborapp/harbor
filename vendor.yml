@@ -57,6 +57,8 @@ vendors:
   rev: 8d409ca53a740932c8e3a6cd1d8ea4c111f5e539
 - path: github.com/stretchr/testify
   rev: d77da356e56a7428ad25149ca77381849a6a5232
+- path: github.com/ungerik/go-gravatar
+  rev: 6ab22628222adee0d853df36a2f0783f56ea55ec
 - path: golang.org/x/crypto
   rev: 811831de4c4dd03a0b8737233af3b36852386373
 - path: golang.org/x/net
