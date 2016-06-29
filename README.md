@@ -3,7 +3,7 @@
 [![Build Status](http://github.dronehippie.de/api/badges/harborapp/harbor-api/status.svg)](http://github.dronehippie.de/harborapp/harbor-api)
 [![Coverage Status](http://coverage.dronehippie.de/badges/harborapp/harbor-api/coverage.svg)](http://coverage.dronehippie.de/harborapp/harbor-api)
 [![Go Doc](https://godoc.org/github.com/harborapp/harbor-api?status.svg)](http://godoc.org/github.com/harborapp/harbor-api)
-[![Go Report](http://goreportcard.com/badge/harborapp/harbor-api)](http://goreportcard.com/report/harborapp/harbor-api)
+[![Go Report](http://goreportcard.com/badge/github.com/harborapp/harbor-api)](http://goreportcard.com/report/github.com/harborapp/harbor-api)
 [![Join the chat at https://gitter.im/harborapp/harbor-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/harborapp/harbor-api)
 ![Release Status](https://img.shields.io/badge/status-beta-yellow.svg?style=flat)
 
