@@ -5,11 +5,11 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
-	"github.com/harborapp/harbor-api/config"
-	"github.com/harborapp/harbor-api/model"
-	"github.com/harborapp/harbor-api/router/middleware/session"
-	"github.com/harborapp/harbor-api/shared/token"
-	"github.com/harborapp/harbor-api/store"
+	"github.com/umschlag/umschlag-api/config"
+	"github.com/umschlag/umschlag-api/model"
+	"github.com/umschlag/umschlag-api/router/middleware/session"
+	"github.com/umschlag/umschlag-api/shared/token"
+	"github.com/umschlag/umschlag-api/store"
 )
 
 // AuthLogout represents the logout handler.

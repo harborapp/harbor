@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/harborapp/harbor-api/model"
-	"github.com/harborapp/harbor-api/store"
+	"github.com/umschlag/umschlag-api/model"
+	"github.com/umschlag/umschlag-api/store"
 )
 
 const (

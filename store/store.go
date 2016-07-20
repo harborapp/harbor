@@ -1,13 +1,13 @@
 package store
 
 import (
-	"github.com/harborapp/harbor-api/model"
 	"github.com/jinzhu/gorm"
+	"github.com/umschlag/umschlag-api/model"
 )
 
 //go:generate mockery -all -case=underscore
 
-// Store implements all required data-layer functions for Harbor.
+// Store implements all required data-layer functions for Umschlag.
 type Store interface {
 	// GetNamespaces retrieves all available namespaces from the database.
 	GetNamespaces() (*model.Namespaces, error)

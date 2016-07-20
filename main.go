@@ -6,10 +6,10 @@ import (
 	"runtime"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/codegangsta/cli"
-	"github.com/harborapp/harbor-api/cmd"
-	"github.com/harborapp/harbor-api/config"
 	"github.com/sanbornm/go-selfupdate/selfupdate"
+	"github.com/umschlag/umschlag-api/cmd"
+	"github.com/umschlag/umschlag-api/config"
+	"github.com/urfave/cli"
 )
 
 var (
@@ -20,7 +20,7 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	app := cli.NewApp()
-	app.Name = "harbor"
+	app.Name = "umschlag"
 	app.Version = config.Version
 	app.Author = "Thomas Boerger <thomas@webhippie.de>"
 	app.Usage = "A docker distribution management system"
@@ -29,13 +29,13 @@ func main() {
 		cli.BoolTFlag{
 			Name:        "update, u",
 			Usage:       "Enable auto update",
-			EnvVar:      "HARBOR_UPDATE",
+			EnvVar:      "UMSCHLAG_UPDATE",
 			Destination: &config.Debug,
 		},
 		cli.BoolFlag{
 			Name:        "debug",
 			Usage:       "Activate debug information",
-			EnvVar:      "HARBOR_DEBUG",
+			EnvVar:      "UMSCHLAG_DEBUG",
 			Destination: &config.Debug,
 		},
 	}
@@ -89,7 +89,7 @@ func Update() {
 			BinURL:  updates,
 			DiffURL: updates,
 			Dir:     "updates/",
-			CmdName: "harbor-api",
+			CmdName: "umschlag-api",
 		}
 
 		go updater.BackgroundRun()

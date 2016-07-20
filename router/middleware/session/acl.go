@@ -5,10 +5,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/harborapp/harbor-api/model"
-	"github.com/harborapp/harbor-api/shared/token"
-	"github.com/harborapp/harbor-api/store"
 	"github.com/jinzhu/gorm"
+	"github.com/umschlag/umschlag-api/model"
+	"github.com/umschlag/umschlag-api/shared/token"
+	"github.com/umschlag/umschlag-api/store"
 )
 
 const (

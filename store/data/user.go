@@ -1,8 +1,8 @@
 package data
 
 import (
-	"github.com/harborapp/harbor-api/model"
 	"github.com/jinzhu/gorm"
+	"github.com/umschlag/umschlag-api/model"
 )
 
 // GetUsers retrieves all available users from the database.

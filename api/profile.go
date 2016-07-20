@@ -5,9 +5,9 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
-	"github.com/harborapp/harbor-api/router/middleware/session"
-	"github.com/harborapp/harbor-api/shared/token"
-	"github.com/harborapp/harbor-api/store"
+	"github.com/umschlag/umschlag-api/router/middleware/session"
+	"github.com/umschlag/umschlag-api/shared/token"
+	"github.com/umschlag/umschlag-api/store"
 )
 
 // ProfileShow displays the current profile.

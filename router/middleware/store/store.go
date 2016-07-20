@@ -2,8 +2,8 @@ package store
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/harborapp/harbor-api/store"
-	"github.com/harborapp/harbor-api/store/data"
+	"github.com/umschlag/umschlag-api/store"
+	"github.com/umschlag/umschlag-api/store/data"
 )
 
 // SetStore injects the storage into the context.

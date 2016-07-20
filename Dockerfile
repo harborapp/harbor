@@ -6,6 +6,6 @@ RUN apk update && \
   rm -rf \
     /var/cache/apk/*
 
-ADD bin/harbor-api /usr/bin/
-ENTRYPOINT ["/usr/bin/harbor-api"]
+ADD bin/umschlag-api /usr/bin/
+ENTRYPOINT ["/usr/bin/umschlag-api"]
 CMD ["server"]

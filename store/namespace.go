@@ -1,8 +1,8 @@
 package store
 
 import (
-	"github.com/harborapp/harbor-api/model"
 	"github.com/jinzhu/gorm"
+	"github.com/umschlag/umschlag-api/model"
 	"golang.org/x/net/context"
 )
 

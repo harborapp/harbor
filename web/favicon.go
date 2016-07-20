@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/harborapp/harbor-api/assets"
+	"github.com/umschlag/umschlag-api/assets"
 )
 
 // Favicon represents the favicon.

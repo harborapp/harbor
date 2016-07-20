@@ -4,17 +4,17 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/harborapp/harbor-api/api"
-	"github.com/harborapp/harbor-api/assets"
-	"github.com/harborapp/harbor-api/config"
-	"github.com/harborapp/harbor-api/router/middleware/header"
-	"github.com/harborapp/harbor-api/router/middleware/location"
-	"github.com/harborapp/harbor-api/router/middleware/logger"
-	"github.com/harborapp/harbor-api/router/middleware/recovery"
-	"github.com/harborapp/harbor-api/router/middleware/session"
-	"github.com/harborapp/harbor-api/router/middleware/store"
-	"github.com/harborapp/harbor-api/template"
-	"github.com/harborapp/harbor-api/web"
+	"github.com/umschlag/umschlag-api/api"
+	"github.com/umschlag/umschlag-api/assets"
+	"github.com/umschlag/umschlag-api/config"
+	"github.com/umschlag/umschlag-api/router/middleware/header"
+	"github.com/umschlag/umschlag-api/router/middleware/location"
+	"github.com/umschlag/umschlag-api/router/middleware/logger"
+	"github.com/umschlag/umschlag-api/router/middleware/recovery"
+	"github.com/umschlag/umschlag-api/router/middleware/session"
+	"github.com/umschlag/umschlag-api/router/middleware/store"
+	"github.com/umschlag/umschlag-api/template"
+	"github.com/umschlag/umschlag-api/web"
 )
 
 // Load initializes the routing of the application.

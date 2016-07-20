@@ -7,12 +7,12 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/harborapp/harbor-api/config"
-	"github.com/harborapp/harbor-api/model"
-	"github.com/harborapp/harbor-api/store"
 	"github.com/jinzhu/gorm"
 	"github.com/o1egl/gormrus"
 	"github.com/qor/validations"
+	"github.com/umschlag/umschlag-api/config"
+	"github.com/umschlag/umschlag-api/model"
+	"github.com/umschlag/umschlag-api/store"
 
 	// Register MySQL driver for GORM
 	_ "github.com/jinzhu/gorm/dialects/mysql"

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/harborapp/harbor-api/config"
+	"github.com/umschlag/umschlag-api/config"
 )
 
 // Index represents the index page.
