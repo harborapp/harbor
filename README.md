@@ -4,6 +4,7 @@
 [![Coverage Status](http://coverage.dronehippie.de/badges/umschlag/umschlag-api/coverage.svg)](http://coverage.dronehippie.de/umschlag/umschlag-api)
 [![Go Doc](https://godoc.org/github.com/umschlag/umschlag-api?status.svg)](http://godoc.org/github.com/umschlag/umschlag-api)
 [![Go Report](http://goreportcard.com/badge/github.com/umschlag/umschlag-api)](http://goreportcard.com/report/github.com/umschlag/umschlag-api)
+[![](https://images.microbadger.com/badges/image/umschlag/umschlag-api.svg)](http://microbadger.com/images/umschlag/umschlag-api "Get your own image badge on microbadger.com")
 [![Join the chat at https://gitter.im/umschlag/umschlag](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/umschlag/umschlag)
 ![Release Status](https://img.shields.io/badge/status-beta-yellow.svg?style=flat)
 
