@@ -1,0 +1,165 @@
+package api
+
+import (
+	"net/http"
+
+	"github.com/Sirupsen/logrus"
+	"github.com/gin-gonic/gin"
+	"github.com/umschlag/umschlag-api/model"
+	"github.com/umschlag/umschlag-api/router/middleware/session"
+	"github.com/umschlag/umschlag-api/store"
+)
+
+// RegistryIndex retrieves all available registries.
+func RegistryIndex(c *gin.Context) {
+	records, err := store.GetRegistries(
+		c,
+	)
+
+	if err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"status":  http.StatusInternalServerError,
+				"message": "Failed to fetch registries",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		records,
+	)
+}
+
+// RegistryShow retrieves a specific registry.
+func RegistryShow(c *gin.Context) {
+	record := session.Registry(c)
+
+	c.JSON(
+		http.StatusOK,
+		record,
+	)
+}
+
+// RegistryDelete removes a specific registry.
+func RegistryDelete(c *gin.Context) {
+	record := session.Registry(c)
+
+	err := store.DeleteRegistry(
+		c,
+		record,
+	)
+
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			gin.H{
+				"status":  http.StatusBadRequest,
+				"message": err.Error(),
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"status":  http.StatusOK,
+			"message": "Successfully deleted registry",
+		},
+	)
+}
+
+// RegistryUpdate updates an existing registry.
+func RegistryUpdate(c *gin.Context) {
+	record := session.Registry(c)
+
+	if err := c.BindJSON(&record); err != nil {
+		logrus.Warn("Failed to bind registry data")
+		logrus.Warn(err)
+
+		c.JSON(
+			http.StatusPreconditionFailed,
+			gin.H{
+				"status":  http.StatusPreconditionFailed,
+				"message": "Failed to bind registry data",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	err := store.UpdateRegistry(
+		c,
+		record,
+	)
+
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			gin.H{
+				"status":  http.StatusBadRequest,
+				"message": err.Error(),
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		record,
+	)
+}
+
+// RegistryCreate creates a new user.
+func RegistryCreate(c *gin.Context) {
+	record := &model.Registry{}
+
+	if err := c.BindJSON(&record); err != nil {
+		logrus.Warn("Failed to bind registry data")
+		logrus.Warn(err)
+
+		c.JSON(
+			http.StatusPreconditionFailed,
+			gin.H{
+				"status":  http.StatusPreconditionFailed,
+				"message": "Failed to bind registry data",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	err := store.CreateRegistry(
+		c,
+		record,
+	)
+
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			gin.H{
+				"status":  http.StatusBadRequest,
+				"message": err.Error(),
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		record,
+	)
+}

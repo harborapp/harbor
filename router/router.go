@@ -87,6 +87,20 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 			}
 
 			//
+			// Registries
+			//
+			registries := base.Group("/registries")
+			{
+				registries.Use(session.MustRegistries("display"))
+
+				registries.GET("", api.RegistryIndex)
+				registries.GET("/:registry", session.SetRegistry(), api.RegistryShow)
+				registries.DELETE("/:registry", session.SetRegistry(), session.MustRegistries("delete"), api.RegistryDelete)
+				registries.PATCH("/:registry", session.SetRegistry(), session.MustRegistries("change"), api.RegistryUpdate)
+				registries.POST("", session.MustRegistries("change"), api.RegistryCreate)
+			}
+
+			//
 			// Users
 			//
 			users := base.Group("/users")

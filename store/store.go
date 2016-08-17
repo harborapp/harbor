@@ -9,6 +9,21 @@ import (
 
 // Store implements all required data-layer functions for Umschlag.
 type Store interface {
+	// GetRegistries retrieves all available registries from the database.
+	GetRegistries() (*model.Registries, error)
+
+	// CreateRegistry creates a new registry.
+	CreateRegistry(*model.Registry) error
+
+	// UpdateRegistry updates a registry.
+	UpdateRegistry(*model.Registry) error
+
+	// DeleteRegistry deletes a registry.
+	DeleteRegistry(*model.Registry) error
+
+	// GetRegistry retrieves a specific registry from the database.
+	GetRegistry(string) (*model.Registry, *gorm.DB)
+
 	// GetNamespaces retrieves all available namespaces from the database.
 	GetNamespaces() (*model.Namespaces, error)
 

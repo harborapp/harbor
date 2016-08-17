@@ -18,6 +18,7 @@ type Registry struct {
 	Slug       string     `json:"slug" sql:"unique_index"`
 	Name       string     `json:"name" sql:"unique_index"`
 	Host       string     `json:"host" sql:"unique_index"`
+	UseSSL     bool       `json:"use_ssl" sql:"default:false"`
 	CreatedAt  time.Time  `json:"created_at"`
 	UpdatedAt  time.Time  `json:"updated_at"`
 	Namespaces Namespaces `json:"namespaces,omitempty"`
