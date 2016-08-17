@@ -12,9 +12,11 @@ func (db *data) GetNamespaces() (*model.Namespaces, error) {
 	err := db.Order(
 		"name ASC",
 	).Preload(
-		"Repositories",
-		"Teams",
+		"Registry",
+	).Preload(
 		"Users",
+	).Preload(
+		"Teams",
 	).Find(
 		&records,
 	).Error
@@ -56,9 +58,11 @@ func (db *data) GetNamespace(id string) (*model.Namespace, *gorm.DB) {
 	).Model(
 		&record,
 	).Preload(
-		"Repositories",
-		"Teams",
+		"Registry",
+	).Preload(
 		"Users",
+	).Preload(
+		"Teams",
 	).First(
 		&record,
 	)
