@@ -101,6 +101,40 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 			}
 
 			//
+			// Namespaces
+			//
+			namespaces := base.Group("/namespaces")
+			{
+				namespaces.Use(session.MustNamespaces("display"))
+
+				namespaces.GET("", api.NamespaceIndex)
+				namespaces.GET("/:namespace", session.SetNamespace(), api.NamespaceShow)
+				namespaces.DELETE("/:namespace", session.SetNamespace(), session.MustNamespaces("delete"), api.NamespaceDelete)
+				namespaces.PATCH("/:namespace", session.SetNamespace(), session.MustNamespaces("change"), api.NamespaceUpdate)
+				namespaces.POST("", session.MustNamespaces("change"), api.NamespaceCreate)
+			}
+
+			namespaceTeams := base.Group("/namespaces/:namespace/teams")
+			{
+				namespaceTeams.Use(session.MustTeams("change"))
+				namespaceTeams.Use(session.SetNamespace())
+
+				namespaceTeams.GET("", api.NamespaceTeamIndex)
+				namespaceTeams.PATCH("", api.NamespaceTeamAppend)
+				namespaceTeams.DELETE("", api.NamespaceTeamDelete)
+			}
+
+			namespaceUsers := base.Group("/namespaces/:namespace/users")
+			{
+				namespaceUsers.Use(session.MustUsers("change"))
+				namespaceUsers.Use(session.SetNamespace())
+
+				namespaceUsers.GET("", api.NamespaceUserIndex)
+				namespaceUsers.PATCH("", api.NamespaceUserAppend)
+				namespaceUsers.DELETE("", api.NamespaceUserDelete)
+			}
+
+			//
 			// Users
 			//
 			users := base.Group("/users")
@@ -124,6 +158,16 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				userTeams.DELETE("", api.UserTeamDelete)
 			}
 
+			userNamespaces := base.Group("/users/:user/namespaces")
+			{
+				userNamespaces.Use(session.MustNamespaces("change"))
+				userNamespaces.Use(session.SetUser())
+
+				userNamespaces.GET("", api.UserNamespaceIndex)
+				userNamespaces.PATCH("", api.UserNamespaceAppend)
+				userNamespaces.DELETE("", api.UserNamespaceDelete)
+			}
+
 			//
 			// Teams
 			//
@@ -140,7 +184,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 
 			teamUsers := base.Group("/teams/:team/users")
 			{
-				teamUsers.Use(session.MustTeams("change"))
+				teamUsers.Use(session.MustUsers("change"))
 				teamUsers.Use(session.SetTeam())
 
 				teamUsers.GET("", api.TeamUserIndex)
@@ -148,6 +192,15 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				teamUsers.DELETE("", api.TeamUserDelete)
 			}
 
+			teamNamespaces := base.Group("/teams/:team/namespaces")
+			{
+				teamNamespaces.Use(session.MustNamespaces("change"))
+				teamNamespaces.Use(session.SetTeam())
+
+				teamNamespaces.GET("", api.TeamNamespaceIndex)
+				teamNamespaces.PATCH("", api.TeamNamespaceAppend)
+				teamNamespaces.DELETE("", api.TeamNamespaceDelete)
+			}
 		}
 	}
 

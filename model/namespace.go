@@ -24,6 +24,7 @@ type Namespace struct {
 	UpdatedAt    time.Time    `json:"updated_at"`
 	Repositories Repositories `json:"repositories,omitempty"`
 	Teams        Teams        `json:"teams,omitempty" gorm:"many2many:team_namespaces;"`
+	Users        Users        `json:"users,omitempty" gorm:"many2many:user_namespaces;"`
 }
 
 // BeforeSave invokes required actions before persisting.

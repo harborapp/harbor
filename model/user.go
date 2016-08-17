@@ -18,18 +18,19 @@ type Users []*User
 
 // User represents a user model definition.
 type User struct {
-	ID        int       `json:"id" gorm:"primary_key"`
-	Slug      string    `json:"slug" sql:"unique_index"`
-	Username  string    `json:"username" sql:"unique_index"`
-	Email     string    `json:"email" sql:"unique_index"`
-	Hash      string    `json:"-" sql:"unique_index"`
-	Password  string    `json:"password,omitempty" sql:"-"`
-	Hashword  string    `json:"-"`
-	Avatar    string    `json:"avatar,omitempty" sql:"-"`
-	Active    bool      `json:"active" sql:"default:false"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Teams     Teams     `json:"teams,omitempty" gorm:"many2many:team_users;"`
+	ID         int        `json:"id" gorm:"primary_key"`
+	Slug       string     `json:"slug" sql:"unique_index"`
+	Username   string     `json:"username" sql:"unique_index"`
+	Email      string     `json:"email" sql:"unique_index"`
+	Hash       string     `json:"-" sql:"unique_index"`
+	Password   string     `json:"password,omitempty" sql:"-"`
+	Hashword   string     `json:"-"`
+	Avatar     string     `json:"avatar,omitempty" sql:"-"`
+	Active     bool       `json:"active" sql:"default:false"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	Teams      Teams      `json:"teams,omitempty" gorm:"many2many:team_users;"`
+	Namespaces Namespaces `json:"namespaces,omitempty" gorm:"many2many:user_namespaces;"`
 }
 
 // AfterFind invokes required after loading a record from the database.

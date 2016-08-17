@@ -116,3 +116,62 @@ func (db *data) DeleteTeamUser(params *model.TeamUserParams) error {
 		user,
 	).Error
 }
+
+// GetTeamNamespaces retrieves namespaces for a team.
+func (db *data) GetTeamNamespaces(params *model.TeamNamespaceParams) (*model.Namespaces, error) {
+	team, _ := db.GetTeam(params.Team)
+
+	records := &model.Namespaces{}
+
+	err := db.Model(
+		team,
+	).Association(
+		"Namespaces",
+	).Find(
+		records,
+	).Error
+
+	return records, err
+}
+
+// GetTeamHasNamespace checks if a specific namespace is assigned to a team.
+func (db *data) GetTeamHasNamespace(params *model.TeamNamespaceParams) bool {
+	team, _ := db.GetTeam(params.Team)
+	namespace, _ := db.GetNamespace(params.Namespace)
+
+	count := db.Model(
+		team,
+	).Association(
+		"Namespaces",
+	).Find(
+		namespace,
+	).Count()
+
+	return count > 0
+}
+
+func (db *data) CreateTeamNamespace(params *model.TeamNamespaceParams) error {
+	team, _ := db.GetTeam(params.Team)
+	namespace, _ := db.GetNamespace(params.Namespace)
+
+	return db.Model(
+		team,
+	).Association(
+		"Namespaces",
+	).Append(
+		namespace,
+	).Error
+}
+
+func (db *data) DeleteTeamNamespace(params *model.TeamNamespaceParams) error {
+	team, _ := db.GetTeam(params.Team)
+	namespace, _ := db.GetNamespace(params.Namespace)
+
+	return db.Model(
+		team,
+	).Association(
+		"Namespaces",
+	).Delete(
+		namespace,
+	).Error
+}

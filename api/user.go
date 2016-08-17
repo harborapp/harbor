@@ -321,3 +321,161 @@ func UserTeamDelete(c *gin.Context) {
 		},
 	)
 }
+
+// UserNamespaceIndex retrieves all namespaces related to a user.
+func UserNamespaceIndex(c *gin.Context) {
+	records, err := store.GetUserNamespaces(
+		c,
+		&model.UserNamespaceParams{
+			User: c.Param("user"),
+		},
+	)
+
+	if err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"status":  http.StatusInternalServerError,
+				"message": "Failed to fetch namespaces",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		records,
+	)
+}
+
+// UserNamespaceAppend appends a namespace to a user.
+func UserNamespaceAppend(c *gin.Context) {
+	form := &model.UserNamespaceParams{}
+
+	if err := c.BindJSON(&form); err != nil {
+		logrus.Warn("Failed to bind post data")
+		logrus.Warn(err)
+
+		c.JSON(
+			http.StatusPreconditionFailed,
+			gin.H{
+				"status":  http.StatusPreconditionFailed,
+				"message": "Failed to bind form data",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	assigned := store.GetUserHasNamespace(
+		c,
+		form,
+	)
+
+	if assigned == true {
+		c.JSON(
+			http.StatusPreconditionFailed,
+			gin.H{
+				"status":  http.StatusPreconditionFailed,
+				"message": "Namespace is already appended",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	err := store.CreateUserNamespace(
+		c,
+		form,
+	)
+
+	if err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"status":  http.StatusInternalServerError,
+				"message": "Failed to append namespace",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"status":  http.StatusOK,
+			"message": "Successfully appended namespace",
+		},
+	)
+}
+
+// UserNamespaceDelete deleted a namespace from a user
+func UserNamespaceDelete(c *gin.Context) {
+	form := &model.UserNamespaceParams{}
+
+	if err := c.BindJSON(&form); err != nil {
+		logrus.Warn("Failed to bind post data")
+		logrus.Warn(err)
+
+		c.JSON(
+			http.StatusPreconditionFailed,
+			gin.H{
+				"status":  http.StatusPreconditionFailed,
+				"message": "Failed to bind form data",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	assigned := store.GetUserHasNamespace(
+		c,
+		form,
+	)
+
+	if assigned == false {
+		c.JSON(
+			http.StatusPreconditionFailed,
+			gin.H{
+				"status":  http.StatusPreconditionFailed,
+				"message": "Namespace is not assigned",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	err := store.DeleteUserNamespace(
+		c,
+		form,
+	)
+
+	if err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"status":  http.StatusInternalServerError,
+				"message": "Failed to unlink namespace",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"status":  http.StatusOK,
+			"message": "Successfully unlinked namespace",
+		},
+	)
+}

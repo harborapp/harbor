@@ -17,7 +17,6 @@ type Team struct {
 	ID         int        `json:"id" gorm:"primary_key"`
 	Slug       string     `json:"slug" sql:"unique_index"`
 	Name       string     `json:"name" sql:"unique_index"`
-	Public     bool       `json:"private" sql:"default:false"`
 	CreatedAt  time.Time  `json:"created_at"`
 	UpdatedAt  time.Time  `json:"updated_at"`
 	Users      Users      `json:"users,omitempty" gorm:"many2many:team_users;"`

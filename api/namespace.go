@@ -10,9 +10,9 @@ import (
 	"github.com/umschlag/umschlag-api/store"
 )
 
-// TeamIndex retrieves all available teams.
-func TeamIndex(c *gin.Context) {
-	records, err := store.GetTeams(
+// NamespaceIndex retrieves all available namespaces.
+func NamespaceIndex(c *gin.Context) {
+	records, err := store.GetNamespaces(
 		c,
 	)
 
@@ -21,7 +21,7 @@ func TeamIndex(c *gin.Context) {
 			http.StatusInternalServerError,
 			gin.H{
 				"status":  http.StatusInternalServerError,
-				"message": "Failed to fetch teams",
+				"message": "Failed to fetch namespaces",
 			},
 		)
 
@@ -35,9 +35,9 @@ func TeamIndex(c *gin.Context) {
 	)
 }
 
-// TeamShow retrieves a specific team.
-func TeamShow(c *gin.Context) {
-	record := session.Team(c)
+// NamespaceShow retrieves a specific namespace.
+func NamespaceShow(c *gin.Context) {
+	record := session.Namespace(c)
 
 	c.JSON(
 		http.StatusOK,
@@ -45,11 +45,11 @@ func TeamShow(c *gin.Context) {
 	)
 }
 
-// TeamDelete removes a specific team.
-func TeamDelete(c *gin.Context) {
-	record := session.Team(c)
+// NamespaceDelete removes a specific namespace.
+func NamespaceDelete(c *gin.Context) {
+	record := session.Namespace(c)
 
-	err := store.DeleteTeam(
+	err := store.DeleteNamespace(
 		c,
 		record,
 	)
@@ -71,24 +71,24 @@ func TeamDelete(c *gin.Context) {
 		http.StatusOK,
 		gin.H{
 			"status":  http.StatusOK,
-			"message": "Successfully deleted team",
+			"message": "Successfully deleted namespace",
 		},
 	)
 }
 
-// TeamUpdate updates an existing team.
-func TeamUpdate(c *gin.Context) {
-	record := session.Team(c)
+// NamespaceUpdate updates an existing namespace.
+func NamespaceUpdate(c *gin.Context) {
+	record := session.Namespace(c)
 
 	if err := c.BindJSON(&record); err != nil {
-		logrus.Warn("Failed to bind team data")
+		logrus.Warn("Failed to bind namespace data")
 		logrus.Warn(err)
 
 		c.JSON(
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Failed to bind team data",
+				"message": "Failed to bind namespace data",
 			},
 		)
 
@@ -96,7 +96,7 @@ func TeamUpdate(c *gin.Context) {
 		return
 	}
 
-	err := store.UpdateTeam(
+	err := store.UpdateNamespace(
 		c,
 		record,
 	)
@@ -120,19 +120,19 @@ func TeamUpdate(c *gin.Context) {
 	)
 }
 
-// TeamCreate creates a new user.
-func TeamCreate(c *gin.Context) {
-	record := &model.Team{}
+// NamespaceCreate creates a new namespace.
+func NamespaceCreate(c *gin.Context) {
+	record := &model.Namespace{}
 
 	if err := c.BindJSON(&record); err != nil {
-		logrus.Warn("Failed to bind team data")
+		logrus.Warn("Failed to bind namespace data")
 		logrus.Warn(err)
 
 		c.JSON(
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Failed to bind team data",
+				"message": "Failed to bind namespace data",
 			},
 		)
 
@@ -140,7 +140,7 @@ func TeamCreate(c *gin.Context) {
 		return
 	}
 
-	err := store.CreateTeam(
+	err := store.CreateNamespace(
 		c,
 		record,
 	)
@@ -164,12 +164,12 @@ func TeamCreate(c *gin.Context) {
 	)
 }
 
-// TeamUserIndex retrieves all users related to a team.
-func TeamUserIndex(c *gin.Context) {
-	records, err := store.GetTeamUsers(
+// NamespaceUserIndex retrieves all users related to a namespace.
+func NamespaceUserIndex(c *gin.Context) {
+	records, err := store.GetNamespaceUsers(
 		c,
-		&model.TeamUserParams{
-			Team: c.Param("team"),
+		&model.NamespaceUserParams{
+			Namespace: c.Param("namespace"),
 		},
 	)
 
@@ -192,9 +192,9 @@ func TeamUserIndex(c *gin.Context) {
 	)
 }
 
-// TeamUserAppend appends a user to a team.
-func TeamUserAppend(c *gin.Context) {
-	form := &model.TeamUserParams{}
+// NamespaceUserAppend appends a user to a namespace.
+func NamespaceUserAppend(c *gin.Context) {
+	form := &model.NamespaceUserParams{}
 
 	if err := c.BindJSON(&form); err != nil {
 		logrus.Warn("Failed to bind post data")
@@ -212,7 +212,7 @@ func TeamUserAppend(c *gin.Context) {
 		return
 	}
 
-	assigned := store.GetTeamHasUser(
+	assigned := store.GetNamespaceHasUser(
 		c,
 		form,
 	)
@@ -230,7 +230,7 @@ func TeamUserAppend(c *gin.Context) {
 		return
 	}
 
-	err := store.CreateTeamUser(
+	err := store.CreateNamespaceUser(
 		c,
 		form,
 	)
@@ -257,9 +257,9 @@ func TeamUserAppend(c *gin.Context) {
 	)
 }
 
-// TeamUserDelete deleted a user from a team
-func TeamUserDelete(c *gin.Context) {
-	form := &model.TeamUserParams{}
+// NamespaceUserDelete deleted a user from a namespace
+func NamespaceUserDelete(c *gin.Context) {
+	form := &model.NamespaceUserParams{}
 
 	if err := c.BindJSON(&form); err != nil {
 		logrus.Warn("Failed to bind post data")
@@ -277,7 +277,7 @@ func TeamUserDelete(c *gin.Context) {
 		return
 	}
 
-	assigned := store.GetTeamHasUser(
+	assigned := store.GetNamespaceHasUser(
 		c,
 		form,
 	)
@@ -295,7 +295,7 @@ func TeamUserDelete(c *gin.Context) {
 		return
 	}
 
-	err := store.DeleteTeamUser(
+	err := store.DeleteNamespaceUser(
 		c,
 		form,
 	)
@@ -322,12 +322,12 @@ func TeamUserDelete(c *gin.Context) {
 	)
 }
 
-// TeamNamespaceIndex retrieves all namespaces related to a team.
-func TeamNamespaceIndex(c *gin.Context) {
-	records, err := store.GetTeamNamespaces(
+// NamespaceTeamIndex retrieves all teams related to a namespace.
+func NamespaceTeamIndex(c *gin.Context) {
+	records, err := store.GetNamespaceTeams(
 		c,
-		&model.TeamNamespaceParams{
-			Team: c.Param("team"),
+		&model.NamespaceTeamParams{
+			Namespace: c.Param("namespace"),
 		},
 	)
 
@@ -336,7 +336,7 @@ func TeamNamespaceIndex(c *gin.Context) {
 			http.StatusInternalServerError,
 			gin.H{
 				"status":  http.StatusInternalServerError,
-				"message": "Failed to fetch namespaces",
+				"message": "Failed to fetch teams",
 			},
 		)
 
@@ -350,9 +350,9 @@ func TeamNamespaceIndex(c *gin.Context) {
 	)
 }
 
-// TeamNamespaceAppend appends a namespace to a team.
-func TeamNamespaceAppend(c *gin.Context) {
-	form := &model.TeamNamespaceParams{}
+// NamespaceTeamAppend appends a team to a namespace.
+func NamespaceTeamAppend(c *gin.Context) {
+	form := &model.NamespaceTeamParams{}
 
 	if err := c.BindJSON(&form); err != nil {
 		logrus.Warn("Failed to bind post data")
@@ -370,7 +370,7 @@ func TeamNamespaceAppend(c *gin.Context) {
 		return
 	}
 
-	assigned := store.GetTeamHasNamespace(
+	assigned := store.GetNamespaceHasTeam(
 		c,
 		form,
 	)
@@ -380,7 +380,7 @@ func TeamNamespaceAppend(c *gin.Context) {
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Namespace is already appended",
+				"message": "Team is already appended",
 			},
 		)
 
@@ -388,7 +388,7 @@ func TeamNamespaceAppend(c *gin.Context) {
 		return
 	}
 
-	err := store.CreateTeamNamespace(
+	err := store.CreateNamespaceTeam(
 		c,
 		form,
 	)
@@ -398,7 +398,7 @@ func TeamNamespaceAppend(c *gin.Context) {
 			http.StatusInternalServerError,
 			gin.H{
 				"status":  http.StatusInternalServerError,
-				"message": "Failed to append namespace",
+				"message": "Failed to append team",
 			},
 		)
 
@@ -410,14 +410,14 @@ func TeamNamespaceAppend(c *gin.Context) {
 		http.StatusOK,
 		gin.H{
 			"status":  http.StatusOK,
-			"message": "Successfully appended namespace",
+			"message": "Successfully appended team",
 		},
 	)
 }
 
-// TeamNamespaceDelete deleted a namespace from a team
-func TeamNamespaceDelete(c *gin.Context) {
-	form := &model.TeamNamespaceParams{}
+// NamespaceTeamDelete deleted a team from a namespace
+func NamespaceTeamDelete(c *gin.Context) {
+	form := &model.NamespaceTeamParams{}
 
 	if err := c.BindJSON(&form); err != nil {
 		logrus.Warn("Failed to bind post data")
@@ -435,7 +435,7 @@ func TeamNamespaceDelete(c *gin.Context) {
 		return
 	}
 
-	assigned := store.GetTeamHasNamespace(
+	assigned := store.GetNamespaceHasTeam(
 		c,
 		form,
 	)
@@ -445,7 +445,7 @@ func TeamNamespaceDelete(c *gin.Context) {
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Namespace is not assigned",
+				"message": "Team is not assigned",
 			},
 		)
 
@@ -453,7 +453,7 @@ func TeamNamespaceDelete(c *gin.Context) {
 		return
 	}
 
-	err := store.DeleteTeamNamespace(
+	err := store.DeleteNamespaceTeam(
 		c,
 		form,
 	)
@@ -463,7 +463,7 @@ func TeamNamespaceDelete(c *gin.Context) {
 			http.StatusInternalServerError,
 			gin.H{
 				"status":  http.StatusInternalServerError,
-				"message": "Failed to unlink namespace",
+				"message": "Failed to unlink team",
 			},
 		)
 
@@ -475,7 +475,7 @@ func TeamNamespaceDelete(c *gin.Context) {
 		http.StatusOK,
 		gin.H{
 			"status":  http.StatusOK,
-			"message": "Successfully unlinked namespace",
+			"message": "Successfully unlinked team",
 		},
 	)
 }

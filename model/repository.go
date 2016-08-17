@@ -19,6 +19,7 @@ type Repository struct {
 	NamespaceID int        `json:"namespace_id" sql:"index"`
 	Slug        string     `json:"slug"`
 	Name        string     `json:"name"`
+	Public      bool       `json:"private" sql:"default:false"`
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 	Tags        Tags       `json:"tags,omitempty"`

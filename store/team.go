@@ -50,3 +50,23 @@ func CreateTeamUser(c context.Context, params *model.TeamUserParams) error {
 func DeleteTeamUser(c context.Context, params *model.TeamUserParams) error {
 	return FromContext(c).DeleteTeamUser(params)
 }
+
+// GetTeamNamespaces retrieves namespaces for a team.
+func GetTeamNamespaces(c context.Context, params *model.TeamNamespaceParams) (*model.Namespaces, error) {
+	return FromContext(c).GetTeamNamespaces(params)
+}
+
+// GetTeamHasNamespace checks if a specific namespace is assigned to a team.
+func GetTeamHasNamespace(c context.Context, params *model.TeamNamespaceParams) bool {
+	return FromContext(c).GetTeamHasNamespace(params)
+}
+
+// CreateTeamNamespace assigns a namespace to a specific team.
+func CreateTeamNamespace(c context.Context, params *model.TeamNamespaceParams) error {
+	return FromContext(c).CreateTeamNamespace(params)
+}
+
+// DeleteTeamNamespace removes a namespace from a specific team.
+func DeleteTeamNamespace(c context.Context, params *model.TeamNamespaceParams) error {
+	return FromContext(c).DeleteTeamNamespace(params)
+}

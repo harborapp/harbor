@@ -116,3 +116,62 @@ func (db *data) DeleteUserTeam(params *model.UserTeamParams) error {
 		team,
 	).Error
 }
+
+// GetUserNamespaces retrieves namespaces for a user.
+func (db *data) GetUserNamespaces(params *model.UserNamespaceParams) (*model.Namespaces, error) {
+	user, _ := db.GetUser(params.User)
+
+	records := &model.Namespaces{}
+
+	err := db.Model(
+		user,
+	).Association(
+		"Namespaces",
+	).Find(
+		records,
+	).Error
+
+	return records, err
+}
+
+// GetUserHasNamespace checks if a specific namespace is assigned to a user.
+func (db *data) GetUserHasNamespace(params *model.UserNamespaceParams) bool {
+	user, _ := db.GetUser(params.User)
+	namespace, _ := db.GetNamespace(params.Namespace)
+
+	count := db.Model(
+		user,
+	).Association(
+		"Namespaces",
+	).Find(
+		namespace,
+	).Count()
+
+	return count > 0
+}
+
+func (db *data) CreateUserNamespace(params *model.UserNamespaceParams) error {
+	user, _ := db.GetUser(params.User)
+	namespace, _ := db.GetNamespace(params.Namespace)
+
+	return db.Model(
+		user,
+	).Association(
+		"Namespaces",
+	).Append(
+		namespace,
+	).Error
+}
+
+func (db *data) DeleteUserNamespace(params *model.UserNamespaceParams) error {
+	user, _ := db.GetUser(params.User)
+	namespace, _ := db.GetNamespace(params.Namespace)
+
+	return db.Model(
+		user,
+	).Association(
+		"Namespaces",
+	).Delete(
+		namespace,
+	).Error
+}
