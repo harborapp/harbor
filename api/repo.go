@@ -8,9 +8,9 @@ import (
 	"github.com/umschlag/umschlag-api/store"
 )
 
-// RepositoryIndex retrieves all available repositories.
-func RepositoryIndex(c *gin.Context) {
-	records, err := store.GetRepositories(
+// RepoIndex retrieves all available repos.
+func RepoIndex(c *gin.Context) {
+	records, err := store.GetRepos(
 		c,
 	)
 
@@ -19,7 +19,7 @@ func RepositoryIndex(c *gin.Context) {
 			http.StatusInternalServerError,
 			gin.H{
 				"status":  http.StatusInternalServerError,
-				"message": "Failed to fetch repositories",
+				"message": "Failed to fetch repos",
 			},
 		)
 
@@ -33,9 +33,9 @@ func RepositoryIndex(c *gin.Context) {
 	)
 }
 
-// RepositoryShow retrieves a specific repository.
-func RepositoryShow(c *gin.Context) {
-	record := session.Repository(c)
+// RepoShow retrieves a specific repo.
+func RepoShow(c *gin.Context) {
+	record := session.Repo(c)
 
 	c.JSON(
 		http.StatusOK,
@@ -43,11 +43,11 @@ func RepositoryShow(c *gin.Context) {
 	)
 }
 
-// RepositoryDelete removes a specific repository.
-func RepositoryDelete(c *gin.Context) {
-	record := session.Repository(c)
+// RepoDelete removes a specific repo.
+func RepoDelete(c *gin.Context) {
+	record := session.Repo(c)
 
-	err := store.DeleteRepository(
+	err := store.DeleteRepo(
 		c,
 		record,
 	)
@@ -69,7 +69,7 @@ func RepositoryDelete(c *gin.Context) {
 		http.StatusOK,
 		gin.H{
 			"status":  http.StatusOK,
-			"message": "Successfully deleted repository",
+			"message": "Successfully deleted repo",
 		},
 	)
 }

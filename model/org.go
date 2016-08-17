@@ -14,17 +14,17 @@ type Orgs []*Org
 
 // Org represents a org model definition.
 type Org struct {
-	ID           int          `json:"id" gorm:"primary_key"`
-	Registry     *Registry    `json:"registry,omitempty"`
-	RegistryID   int          `json:"registry_id" sql:"index"`
-	Slug         string       `json:"slug"`
-	Name         string       `json:"name"`
-	Public       bool         `json:"private" sql:"default:false"`
-	CreatedAt    time.Time    `json:"created_at"`
-	UpdatedAt    time.Time    `json:"updated_at"`
-	Repositories Repositories `json:"repositories,omitempty"`
-	Teams        Teams        `json:"teams,omitempty" gorm:"many2many:team_orgs;"`
-	Users        Users        `json:"users,omitempty" gorm:"many2many:user_orgs;"`
+	ID         int       `json:"id" gorm:"primary_key"`
+	Registry   *Registry `json:"registry,omitempty"`
+	RegistryID int       `json:"registry_id" sql:"index"`
+	Slug       string    `json:"slug"`
+	Name       string    `json:"name"`
+	Public     bool      `json:"private" sql:"default:false"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	Repos      Repos     `json:"repos,omitempty"`
+	Teams      Teams     `json:"teams,omitempty" gorm:"many2many:team_orgs;"`
+	Users      Users     `json:"users,omitempty" gorm:"many2many:user_orgs;"`
 }
 
 // BeforeSave invokes required actions before persisting.
@@ -60,8 +60,8 @@ func (u *Org) BeforeSave(db *gorm.DB) (err error) {
 
 // AfterDelete invokes required actions after deletion.
 func (u *Org) AfterDelete(tx *gorm.DB) error {
-	for _, repository := range u.Repositories {
-		if err := tx.Delete(repository).Error; err != nil {
+	for _, repo := range u.Repos {
+		if err := tx.Delete(repo).Error; err != nil {
 			return err
 		}
 	}

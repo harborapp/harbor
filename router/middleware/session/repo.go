@@ -9,19 +9,19 @@ import (
 )
 
 const (
-	// RepositoryContextKey defines the context key that stores the repository.
-	RepositoryContextKey = "repository"
+	// RepoContextKey defines the context key that stores the repo.
+	RepoContextKey = "repo"
 )
 
-// Repository gets the repository from the context.
-func Repository(c *gin.Context) *model.Repository {
-	v, ok := c.Get(RepositoryContextKey)
+// Repo gets the repo from the context.
+func Repo(c *gin.Context) *model.Repo {
+	v, ok := c.Get(RepoContextKey)
 
 	if !ok {
 		return nil
 	}
 
-	r, ok := v.(*model.Repository)
+	r, ok := v.(*model.Repo)
 
 	if !ok {
 		return nil
@@ -30,10 +30,10 @@ func Repository(c *gin.Context) *model.Repository {
 	return r
 }
 
-// SetRepository injects the repository into the context.
-func SetRepository() gin.HandlerFunc {
+// SetRepo injects the repo into the context.
+func SetRepo() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		record, res := store.GetRepository(
+		record, res := store.GetRepo(
 			c,
 			c.Param("repo"),
 		)
@@ -43,20 +43,20 @@ func SetRepository() gin.HandlerFunc {
 				http.StatusNotFound,
 				gin.H{
 					"status":  http.StatusNotFound,
-					"message": "Failed to find repository",
+					"message": "Failed to find repo",
 				},
 			)
 
 			c.Abort()
 		} else {
-			c.Set(RepositoryContextKey, record)
+			c.Set(RepoContextKey, record)
 			c.Next()
 		}
 	}
 }
 
-// MustRepositories validates the repositories access.
-func MustRepositories(action string) gin.HandlerFunc {
+// MustRepos validates the repos access.
+func MustRepos(action string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user := Current(c)
 
@@ -72,11 +72,11 @@ func MustRepositories(action string) gin.HandlerFunc {
 			c.Abort()
 		} else {
 			switch {
-			case action == "display": // && user.Permission.DisplayRepositories:
+			case action == "display": // && user.Permission.DisplayRepos:
 				c.Next()
-			case action == "change": // && user.Permission.ChangeRepositories:
+			case action == "change": // && user.Permission.ChangeRepos:
 				c.Next()
-			case action == "delete": // && user.Permission.DeleteRepositories:
+			case action == "delete": // && user.Permission.DeleteRepos:
 				c.Next()
 			default:
 				c.JSON(

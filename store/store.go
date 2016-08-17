@@ -39,20 +39,20 @@ type Store interface {
 	// GetTag retrieves a specific tag from the database.
 	GetTag(string) (*model.Tag, *gorm.DB)
 
-	// GetRepositories retrieves all available repositories from the database.
-	GetRepositories() (*model.Repositories, error)
+	// GetRepos retrieves all available repos from the database.
+	GetRepos() (*model.Repos, error)
 
-	// CreateRepository creates a new repository.
-	CreateRepository(*model.Repository) error
+	// CreateRepo creates a new repo.
+	CreateRepo(*model.Repo) error
 
-	// UpdateRepository updates a repository.
-	UpdateRepository(*model.Repository) error
+	// UpdateRepo updates a repo.
+	UpdateRepo(*model.Repo) error
 
-	// DeleteRepository deletes a repository.
-	DeleteRepository(*model.Repository) error
+	// DeleteRepo deletes a repo.
+	DeleteRepo(*model.Repo) error
 
-	// GetRepository retrieves a specific repository from the database.
-	GetRepository(string) (*model.Repository, *gorm.DB)
+	// GetRepo retrieves a specific repo from the database.
+	GetRepo(string) (*model.Repo, *gorm.DB)
 
 	// GetOrgs retrieves all available orgs from the database.
 	GetOrgs() (*model.Orgs, error)

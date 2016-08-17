@@ -9,11 +9,11 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// Repositories is simply a collection of repository structs.
-type Repositories []*Repository
+// Repos is simply a collection of repo structs.
+type Repos []*Repo
 
-// Repository represents a repository model definition.
-type Repository struct {
+// Repo represents a repo model definition.
+type Repo struct {
 	ID        int       `json:"id" gorm:"primary_key"`
 	Org       *Org      `json:"org,omitempty"`
 	OrgID     int       `json:"org_id" sql:"index"`
@@ -26,7 +26,7 @@ type Repository struct {
 }
 
 // BeforeSave invokes required actions before persisting.
-func (u *Repository) BeforeSave(db *gorm.DB) (err error) {
+func (u *Repo) BeforeSave(db *gorm.DB) (err error) {
 	if u.Slug == "" {
 		for i := 0; true; i++ {
 			if i == 0 {
@@ -44,7 +44,7 @@ func (u *Repository) BeforeSave(db *gorm.DB) (err error) {
 				"id",
 				u.ID,
 			).First(
-				&Repository{},
+				&Repo{},
 			).RecordNotFound()
 
 			if notFound {
@@ -57,7 +57,7 @@ func (u *Repository) BeforeSave(db *gorm.DB) (err error) {
 }
 
 // AfterDelete invokes required actions after deletion.
-func (u *Repository) AfterDelete(tx *gorm.DB) error {
+func (u *Repo) AfterDelete(tx *gorm.DB) error {
 	for _, tag := range u.Tags {
 		if err := tx.Delete(tag).Error; err != nil {
 			return err
@@ -68,7 +68,7 @@ func (u *Repository) AfterDelete(tx *gorm.DB) error {
 }
 
 // Validate does some validation to be able to store the record.
-func (u *Repository) Validate(db *gorm.DB) {
+func (u *Repo) Validate(db *gorm.DB) {
 	if !govalidator.StringLength(u.Name, "1", "255") {
 		db.AddError(fmt.Errorf("Name should be longer than 1 and shorter than 255"))
 	}
@@ -81,7 +81,7 @@ func (u *Repository) Validate(db *gorm.DB) {
 			"id",
 			u.ID,
 		).First(
-			&Repository{},
+			&Repo{},
 		).RecordNotFound()
 
 		if !notFound {

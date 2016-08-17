@@ -14,13 +14,13 @@ type Tags []*Tag
 
 // Tag represents a tag model definition.
 type Tag struct {
-	ID           int         `json:"id" gorm:"primary_key"`
-	Repository   *Repository `json:"repository,omitempty"`
-	RepositoryID int         `json:"repository_id" sql:"index"`
-	Slug         string      `json:"slug"`
-	Name         string      `json:"name"`
-	CreatedAt    time.Time   `json:"created_at"`
-	UpdatedAt    time.Time   `json:"updated_at"`
+	ID        int       `json:"id" gorm:"primary_key"`
+	Repo      *Repo     `json:"repo,omitempty"`
+	RepoID    int       `json:"repo_id" sql:"index"`
+	Slug      string    `json:"slug"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // BeforeSave invokes required actions before persisting.

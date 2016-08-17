@@ -188,7 +188,7 @@ func migrateDatabase(driver string, db *gorm.DB) error {
 	db.AutoMigrate(
 		&model.Org{},
 		&model.Registry{},
-		&model.Repository{},
+		&model.Repo{},
 		&model.Tag{},
 		&model.Team{},
 		&model.User{},
@@ -211,17 +211,17 @@ func migrateDatabase(driver string, db *gorm.DB) error {
 	)
 
 	db.Model(
-		&model.Repository{},
+		&model.Repo{},
 	).AddUniqueIndex(
-		"uix_repositories_org_id_slug",
+		"uix_repos_org_id_slug",
 		"org_id",
 		"slug",
 	)
 
 	db.Model(
-		&model.Repository{},
+		&model.Repo{},
 	).AddUniqueIndex(
-		"uix_repositories_org_id_name",
+		"uix_repos_org_id_name",
 		"org_id",
 		"name",
 	)
@@ -229,16 +229,16 @@ func migrateDatabase(driver string, db *gorm.DB) error {
 	db.Model(
 		&model.Tag{},
 	).AddUniqueIndex(
-		"uix_tags_repository_id_slug",
-		"repository_id",
+		"uix_tags_repo_id_slug",
+		"repo_id",
 		"slug",
 	)
 
 	db.Model(
 		&model.Tag{},
 	).AddUniqueIndex(
-		"uix_tags_repository_id_name",
-		"repository_id",
+		"uix_tags_repo_id_name",
+		"repo_id",
 		"name",
 	)
 

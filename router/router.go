@@ -106,7 +106,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 			tags := base.Group("/orgs/:org/repos/:repo/tags")
 			{
 				tags.Use(session.SetOrg())
-				tags.Use(session.SetRepository())
+				tags.Use(session.SetRepo())
 				tags.Use(session.MustTags("display"))
 
 				tags.GET("", api.TagIndex)
@@ -120,11 +120,11 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 			repos := base.Group("/orgs/:org/repos")
 			{
 				repos.Use(session.SetOrg())
-				repos.Use(session.MustRepositories("display"))
+				repos.Use(session.MustRepos("display"))
 
-				repos.GET("", api.RepositoryIndex)
-				repos.GET("/:repo", session.SetRepository(), api.RepositoryShow)
-				repos.DELETE("/:repo", session.SetRepository(), session.MustRepositories("delete"), api.RepositoryDelete)
+				repos.GET("", api.RepoIndex)
+				repos.GET("/:repo", session.SetRepo(), api.RepoShow)
+				repos.DELETE("/:repo", session.SetRepo(), session.MustRepos("delete"), api.RepoDelete)
 			}
 
 			//
