@@ -12,26 +12,26 @@ type UserTeamParams struct {
 	Team string `json:"team"`
 }
 
-// NamespaceUserParams represents the parameters to connect users with namespaces.
-type NamespaceUserParams struct {
-	Namespace string `json:"namespace"`
-	User      string `json:"user"`
+// OrgUserParams represents the parameters to connect users with orgs.
+type OrgUserParams struct {
+	Org  string `json:"org"`
+	User string `json:"user"`
 }
 
-// UserNamespaceParams represents the parameters to connect namespaces with users.
-type UserNamespaceParams struct {
-	User      string `json:"user"`
-	Namespace string `json:"namespace"`
+// UserOrgParams represents the parameters to connect orgs with users.
+type UserOrgParams struct {
+	User string `json:"user"`
+	Org  string `json:"org"`
 }
 
-// NamespaceTeamParams represents the parameters to connect teams with namespaces.
-type NamespaceTeamParams struct {
-	Namespace string `json:"namespace"`
-	Team      string `json:"team"`
+// OrgTeamParams represents the parameters to connect teams with orgs.
+type OrgTeamParams struct {
+	Org  string `json:"org"`
+	Team string `json:"team"`
 }
 
-// TeamNamespaceParams represents the parameters to connect namespaces with teams.
-type TeamNamespaceParams struct {
-	Team      string `json:"team"`
-	Namespace string `json:"namespace"`
+// TeamOrgParams represents the parameters to connect orgs with teams.
+type TeamOrgParams struct {
+	Team string `json:"team"`
+	Org  string `json:"org"`
 }

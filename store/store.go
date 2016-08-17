@@ -54,44 +54,44 @@ type Store interface {
 	// GetRepository retrieves a specific repository from the database.
 	GetRepository(string) (*model.Repository, *gorm.DB)
 
-	// GetNamespaces retrieves all available namespaces from the database.
-	GetNamespaces() (*model.Namespaces, error)
+	// GetOrgs retrieves all available orgs from the database.
+	GetOrgs() (*model.Orgs, error)
 
-	// CreateNamespace creates a new namespace.
-	CreateNamespace(*model.Namespace) error
+	// CreateOrg creates a new org.
+	CreateOrg(*model.Org) error
 
-	// UpdateNamespace updates a namespace.
-	UpdateNamespace(*model.Namespace) error
+	// UpdateOrg updates a org.
+	UpdateOrg(*model.Org) error
 
-	// DeleteNamespace deletes a namespace.
-	DeleteNamespace(*model.Namespace) error
+	// DeleteOrg deletes a org.
+	DeleteOrg(*model.Org) error
 
-	// GetNamespace retrieves a specific namespace from the database.
-	GetNamespace(string) (*model.Namespace, *gorm.DB)
+	// GetOrg retrieves a specific org from the database.
+	GetOrg(string) (*model.Org, *gorm.DB)
 
-	// GetNamespaceTeams retrieves teams for a namespace.
-	GetNamespaceTeams(*model.NamespaceTeamParams) (*model.Teams, error)
+	// GetOrgTeams retrieves teams for a org.
+	GetOrgTeams(*model.OrgTeamParams) (*model.Teams, error)
 
-	// GetNamespaceHasTeam checks if a specific team is assigned to a namespace.
-	GetNamespaceHasTeam(*model.NamespaceTeamParams) bool
+	// GetOrgHasTeam checks if a specific team is assigned to a org.
+	GetOrgHasTeam(*model.OrgTeamParams) bool
 
-	// CreateNamespaceTeam assigns a team to a specific namespace.
-	CreateNamespaceTeam(*model.NamespaceTeamParams) error
+	// CreateOrgTeam assigns a team to a specific org.
+	CreateOrgTeam(*model.OrgTeamParams) error
 
-	// DeleteNamespaceTeam removes a team from a specific namespace.
-	DeleteNamespaceTeam(*model.NamespaceTeamParams) error
+	// DeleteOrgTeam removes a team from a specific org.
+	DeleteOrgTeam(*model.OrgTeamParams) error
 
-	// GetNamespaceUsers retrieves users for a namespace.
-	GetNamespaceUsers(*model.NamespaceUserParams) (*model.Users, error)
+	// GetOrgUsers retrieves users for a org.
+	GetOrgUsers(*model.OrgUserParams) (*model.Users, error)
 
-	// GetNamespaceHasUser checks if a specific user is assigned to a namespace.
-	GetNamespaceHasUser(*model.NamespaceUserParams) bool
+	// GetOrgHasUser checks if a specific user is assigned to a org.
+	GetOrgHasUser(*model.OrgUserParams) bool
 
-	// CreateNamespaceUser assigns a user to a specific namespace.
-	CreateNamespaceUser(*model.NamespaceUserParams) error
+	// CreateOrgUser assigns a user to a specific org.
+	CreateOrgUser(*model.OrgUserParams) error
 
-	// DeleteNamespaceUser removes a user from a specific namespace.
-	DeleteNamespaceUser(*model.NamespaceUserParams) error
+	// DeleteOrgUser removes a user from a specific org.
+	DeleteOrgUser(*model.OrgUserParams) error
 
 	// GetUsers retrieves all available users from the database.
 	GetUsers() (*model.Users, error)
@@ -120,17 +120,17 @@ type Store interface {
 	// DeleteUserTeam removes a team from a specific user.
 	DeleteUserTeam(*model.UserTeamParams) error
 
-	// GetUserNamespaces retrieves namespaces for a user.
-	GetUserNamespaces(*model.UserNamespaceParams) (*model.Namespaces, error)
+	// GetUserOrgs retrieves orgs for a user.
+	GetUserOrgs(*model.UserOrgParams) (*model.Orgs, error)
 
-	// GetUserHasNamespace checks if a specific namespace is assigned to a user.
-	GetUserHasNamespace(*model.UserNamespaceParams) bool
+	// GetUserHasOrg checks if a specific org is assigned to a user.
+	GetUserHasOrg(*model.UserOrgParams) bool
 
-	// CreateUserNamespace assigns a namespace to a specific user.
-	CreateUserNamespace(*model.UserNamespaceParams) error
+	// CreateUserOrg assigns a org to a specific user.
+	CreateUserOrg(*model.UserOrgParams) error
 
-	// DeleteUserNamespace removes a namespace from a specific user.
-	DeleteUserNamespace(*model.UserNamespaceParams) error
+	// DeleteUserOrg removes a org from a specific user.
+	DeleteUserOrg(*model.UserOrgParams) error
 
 	// GetTeams retrieves all available teams from the database.
 	GetTeams() (*model.Teams, error)
@@ -159,15 +159,15 @@ type Store interface {
 	// DeleteTeamUser removes a user from a specific team.
 	DeleteTeamUser(*model.TeamUserParams) error
 
-	// GetTeamNamespaces retrieves namespaces for a team.
-	GetTeamNamespaces(*model.TeamNamespaceParams) (*model.Namespaces, error)
+	// GetTeamOrgs retrieves orgs for a team.
+	GetTeamOrgs(*model.TeamOrgParams) (*model.Orgs, error)
 
-	// GetTeamHasNamespace checks if a specific namespace is assigned to a team.
-	GetTeamHasNamespace(*model.TeamNamespaceParams) bool
+	// GetTeamHasOrg checks if a specific org is assigned to a team.
+	GetTeamHasOrg(*model.TeamOrgParams) bool
 
-	// CreateTeamNamespace assigns a namespace to a specific team.
-	CreateTeamNamespace(*model.TeamNamespaceParams) error
+	// CreateTeamOrg assigns a org to a specific team.
+	CreateTeamOrg(*model.TeamOrgParams) error
 
-	// DeleteTeamNamespace removes a namespace from a specific team.
-	DeleteTeamNamespace(*model.TeamNamespaceParams) error
+	// DeleteTeamOrg removes a org from a specific team.
+	DeleteTeamOrg(*model.TeamOrgParams) error
 }

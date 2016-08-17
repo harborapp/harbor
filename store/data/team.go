@@ -117,16 +117,16 @@ func (db *data) DeleteTeamUser(params *model.TeamUserParams) error {
 	).Error
 }
 
-// GetTeamNamespaces retrieves namespaces for a team.
-func (db *data) GetTeamNamespaces(params *model.TeamNamespaceParams) (*model.Namespaces, error) {
+// GetTeamOrgs retrieves orgs for a team.
+func (db *data) GetTeamOrgs(params *model.TeamOrgParams) (*model.Orgs, error) {
 	team, _ := db.GetTeam(params.Team)
 
-	records := &model.Namespaces{}
+	records := &model.Orgs{}
 
 	err := db.Model(
 		team,
 	).Association(
-		"Namespaces",
+		"Orgs",
 	).Find(
 		records,
 	).Error
@@ -134,44 +134,44 @@ func (db *data) GetTeamNamespaces(params *model.TeamNamespaceParams) (*model.Nam
 	return records, err
 }
 
-// GetTeamHasNamespace checks if a specific namespace is assigned to a team.
-func (db *data) GetTeamHasNamespace(params *model.TeamNamespaceParams) bool {
+// GetTeamHasOrg checks if a specific org is assigned to a team.
+func (db *data) GetTeamHasOrg(params *model.TeamOrgParams) bool {
 	team, _ := db.GetTeam(params.Team)
-	namespace, _ := db.GetNamespace(params.Namespace)
+	org, _ := db.GetOrg(params.Org)
 
 	count := db.Model(
 		team,
 	).Association(
-		"Namespaces",
+		"Orgs",
 	).Find(
-		namespace,
+		org,
 	).Count()
 
 	return count > 0
 }
 
-func (db *data) CreateTeamNamespace(params *model.TeamNamespaceParams) error {
+func (db *data) CreateTeamOrg(params *model.TeamOrgParams) error {
 	team, _ := db.GetTeam(params.Team)
-	namespace, _ := db.GetNamespace(params.Namespace)
+	org, _ := db.GetOrg(params.Org)
 
 	return db.Model(
 		team,
 	).Association(
-		"Namespaces",
+		"Orgs",
 	).Append(
-		namespace,
+		org,
 	).Error
 }
 
-func (db *data) DeleteTeamNamespace(params *model.TeamNamespaceParams) error {
+func (db *data) DeleteTeamOrg(params *model.TeamOrgParams) error {
 	team, _ := db.GetTeam(params.Team)
-	namespace, _ := db.GetNamespace(params.Namespace)
+	org, _ := db.GetOrg(params.Org)
 
 	return db.Model(
 		team,
 	).Association(
-		"Namespaces",
+		"Orgs",
 	).Delete(
-		namespace,
+		org,
 	).Error
 }

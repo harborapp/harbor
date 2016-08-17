@@ -12,7 +12,7 @@ func (db *data) GetRegistries() (*model.Registries, error) {
 	err := db.Order(
 		"name ASC",
 	).Preload(
-		"Namespaces",
+		"Orgs",
 	).Find(
 		&records,
 	).Error
@@ -54,7 +54,7 @@ func (db *data) GetRegistry(id string) (*model.Registry, *gorm.DB) {
 	).Model(
 		&record,
 	).Preload(
-		"Namespaces",
+		"Orgs",
 	).First(
 		&record,
 	)

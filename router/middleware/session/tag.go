@@ -9,19 +9,19 @@ import (
 )
 
 const (
-	// NamespaceContextKey defines the context key that stores the namespace.
-	NamespaceContextKey = "namespace"
+	// TagContextKey defines the context key that stores the tag.
+	TagContextKey = "tag"
 )
 
-// Namespace gets the namespace from the context.
-func Namespace(c *gin.Context) *model.Namespace {
-	v, ok := c.Get(NamespaceContextKey)
+// Tag gets the tag from the context.
+func Tag(c *gin.Context) *model.Tag {
+	v, ok := c.Get(TagContextKey)
 
 	if !ok {
 		return nil
 	}
 
-	r, ok := v.(*model.Namespace)
+	r, ok := v.(*model.Tag)
 
 	if !ok {
 		return nil
@@ -30,12 +30,12 @@ func Namespace(c *gin.Context) *model.Namespace {
 	return r
 }
 
-// SetNamespace injects the namespace into the context.
-func SetNamespace() gin.HandlerFunc {
+// SetTag injects the tag into the context.
+func SetTag() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		record, res := store.GetNamespace(
+		record, res := store.GetTag(
 			c,
-			c.Param("namespace"),
+			c.Param("tag"),
 		)
 
 		if res.Error != nil || res.RecordNotFound() {
@@ -43,24 +43,24 @@ func SetNamespace() gin.HandlerFunc {
 				http.StatusNotFound,
 				gin.H{
 					"status":  http.StatusNotFound,
-					"message": "Failed to find namespace",
+					"message": "Failed to find tag",
 				},
 			)
 
 			c.Abort()
 		} else {
-			c.Set(NamespaceContextKey, record)
+			c.Set(TagContextKey, record)
 			c.Next()
 		}
 	}
 }
 
-// MustNamespaces validates the namespaces access.
-func MustNamespaces(action string) gin.HandlerFunc {
+// MustTags validates the tags access.
+func MustTags(action string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		namespace := Current(c)
+		user := Current(c)
 
-		if namespace == nil {
+		if user == nil {
 			c.JSON(
 				http.StatusUnauthorized,
 				gin.H{
@@ -72,11 +72,11 @@ func MustNamespaces(action string) gin.HandlerFunc {
 			c.Abort()
 		} else {
 			switch {
-			case action == "display": // && namespace.Permission.DisplayNamespaces:
+			case action == "display": // && user.Permission.DisplayTags:
 				c.Next()
-			case action == "change": // && namespace.Permission.ChangeNamespaces:
+			case action == "change": // && user.Permission.ChangeTags:
 				c.Next()
-			case action == "delete": // && namespace.Permission.DeleteNamespaces:
+			case action == "delete": // && user.Permission.DeleteTags:
 				c.Next()
 			default:
 				c.JSON(

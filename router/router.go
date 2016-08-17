@@ -101,37 +101,64 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 			}
 
 			//
-			// Namespaces
+			// Tags
 			//
-			namespaces := base.Group("/namespaces")
+			tags := base.Group("/orgs/:org/repos/:repo/tags")
 			{
-				namespaces.Use(session.MustNamespaces("display"))
+				tags.Use(session.SetOrg())
+				tags.Use(session.SetRepository())
+				tags.Use(session.MustTags("display"))
 
-				namespaces.GET("", api.NamespaceIndex)
-				namespaces.GET("/:namespace", session.SetNamespace(), api.NamespaceShow)
-				namespaces.DELETE("/:namespace", session.SetNamespace(), session.MustNamespaces("delete"), api.NamespaceDelete)
-				namespaces.PATCH("/:namespace", session.SetNamespace(), session.MustNamespaces("change"), api.NamespaceUpdate)
-				namespaces.POST("", session.MustNamespaces("change"), api.NamespaceCreate)
+				tags.GET("", api.TagIndex)
+				tags.GET("/:tag", session.SetTag(), api.TagShow)
+				tags.DELETE("/:tag", session.SetTag(), session.MustTags("delete"), api.TagDelete)
 			}
 
-			namespaceTeams := base.Group("/namespaces/:namespace/teams")
+			//
+			// Repos
+			//
+			repos := base.Group("/orgs/:org/repos")
 			{
-				namespaceTeams.Use(session.MustTeams("change"))
-				namespaceTeams.Use(session.SetNamespace())
+				repos.Use(session.SetOrg())
+				repos.Use(session.MustRepositories("display"))
 
-				namespaceTeams.GET("", api.NamespaceTeamIndex)
-				namespaceTeams.PATCH("", api.NamespaceTeamAppend)
-				namespaceTeams.DELETE("", api.NamespaceTeamDelete)
+				repos.GET("", api.RepositoryIndex)
+				repos.GET("/:repo", session.SetRepository(), api.RepositoryShow)
+				repos.DELETE("/:repo", session.SetRepository(), session.MustRepositories("delete"), api.RepositoryDelete)
 			}
 
-			namespaceUsers := base.Group("/namespaces/:namespace/users")
+			//
+			// Orgs
+			//
+			orgs := base.Group("/orgs")
 			{
-				namespaceUsers.Use(session.MustUsers("change"))
-				namespaceUsers.Use(session.SetNamespace())
+				orgs.Use(session.MustOrgs("display"))
 
-				namespaceUsers.GET("", api.NamespaceUserIndex)
-				namespaceUsers.PATCH("", api.NamespaceUserAppend)
-				namespaceUsers.DELETE("", api.NamespaceUserDelete)
+				orgs.GET("", api.OrgIndex)
+				orgs.GET("/:org", session.SetOrg(), api.OrgShow)
+				orgs.DELETE("/:org", session.SetOrg(), session.MustOrgs("delete"), api.OrgDelete)
+				orgs.PATCH("/:org", session.SetOrg(), session.MustOrgs("change"), api.OrgUpdate)
+				orgs.POST("", session.MustOrgs("change"), api.OrgCreate)
+			}
+
+			orgTeams := base.Group("/orgs/:org/teams")
+			{
+				orgTeams.Use(session.MustTeams("change"))
+				orgTeams.Use(session.SetOrg())
+
+				orgTeams.GET("", api.OrgTeamIndex)
+				orgTeams.PATCH("", api.OrgTeamAppend)
+				orgTeams.DELETE("", api.OrgTeamDelete)
+			}
+
+			orgUsers := base.Group("/orgs/:org/users")
+			{
+				orgUsers.Use(session.MustUsers("change"))
+				orgUsers.Use(session.SetOrg())
+
+				orgUsers.GET("", api.OrgUserIndex)
+				orgUsers.PATCH("", api.OrgUserAppend)
+				orgUsers.DELETE("", api.OrgUserDelete)
 			}
 
 			//
@@ -158,14 +185,14 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				userTeams.DELETE("", api.UserTeamDelete)
 			}
 
-			userNamespaces := base.Group("/users/:user/namespaces")
+			userOrgs := base.Group("/users/:user/orgs")
 			{
-				userNamespaces.Use(session.MustNamespaces("change"))
-				userNamespaces.Use(session.SetUser())
+				userOrgs.Use(session.MustOrgs("change"))
+				userOrgs.Use(session.SetUser())
 
-				userNamespaces.GET("", api.UserNamespaceIndex)
-				userNamespaces.PATCH("", api.UserNamespaceAppend)
-				userNamespaces.DELETE("", api.UserNamespaceDelete)
+				userOrgs.GET("", api.UserOrgIndex)
+				userOrgs.PATCH("", api.UserOrgAppend)
+				userOrgs.DELETE("", api.UserOrgDelete)
 			}
 
 			//
@@ -192,14 +219,14 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				teamUsers.DELETE("", api.TeamUserDelete)
 			}
 
-			teamNamespaces := base.Group("/teams/:team/namespaces")
+			teamOrgs := base.Group("/teams/:team/orgs")
 			{
-				teamNamespaces.Use(session.MustNamespaces("change"))
-				teamNamespaces.Use(session.SetTeam())
+				teamOrgs.Use(session.MustOrgs("change"))
+				teamOrgs.Use(session.SetTeam())
 
-				teamNamespaces.GET("", api.TeamNamespaceIndex)
-				teamNamespaces.PATCH("", api.TeamNamespaceAppend)
-				teamNamespaces.DELETE("", api.TeamNamespaceDelete)
+				teamOrgs.GET("", api.TeamOrgIndex)
+				teamOrgs.PATCH("", api.TeamOrgAppend)
+				teamOrgs.DELETE("", api.TeamOrgDelete)
 			}
 		}
 	}

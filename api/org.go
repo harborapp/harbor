@@ -10,9 +10,9 @@ import (
 	"github.com/umschlag/umschlag-api/store"
 )
 
-// NamespaceIndex retrieves all available namespaces.
-func NamespaceIndex(c *gin.Context) {
-	records, err := store.GetNamespaces(
+// OrgIndex retrieves all available orgs.
+func OrgIndex(c *gin.Context) {
+	records, err := store.GetOrgs(
 		c,
 	)
 
@@ -21,7 +21,7 @@ func NamespaceIndex(c *gin.Context) {
 			http.StatusInternalServerError,
 			gin.H{
 				"status":  http.StatusInternalServerError,
-				"message": "Failed to fetch namespaces",
+				"message": "Failed to fetch orgs",
 			},
 		)
 
@@ -35,9 +35,9 @@ func NamespaceIndex(c *gin.Context) {
 	)
 }
 
-// NamespaceShow retrieves a specific namespace.
-func NamespaceShow(c *gin.Context) {
-	record := session.Namespace(c)
+// OrgShow retrieves a specific org.
+func OrgShow(c *gin.Context) {
+	record := session.Org(c)
 
 	c.JSON(
 		http.StatusOK,
@@ -45,11 +45,11 @@ func NamespaceShow(c *gin.Context) {
 	)
 }
 
-// NamespaceDelete removes a specific namespace.
-func NamespaceDelete(c *gin.Context) {
-	record := session.Namespace(c)
+// OrgDelete removes a specific org.
+func OrgDelete(c *gin.Context) {
+	record := session.Org(c)
 
-	err := store.DeleteNamespace(
+	err := store.DeleteOrg(
 		c,
 		record,
 	)
@@ -71,24 +71,24 @@ func NamespaceDelete(c *gin.Context) {
 		http.StatusOK,
 		gin.H{
 			"status":  http.StatusOK,
-			"message": "Successfully deleted namespace",
+			"message": "Successfully deleted org",
 		},
 	)
 }
 
-// NamespaceUpdate updates an existing namespace.
-func NamespaceUpdate(c *gin.Context) {
-	record := session.Namespace(c)
+// OrgUpdate updates an existing org.
+func OrgUpdate(c *gin.Context) {
+	record := session.Org(c)
 
 	if err := c.BindJSON(&record); err != nil {
-		logrus.Warn("Failed to bind namespace data")
+		logrus.Warn("Failed to bind org data")
 		logrus.Warn(err)
 
 		c.JSON(
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Failed to bind namespace data",
+				"message": "Failed to bind org data",
 			},
 		)
 
@@ -96,7 +96,7 @@ func NamespaceUpdate(c *gin.Context) {
 		return
 	}
 
-	err := store.UpdateNamespace(
+	err := store.UpdateOrg(
 		c,
 		record,
 	)
@@ -120,19 +120,19 @@ func NamespaceUpdate(c *gin.Context) {
 	)
 }
 
-// NamespaceCreate creates a new namespace.
-func NamespaceCreate(c *gin.Context) {
-	record := &model.Namespace{}
+// OrgCreate creates a new org.
+func OrgCreate(c *gin.Context) {
+	record := &model.Org{}
 
 	if err := c.BindJSON(&record); err != nil {
-		logrus.Warn("Failed to bind namespace data")
+		logrus.Warn("Failed to bind org data")
 		logrus.Warn(err)
 
 		c.JSON(
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Failed to bind namespace data",
+				"message": "Failed to bind org data",
 			},
 		)
 
@@ -140,7 +140,7 @@ func NamespaceCreate(c *gin.Context) {
 		return
 	}
 
-	err := store.CreateNamespace(
+	err := store.CreateOrg(
 		c,
 		record,
 	)
@@ -164,12 +164,12 @@ func NamespaceCreate(c *gin.Context) {
 	)
 }
 
-// NamespaceUserIndex retrieves all users related to a namespace.
-func NamespaceUserIndex(c *gin.Context) {
-	records, err := store.GetNamespaceUsers(
+// OrgUserIndex retrieves all users related to a org.
+func OrgUserIndex(c *gin.Context) {
+	records, err := store.GetOrgUsers(
 		c,
-		&model.NamespaceUserParams{
-			Namespace: c.Param("namespace"),
+		&model.OrgUserParams{
+			Org: c.Param("org"),
 		},
 	)
 
@@ -192,9 +192,9 @@ func NamespaceUserIndex(c *gin.Context) {
 	)
 }
 
-// NamespaceUserAppend appends a user to a namespace.
-func NamespaceUserAppend(c *gin.Context) {
-	form := &model.NamespaceUserParams{}
+// OrgUserAppend appends a user to a org.
+func OrgUserAppend(c *gin.Context) {
+	form := &model.OrgUserParams{}
 
 	if err := c.BindJSON(&form); err != nil {
 		logrus.Warn("Failed to bind post data")
@@ -212,7 +212,7 @@ func NamespaceUserAppend(c *gin.Context) {
 		return
 	}
 
-	assigned := store.GetNamespaceHasUser(
+	assigned := store.GetOrgHasUser(
 		c,
 		form,
 	)
@@ -230,7 +230,7 @@ func NamespaceUserAppend(c *gin.Context) {
 		return
 	}
 
-	err := store.CreateNamespaceUser(
+	err := store.CreateOrgUser(
 		c,
 		form,
 	)
@@ -257,9 +257,9 @@ func NamespaceUserAppend(c *gin.Context) {
 	)
 }
 
-// NamespaceUserDelete deleted a user from a namespace
-func NamespaceUserDelete(c *gin.Context) {
-	form := &model.NamespaceUserParams{}
+// OrgUserDelete deleted a user from a org
+func OrgUserDelete(c *gin.Context) {
+	form := &model.OrgUserParams{}
 
 	if err := c.BindJSON(&form); err != nil {
 		logrus.Warn("Failed to bind post data")
@@ -277,7 +277,7 @@ func NamespaceUserDelete(c *gin.Context) {
 		return
 	}
 
-	assigned := store.GetNamespaceHasUser(
+	assigned := store.GetOrgHasUser(
 		c,
 		form,
 	)
@@ -295,7 +295,7 @@ func NamespaceUserDelete(c *gin.Context) {
 		return
 	}
 
-	err := store.DeleteNamespaceUser(
+	err := store.DeleteOrgUser(
 		c,
 		form,
 	)
@@ -322,12 +322,12 @@ func NamespaceUserDelete(c *gin.Context) {
 	)
 }
 
-// NamespaceTeamIndex retrieves all teams related to a namespace.
-func NamespaceTeamIndex(c *gin.Context) {
-	records, err := store.GetNamespaceTeams(
+// OrgTeamIndex retrieves all teams related to a org.
+func OrgTeamIndex(c *gin.Context) {
+	records, err := store.GetOrgTeams(
 		c,
-		&model.NamespaceTeamParams{
-			Namespace: c.Param("namespace"),
+		&model.OrgTeamParams{
+			Org: c.Param("org"),
 		},
 	)
 
@@ -350,9 +350,9 @@ func NamespaceTeamIndex(c *gin.Context) {
 	)
 }
 
-// NamespaceTeamAppend appends a team to a namespace.
-func NamespaceTeamAppend(c *gin.Context) {
-	form := &model.NamespaceTeamParams{}
+// OrgTeamAppend appends a team to a org.
+func OrgTeamAppend(c *gin.Context) {
+	form := &model.OrgTeamParams{}
 
 	if err := c.BindJSON(&form); err != nil {
 		logrus.Warn("Failed to bind post data")
@@ -370,7 +370,7 @@ func NamespaceTeamAppend(c *gin.Context) {
 		return
 	}
 
-	assigned := store.GetNamespaceHasTeam(
+	assigned := store.GetOrgHasTeam(
 		c,
 		form,
 	)
@@ -388,7 +388,7 @@ func NamespaceTeamAppend(c *gin.Context) {
 		return
 	}
 
-	err := store.CreateNamespaceTeam(
+	err := store.CreateOrgTeam(
 		c,
 		form,
 	)
@@ -415,9 +415,9 @@ func NamespaceTeamAppend(c *gin.Context) {
 	)
 }
 
-// NamespaceTeamDelete deleted a team from a namespace
-func NamespaceTeamDelete(c *gin.Context) {
-	form := &model.NamespaceTeamParams{}
+// OrgTeamDelete deleted a team from a org
+func OrgTeamDelete(c *gin.Context) {
+	form := &model.OrgTeamParams{}
 
 	if err := c.BindJSON(&form); err != nil {
 		logrus.Warn("Failed to bind post data")
@@ -435,7 +435,7 @@ func NamespaceTeamDelete(c *gin.Context) {
 		return
 	}
 
-	assigned := store.GetNamespaceHasTeam(
+	assigned := store.GetOrgHasTeam(
 		c,
 		form,
 	)
@@ -453,7 +453,7 @@ func NamespaceTeamDelete(c *gin.Context) {
 		return
 	}
 
-	err := store.DeleteNamespaceTeam(
+	err := store.DeleteOrgTeam(
 		c,
 		form,
 	)

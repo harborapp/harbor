@@ -14,14 +14,14 @@ type Registries []*Registry
 
 // Registry represents a registry model definition.
 type Registry struct {
-	ID         int        `json:"id" gorm:"primary_key"`
-	Slug       string     `json:"slug" sql:"unique_index"`
-	Name       string     `json:"name" sql:"unique_index"`
-	Host       string     `json:"host" sql:"unique_index"`
-	UseSSL     bool       `json:"use_ssl" sql:"default:false"`
-	CreatedAt  time.Time  `json:"created_at"`
-	UpdatedAt  time.Time  `json:"updated_at"`
-	Namespaces Namespaces `json:"namespaces,omitempty"`
+	ID        int       `json:"id" gorm:"primary_key"`
+	Slug      string    `json:"slug" sql:"unique_index"`
+	Name      string    `json:"name" sql:"unique_index"`
+	Host      string    `json:"host" sql:"unique_index"`
+	UseSSL    bool      `json:"use_ssl" sql:"default:false"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Orgs      Orgs      `json:"orgs,omitempty"`
 }
 
 // BeforeSave invokes required actions before persisting.
@@ -57,8 +57,8 @@ func (u *Registry) BeforeSave(db *gorm.DB) (err error) {
 
 // AfterDelete invokes required actions after deletion.
 func (u *Registry) AfterDelete(tx *gorm.DB) error {
-	for _, namespace := range u.Namespaces {
-		if err := tx.Delete(namespace).Error; err != nil {
+	for _, org := range u.Orgs {
+		if err := tx.Delete(org).Error; err != nil {
 			return err
 		}
 	}

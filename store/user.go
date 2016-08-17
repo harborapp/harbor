@@ -51,22 +51,22 @@ func DeleteUserTeam(c context.Context, params *model.UserTeamParams) error {
 	return FromContext(c).DeleteUserTeam(params)
 }
 
-// GetUserNamespaces retrieves namespaces for a user.
-func GetUserNamespaces(c context.Context, params *model.UserNamespaceParams) (*model.Namespaces, error) {
-	return FromContext(c).GetUserNamespaces(params)
+// GetUserOrgs retrieves orgs for a user.
+func GetUserOrgs(c context.Context, params *model.UserOrgParams) (*model.Orgs, error) {
+	return FromContext(c).GetUserOrgs(params)
 }
 
-// GetUserHasNamespace checks if a specific namespace is assigned to a user.
-func GetUserHasNamespace(c context.Context, params *model.UserNamespaceParams) bool {
-	return FromContext(c).GetUserHasNamespace(params)
+// GetUserHasOrg checks if a specific org is assigned to a user.
+func GetUserHasOrg(c context.Context, params *model.UserOrgParams) bool {
+	return FromContext(c).GetUserHasOrg(params)
 }
 
-// CreateUserNamespace assigns a namespace to a specific user.
-func CreateUserNamespace(c context.Context, params *model.UserNamespaceParams) error {
-	return FromContext(c).CreateUserNamespace(params)
+// CreateUserOrg assigns a org to a specific user.
+func CreateUserOrg(c context.Context, params *model.UserOrgParams) error {
+	return FromContext(c).CreateUserOrg(params)
 }
 
-// DeleteUserNamespace removes a namespace from a specific user.
-func DeleteUserNamespace(c context.Context, params *model.UserNamespaceParams) error {
-	return FromContext(c).DeleteUserNamespace(params)
+// DeleteUserOrg removes a org from a specific user.
+func DeleteUserOrg(c context.Context, params *model.UserOrgParams) error {
+	return FromContext(c).DeleteUserOrg(params)
 }

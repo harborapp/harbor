@@ -51,22 +51,22 @@ func DeleteTeamUser(c context.Context, params *model.TeamUserParams) error {
 	return FromContext(c).DeleteTeamUser(params)
 }
 
-// GetTeamNamespaces retrieves namespaces for a team.
-func GetTeamNamespaces(c context.Context, params *model.TeamNamespaceParams) (*model.Namespaces, error) {
-	return FromContext(c).GetTeamNamespaces(params)
+// GetTeamOrgs retrieves orgs for a team.
+func GetTeamOrgs(c context.Context, params *model.TeamOrgParams) (*model.Orgs, error) {
+	return FromContext(c).GetTeamOrgs(params)
 }
 
-// GetTeamHasNamespace checks if a specific namespace is assigned to a team.
-func GetTeamHasNamespace(c context.Context, params *model.TeamNamespaceParams) bool {
-	return FromContext(c).GetTeamHasNamespace(params)
+// GetTeamHasOrg checks if a specific org is assigned to a team.
+func GetTeamHasOrg(c context.Context, params *model.TeamOrgParams) bool {
+	return FromContext(c).GetTeamHasOrg(params)
 }
 
-// CreateTeamNamespace assigns a namespace to a specific team.
-func CreateTeamNamespace(c context.Context, params *model.TeamNamespaceParams) error {
-	return FromContext(c).CreateTeamNamespace(params)
+// CreateTeamOrg assigns a org to a specific team.
+func CreateTeamOrg(c context.Context, params *model.TeamOrgParams) error {
+	return FromContext(c).CreateTeamOrg(params)
 }
 
-// DeleteTeamNamespace removes a namespace from a specific team.
-func DeleteTeamNamespace(c context.Context, params *model.TeamNamespaceParams) error {
-	return FromContext(c).DeleteTeamNamespace(params)
+// DeleteTeamOrg removes a org from a specific team.
+func DeleteTeamOrg(c context.Context, params *model.TeamOrgParams) error {
+	return FromContext(c).DeleteTeamOrg(params)
 }

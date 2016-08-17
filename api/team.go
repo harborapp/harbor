@@ -322,11 +322,11 @@ func TeamUserDelete(c *gin.Context) {
 	)
 }
 
-// TeamNamespaceIndex retrieves all namespaces related to a team.
-func TeamNamespaceIndex(c *gin.Context) {
-	records, err := store.GetTeamNamespaces(
+// TeamOrgIndex retrieves all orgs related to a team.
+func TeamOrgIndex(c *gin.Context) {
+	records, err := store.GetTeamOrgs(
 		c,
-		&model.TeamNamespaceParams{
+		&model.TeamOrgParams{
 			Team: c.Param("team"),
 		},
 	)
@@ -336,7 +336,7 @@ func TeamNamespaceIndex(c *gin.Context) {
 			http.StatusInternalServerError,
 			gin.H{
 				"status":  http.StatusInternalServerError,
-				"message": "Failed to fetch namespaces",
+				"message": "Failed to fetch orgs",
 			},
 		)
 
@@ -350,9 +350,9 @@ func TeamNamespaceIndex(c *gin.Context) {
 	)
 }
 
-// TeamNamespaceAppend appends a namespace to a team.
-func TeamNamespaceAppend(c *gin.Context) {
-	form := &model.TeamNamespaceParams{}
+// TeamOrgAppend appends a org to a team.
+func TeamOrgAppend(c *gin.Context) {
+	form := &model.TeamOrgParams{}
 
 	if err := c.BindJSON(&form); err != nil {
 		logrus.Warn("Failed to bind post data")
@@ -370,7 +370,7 @@ func TeamNamespaceAppend(c *gin.Context) {
 		return
 	}
 
-	assigned := store.GetTeamHasNamespace(
+	assigned := store.GetTeamHasOrg(
 		c,
 		form,
 	)
@@ -380,7 +380,7 @@ func TeamNamespaceAppend(c *gin.Context) {
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Namespace is already appended",
+				"message": "Org is already appended",
 			},
 		)
 
@@ -388,7 +388,7 @@ func TeamNamespaceAppend(c *gin.Context) {
 		return
 	}
 
-	err := store.CreateTeamNamespace(
+	err := store.CreateTeamOrg(
 		c,
 		form,
 	)
@@ -398,7 +398,7 @@ func TeamNamespaceAppend(c *gin.Context) {
 			http.StatusInternalServerError,
 			gin.H{
 				"status":  http.StatusInternalServerError,
-				"message": "Failed to append namespace",
+				"message": "Failed to append org",
 			},
 		)
 
@@ -410,14 +410,14 @@ func TeamNamespaceAppend(c *gin.Context) {
 		http.StatusOK,
 		gin.H{
 			"status":  http.StatusOK,
-			"message": "Successfully appended namespace",
+			"message": "Successfully appended org",
 		},
 	)
 }
 
-// TeamNamespaceDelete deleted a namespace from a team
-func TeamNamespaceDelete(c *gin.Context) {
-	form := &model.TeamNamespaceParams{}
+// TeamOrgDelete deleted a org from a team
+func TeamOrgDelete(c *gin.Context) {
+	form := &model.TeamOrgParams{}
 
 	if err := c.BindJSON(&form); err != nil {
 		logrus.Warn("Failed to bind post data")
@@ -435,7 +435,7 @@ func TeamNamespaceDelete(c *gin.Context) {
 		return
 	}
 
-	assigned := store.GetTeamHasNamespace(
+	assigned := store.GetTeamHasOrg(
 		c,
 		form,
 	)
@@ -445,7 +445,7 @@ func TeamNamespaceDelete(c *gin.Context) {
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Namespace is not assigned",
+				"message": "Org is not assigned",
 			},
 		)
 
@@ -453,7 +453,7 @@ func TeamNamespaceDelete(c *gin.Context) {
 		return
 	}
 
-	err := store.DeleteTeamNamespace(
+	err := store.DeleteTeamOrg(
 		c,
 		form,
 	)
@@ -463,7 +463,7 @@ func TeamNamespaceDelete(c *gin.Context) {
 			http.StatusInternalServerError,
 			gin.H{
 				"status":  http.StatusInternalServerError,
-				"message": "Failed to unlink namespace",
+				"message": "Failed to unlink org",
 			},
 		)
 
@@ -475,7 +475,7 @@ func TeamNamespaceDelete(c *gin.Context) {
 		http.StatusOK,
 		gin.H{
 			"status":  http.StatusOK,
-			"message": "Successfully unlinked namespace",
+			"message": "Successfully unlinked org",
 		},
 	)
 }

@@ -14,15 +14,15 @@ type Repositories []*Repository
 
 // Repository represents a repository model definition.
 type Repository struct {
-	ID          int        `json:"id" gorm:"primary_key"`
-	Namespace   *Namespace `json:"namespace,omitempty"`
-	NamespaceID int        `json:"namespace_id" sql:"index"`
-	Slug        string     `json:"slug"`
-	Name        string     `json:"name"`
-	Public      bool       `json:"private" sql:"default:false"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
-	Tags        Tags       `json:"tags,omitempty"`
+	ID        int       `json:"id" gorm:"primary_key"`
+	Org       *Org      `json:"org,omitempty"`
+	OrgID     int       `json:"org_id" sql:"index"`
+	Slug      string    `json:"slug"`
+	Name      string    `json:"name"`
+	Public    bool      `json:"private" sql:"default:false"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Tags      Tags      `json:"tags,omitempty"`
 }
 
 // BeforeSave invokes required actions before persisting.

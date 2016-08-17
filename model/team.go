@@ -14,13 +14,13 @@ type Teams []*Team
 
 // Team represents a registry model definition.
 type Team struct {
-	ID         int        `json:"id" gorm:"primary_key"`
-	Slug       string     `json:"slug" sql:"unique_index"`
-	Name       string     `json:"name" sql:"unique_index"`
-	CreatedAt  time.Time  `json:"created_at"`
-	UpdatedAt  time.Time  `json:"updated_at"`
-	Users      Users      `json:"users,omitempty" gorm:"many2many:team_users;"`
-	Namespaces Namespaces `json:"namespaces,omitempty" gorm:"many2many:team_namespaces;"`
+	ID        int       `json:"id" gorm:"primary_key"`
+	Slug      string    `json:"slug" sql:"unique_index"`
+	Name      string    `json:"name" sql:"unique_index"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Users     Users     `json:"users,omitempty" gorm:"many2many:team_users;"`
+	Orgs      Orgs      `json:"orgs,omitempty" gorm:"many2many:team_orgs;"`
 }
 
 // BeforeSave invokes required actions before persisting.
@@ -56,7 +56,7 @@ func (u *Team) BeforeSave(db *gorm.DB) (err error) {
 
 // AfterDelete invokes required actions after deletion.
 func (u *Team) AfterDelete(tx *gorm.DB) error {
-	if err := tx.Model(u).Association("Namespaces").Clear().Error; err != nil {
+	if err := tx.Model(u).Association("Orgs").Clear().Error; err != nil {
 		return err
 	}
 

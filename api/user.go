@@ -322,11 +322,11 @@ func UserTeamDelete(c *gin.Context) {
 	)
 }
 
-// UserNamespaceIndex retrieves all namespaces related to a user.
-func UserNamespaceIndex(c *gin.Context) {
-	records, err := store.GetUserNamespaces(
+// UserOrgIndex retrieves all orgs related to a user.
+func UserOrgIndex(c *gin.Context) {
+	records, err := store.GetUserOrgs(
 		c,
-		&model.UserNamespaceParams{
+		&model.UserOrgParams{
 			User: c.Param("user"),
 		},
 	)
@@ -336,7 +336,7 @@ func UserNamespaceIndex(c *gin.Context) {
 			http.StatusInternalServerError,
 			gin.H{
 				"status":  http.StatusInternalServerError,
-				"message": "Failed to fetch namespaces",
+				"message": "Failed to fetch orgs",
 			},
 		)
 
@@ -350,9 +350,9 @@ func UserNamespaceIndex(c *gin.Context) {
 	)
 }
 
-// UserNamespaceAppend appends a namespace to a user.
-func UserNamespaceAppend(c *gin.Context) {
-	form := &model.UserNamespaceParams{}
+// UserOrgAppend appends a org to a user.
+func UserOrgAppend(c *gin.Context) {
+	form := &model.UserOrgParams{}
 
 	if err := c.BindJSON(&form); err != nil {
 		logrus.Warn("Failed to bind post data")
@@ -370,7 +370,7 @@ func UserNamespaceAppend(c *gin.Context) {
 		return
 	}
 
-	assigned := store.GetUserHasNamespace(
+	assigned := store.GetUserHasOrg(
 		c,
 		form,
 	)
@@ -380,7 +380,7 @@ func UserNamespaceAppend(c *gin.Context) {
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Namespace is already appended",
+				"message": "Org is already appended",
 			},
 		)
 
@@ -388,7 +388,7 @@ func UserNamespaceAppend(c *gin.Context) {
 		return
 	}
 
-	err := store.CreateUserNamespace(
+	err := store.CreateUserOrg(
 		c,
 		form,
 	)
@@ -398,7 +398,7 @@ func UserNamespaceAppend(c *gin.Context) {
 			http.StatusInternalServerError,
 			gin.H{
 				"status":  http.StatusInternalServerError,
-				"message": "Failed to append namespace",
+				"message": "Failed to append org",
 			},
 		)
 
@@ -410,14 +410,14 @@ func UserNamespaceAppend(c *gin.Context) {
 		http.StatusOK,
 		gin.H{
 			"status":  http.StatusOK,
-			"message": "Successfully appended namespace",
+			"message": "Successfully appended org",
 		},
 	)
 }
 
-// UserNamespaceDelete deleted a namespace from a user
-func UserNamespaceDelete(c *gin.Context) {
-	form := &model.UserNamespaceParams{}
+// UserOrgDelete deleted a org from a user
+func UserOrgDelete(c *gin.Context) {
+	form := &model.UserOrgParams{}
 
 	if err := c.BindJSON(&form); err != nil {
 		logrus.Warn("Failed to bind post data")
@@ -435,7 +435,7 @@ func UserNamespaceDelete(c *gin.Context) {
 		return
 	}
 
-	assigned := store.GetUserHasNamespace(
+	assigned := store.GetUserHasOrg(
 		c,
 		form,
 	)
@@ -445,7 +445,7 @@ func UserNamespaceDelete(c *gin.Context) {
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Namespace is not assigned",
+				"message": "Org is not assigned",
 			},
 		)
 
@@ -453,7 +453,7 @@ func UserNamespaceDelete(c *gin.Context) {
 		return
 	}
 
-	err := store.DeleteUserNamespace(
+	err := store.DeleteUserOrg(
 		c,
 		form,
 	)
@@ -463,7 +463,7 @@ func UserNamespaceDelete(c *gin.Context) {
 			http.StatusInternalServerError,
 			gin.H{
 				"status":  http.StatusInternalServerError,
-				"message": "Failed to unlink namespace",
+				"message": "Failed to unlink org",
 			},
 		)
 
@@ -475,7 +475,7 @@ func UserNamespaceDelete(c *gin.Context) {
 		http.StatusOK,
 		gin.H{
 			"status":  http.StatusOK,
-			"message": "Successfully unlinked namespace",
+			"message": "Successfully unlinked org",
 		},
 	)
 }

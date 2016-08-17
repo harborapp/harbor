@@ -9,11 +9,11 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// Namespaces is simply a collection of namespace structs.
-type Namespaces []*Namespace
+// Orgs is simply a collection of org structs.
+type Orgs []*Org
 
-// Namespace represents a namespace model definition.
-type Namespace struct {
+// Org represents a org model definition.
+type Org struct {
 	ID           int          `json:"id" gorm:"primary_key"`
 	Registry     *Registry    `json:"registry,omitempty"`
 	RegistryID   int          `json:"registry_id" sql:"index"`
@@ -23,12 +23,12 @@ type Namespace struct {
 	CreatedAt    time.Time    `json:"created_at"`
 	UpdatedAt    time.Time    `json:"updated_at"`
 	Repositories Repositories `json:"repositories,omitempty"`
-	Teams        Teams        `json:"teams,omitempty" gorm:"many2many:team_namespaces;"`
-	Users        Users        `json:"users,omitempty" gorm:"many2many:user_namespaces;"`
+	Teams        Teams        `json:"teams,omitempty" gorm:"many2many:team_orgs;"`
+	Users        Users        `json:"users,omitempty" gorm:"many2many:user_orgs;"`
 }
 
 // BeforeSave invokes required actions before persisting.
-func (u *Namespace) BeforeSave(db *gorm.DB) (err error) {
+func (u *Org) BeforeSave(db *gorm.DB) (err error) {
 	if u.Slug == "" {
 		for i := 0; true; i++ {
 			if i == 0 {
@@ -46,7 +46,7 @@ func (u *Namespace) BeforeSave(db *gorm.DB) (err error) {
 				"id",
 				u.ID,
 			).First(
-				&Namespace{},
+				&Org{},
 			).RecordNotFound()
 
 			if notFound {
@@ -59,7 +59,7 @@ func (u *Namespace) BeforeSave(db *gorm.DB) (err error) {
 }
 
 // AfterDelete invokes required actions after deletion.
-func (u *Namespace) AfterDelete(tx *gorm.DB) error {
+func (u *Org) AfterDelete(tx *gorm.DB) error {
 	for _, repository := range u.Repositories {
 		if err := tx.Delete(repository).Error; err != nil {
 			return err
@@ -74,7 +74,7 @@ func (u *Namespace) AfterDelete(tx *gorm.DB) error {
 }
 
 // Validate does some validation to be able to store the record.
-func (u *Namespace) Validate(db *gorm.DB) {
+func (u *Org) Validate(db *gorm.DB) {
 	if !govalidator.StringLength(u.Name, "1", "255") {
 		db.AddError(fmt.Errorf("Name should be longer than 1 and shorter than 255"))
 	}
@@ -87,7 +87,7 @@ func (u *Namespace) Validate(db *gorm.DB) {
 			"id",
 			u.ID,
 		).First(
-			&Namespace{},
+			&Org{},
 		).RecordNotFound()
 
 		if !notFound {

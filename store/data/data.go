@@ -186,7 +186,7 @@ func pingDatabase(driver string, db *gorm.DB) error {
 
 func migrateDatabase(driver string, db *gorm.DB) error {
 	db.AutoMigrate(
-		&model.Namespace{},
+		&model.Org{},
 		&model.Registry{},
 		&model.Repository{},
 		&model.Tag{},
@@ -195,17 +195,17 @@ func migrateDatabase(driver string, db *gorm.DB) error {
 	)
 
 	db.Model(
-		&model.Namespace{},
+		&model.Org{},
 	).AddUniqueIndex(
-		"uix_namespaces_registry_id_slug",
+		"uix_orgs_registry_id_slug",
 		"registry_id",
 		"slug",
 	)
 
 	db.Model(
-		&model.Namespace{},
+		&model.Org{},
 	).AddUniqueIndex(
-		"uix_namespaces_registry_id_name",
+		"uix_orgs_registry_id_name",
 		"registry_id",
 		"name",
 	)
@@ -213,16 +213,16 @@ func migrateDatabase(driver string, db *gorm.DB) error {
 	db.Model(
 		&model.Repository{},
 	).AddUniqueIndex(
-		"uix_repositories_namespace_id_slug",
-		"namespace_id",
+		"uix_repositories_org_id_slug",
+		"org_id",
 		"slug",
 	)
 
 	db.Model(
 		&model.Repository{},
 	).AddUniqueIndex(
-		"uix_repositories_namespace_id_name",
-		"namespace_id",
+		"uix_repositories_org_id_name",
+		"org_id",
 		"name",
 	)
 
