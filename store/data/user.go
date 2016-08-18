@@ -11,6 +11,10 @@ func (db *data) GetUsers() (*model.Users, error) {
 
 	err := db.Order(
 		"username ASC",
+	).Preload(
+		"Teams",
+	).Preload(
+		"Orgs",
 	).Find(
 		records,
 	).Error
@@ -51,6 +55,10 @@ func (db *data) GetUser(id string) (*model.User, *gorm.DB) {
 		id,
 	).Model(
 		record,
+	).Preload(
+		"Teams",
+	).Preload(
+		"Orgs",
 	).First(
 		record,
 	)
