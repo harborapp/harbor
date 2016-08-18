@@ -24,6 +24,33 @@ type Registry struct {
 	Orgs      Orgs      `json:"orgs,omitempty"`
 }
 
+// AfterSave invokes required actions after persisting.
+func (u *Registry) AfterSave(db *gorm.DB) (err error) {
+	orgs := &Orgs{}
+
+	err = db.Model(
+		u,
+	).Related(
+		&orgs,
+	).Error
+
+	if err != nil {
+		return err
+	}
+
+	for _, org := range *orgs {
+		err = db.Save(
+			org,
+		).Error
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // BeforeSave invokes required actions before persisting.
 func (u *Registry) BeforeSave(db *gorm.DB) (err error) {
 	if u.Slug == "" {

@@ -19,12 +19,39 @@ type Org struct {
 	RegistryID int       `json:"registry_id" sql:"index"`
 	Slug       string    `json:"slug"`
 	Name       string    `json:"name"`
-	Public     bool      `json:"private" sql:"default:false"`
+	Public     bool      `json:"public" sql:"default:false"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 	Repos      Repos     `json:"repos,omitempty"`
 	Teams      Teams     `json:"teams,omitempty" gorm:"many2many:team_orgs;"`
 	Users      Users     `json:"users,omitempty" gorm:"many2many:user_orgs;"`
+}
+
+// AfterSave invokes required actions after persisting.
+func (u *Org) AfterSave(db *gorm.DB) (err error) {
+	repos := &Repos{}
+
+	err = db.Model(
+		u,
+	).Related(
+		&repos,
+	).Error
+
+	if err != nil {
+		return err
+	}
+
+	for _, repo := range *repos {
+		err = db.Save(
+			repo,
+		).Error
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // BeforeSave invokes required actions before persisting.

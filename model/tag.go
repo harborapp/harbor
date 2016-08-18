@@ -19,8 +19,41 @@ type Tag struct {
 	RepoID    int       `json:"repo_id" sql:"index"`
 	Slug      string    `json:"slug"`
 	Name      string    `json:"name"`
+	FullName  string    `json:"full_name"`
+	Public    bool      `json:"public" sql:"default:false"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+func (u *Tag) UpdateFullName(db *gorm.DB) (err error) {
+	var (
+		repo     = &Repo{}
+		org      = &Org{}
+		registry = &Registry{}
+		handle   *gorm.DB
+	)
+
+	if handle = db.First(repo, u.RepoID); handle.RecordNotFound() {
+		return fmt.Errorf("Failed to find parent repo")
+	}
+
+	if handle = db.First(org, repo.OrgID); handle.RecordNotFound() {
+		return fmt.Errorf("Failed to find parent org")
+	}
+
+	if handle = db.First(registry, org.RegistryID); handle.RecordNotFound() {
+		return fmt.Errorf("Failed to find parent registry")
+	}
+
+	u.FullName = fmt.Sprintf(
+		"%s/%s/%s:%s",
+		registry.Host,
+		org.Name,
+		repo.Name,
+		u.Name,
+	)
+
+	return nil
 }
 
 // BeforeSave invokes required actions before persisting.
@@ -51,7 +84,7 @@ func (u *Tag) BeforeSave(db *gorm.DB) (err error) {
 		}
 	}
 
-	return nil
+	return u.UpdateFullName(db)
 }
 
 // AfterDelete invokes required actions after deletion.
