@@ -26,6 +26,7 @@ type Repo struct {
 	Tags      Tags      `json:"tags,omitempty"`
 }
 
+// UpdateFullName updates the cached full name of the repo
 func (u *Repo) UpdateFullName(db *gorm.DB) (err error) {
 	var (
 		org      = &Org{}

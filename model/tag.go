@@ -25,6 +25,7 @@ type Tag struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+// UpdateFullName updates the cached full name of the tag
 func (u *Tag) UpdateFullName(db *gorm.DB) (err error) {
 	var (
 		repo     = &Repo{}
