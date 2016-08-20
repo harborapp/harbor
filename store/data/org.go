@@ -92,15 +92,15 @@ func (db *data) GetOrgHasUser(params *model.OrgUserParams) bool {
 	org, _ := db.GetOrg(params.Org)
 	user, _ := db.GetUser(params.User)
 
-	count := db.Model(
+	res := db.Model(
 		org,
 	).Association(
 		"Users",
 	).Find(
 		user,
-	).Count()
+	).Error
 
-	return count > 0
+	return res == nil
 }
 
 func (db *data) CreateOrgUser(params *model.OrgUserParams) error {
@@ -151,15 +151,15 @@ func (db *data) GetOrgHasTeam(params *model.OrgTeamParams) bool {
 	org, _ := db.GetOrg(params.Org)
 	team, _ := db.GetTeam(params.Team)
 
-	count := db.Model(
+	res := db.Model(
 		org,
 	).Association(
 		"Teams",
 	).Find(
 		team,
-	).Count()
+	).Error
 
-	return count > 0
+	return res == nil
 }
 
 func (db *data) CreateOrgTeam(params *model.OrgTeamParams) error {
