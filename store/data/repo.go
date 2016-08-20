@@ -1,6 +1,9 @@
 package data
 
 import (
+	"regexp"
+	"strconv"
+
 	"github.com/jinzhu/gorm"
 	"github.com/umschlag/umschlag-api/model"
 )
@@ -43,15 +46,26 @@ func (db *data) DeleteRepo(record *model.Repo) error {
 
 // GetRepo retrieves a specific repo from the database.
 func (db *data) GetRepo(id string) (*model.Repo, *gorm.DB) {
-	record := &model.Repo{}
+	var (
+		record = &model.Repo{}
+		query  *gorm.DB
+	)
 
-	res := db.Where(
-		"id = ?",
-		id,
-	).Or(
-		"slug = ?",
-		id,
-	).Model(
+	if match, _ := regexp.MatchString("^([0-9]+)$", id); match {
+		val, _ := strconv.ParseInt(id, 10, 64)
+
+		query = db.Where(
+			"id = ?",
+			val,
+		)
+	} else {
+		query = db.Where(
+			"slug = ?",
+			id,
+		)
+	}
+
+	res := query.Model(
 		&record,
 	).Preload(
 		"Tags",

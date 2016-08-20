@@ -1,6 +1,9 @@
 package data
 
 import (
+	"regexp"
+	"strconv"
+
 	"github.com/jinzhu/gorm"
 	"github.com/umschlag/umschlag-api/model"
 )
@@ -41,15 +44,26 @@ func (db *data) DeleteTeam(record *model.Team) error {
 
 // GetTeam retrieves a specific team from the database.
 func (db *data) GetTeam(id string) (*model.Team, *gorm.DB) {
-	record := &model.Team{}
+	var (
+		record = &model.Team{}
+		query  *gorm.DB
+	)
 
-	res := db.Where(
-		"id = ?",
-		id,
-	).Or(
-		"slug = ?",
-		id,
-	).Model(
+	if match, _ := regexp.MatchString("^([0-9]+)$", id); match {
+		val, _ := strconv.ParseInt(id, 10, 64)
+
+		query = db.Where(
+			"id = ?",
+			val,
+		)
+	} else {
+		query = db.Where(
+			"slug = ?",
+			id,
+		)
+	}
+
+	res := query.Model(
 		record,
 	).First(
 		record,

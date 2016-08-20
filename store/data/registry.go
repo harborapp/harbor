@@ -1,6 +1,9 @@
 package data
 
 import (
+	"regexp"
+	"strconv"
+
 	"github.com/jinzhu/gorm"
 	"github.com/umschlag/umschlag-api/model"
 )
@@ -43,15 +46,26 @@ func (db *data) DeleteRegistry(record *model.Registry) error {
 
 // GetRegistry retrieves a specific registry from the database.
 func (db *data) GetRegistry(id string) (*model.Registry, *gorm.DB) {
-	record := &model.Registry{}
+	var (
+		record = &model.Registry{}
+		query  *gorm.DB
+	)
 
-	res := db.Where(
-		"id = ?",
-		id,
-	).Or(
-		"slug = ?",
-		id,
-	).Model(
+	if match, _ := regexp.MatchString("^([0-9]+)$", id); match {
+		val, _ := strconv.ParseInt(id, 10, 64)
+
+		query = db.Where(
+			"id = ?",
+			val,
+		)
+	} else {
+		query = db.Where(
+			"slug = ?",
+			id,
+		)
+	}
+
+	res := query.Model(
 		&record,
 	).Preload(
 		"Orgs",
