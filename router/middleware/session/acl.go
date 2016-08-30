@@ -90,6 +90,27 @@ func MustCurrent() gin.HandlerFunc {
 	}
 }
 
+// MustAdmin validates the admin access.
+func MustAdmin() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		user := Current(c)
+
+		if user == nil || !user.Admin {
+			c.JSON(
+				http.StatusUnauthorized,
+				gin.H{
+					"status":  http.StatusUnauthorized,
+					"message": "You have to be an admin user",
+				},
+			)
+
+			c.Abort()
+		} else {
+			c.Next()
+		}
+	}
+}
+
 // MustNobody validates anonymous users.
 func MustNobody() gin.HandlerFunc {
 	return func(c *gin.Context) {
