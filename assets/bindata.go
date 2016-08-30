@@ -87,7 +87,7 @@ func imagesFaviconIco() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "images/favicon.ico", size: 15086, mode: os.FileMode(420), modTime: time.Unix(1460986901, 0)}
+	info := bindataFileInfo{name: "images/favicon.ico", size: 15086, mode: os.FileMode(420), modTime: time.Unix(1460458975, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -107,7 +107,7 @@ func scriptsApplicationJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "scripts/application.js", size: 0, mode: os.FileMode(420), modTime: time.Unix(1460986901, 0)}
+	info := bindataFileInfo{name: "scripts/application.js", size: 0, mode: os.FileMode(420), modTime: time.Unix(1453478690, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -127,7 +127,7 @@ func scriptsVendorJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "scripts/vendor.js", size: 0, mode: os.FileMode(420), modTime: time.Unix(1460986901, 0)}
+	info := bindataFileInfo{name: "scripts/vendor.js", size: 0, mode: os.FileMode(420), modTime: time.Unix(1453478690, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -147,7 +147,7 @@ func stylesApplicationCSS() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "styles/application.css", size: 0, mode: os.FileMode(420), modTime: time.Unix(1460986901, 0)}
+	info := bindataFileInfo{name: "styles/application.css", size: 0, mode: os.FileMode(420), modTime: time.Unix(1453478690, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -167,7 +167,7 @@ func stylesVendorCSS() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "styles/vendor.css", size: 0, mode: os.FileMode(420), modTime: time.Unix(1460986901, 0)}
+	info := bindataFileInfo{name: "styles/vendor.css", size: 0, mode: os.FileMode(420), modTime: time.Unix(1453478690, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
