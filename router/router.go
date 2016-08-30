@@ -8,7 +8,6 @@ import (
 	"github.com/umschlag/umschlag-api/assets"
 	"github.com/umschlag/umschlag-api/config"
 	"github.com/umschlag/umschlag-api/router/middleware/header"
-	"github.com/umschlag/umschlag-api/router/middleware/location"
 	"github.com/umschlag/umschlag-api/router/middleware/logger"
 	"github.com/umschlag/umschlag-api/router/middleware/recovery"
 	"github.com/umschlag/umschlag-api/router/middleware/session"
@@ -34,7 +33,6 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 	e.Use(middleware...)
 	e.Use(logger.SetLogger())
 	e.Use(recovery.SetRecovery())
-	e.Use(location.SetLocation())
 	e.Use(store.SetStore())
 	e.Use(header.SetCache())
 	e.Use(header.SetOptions())
