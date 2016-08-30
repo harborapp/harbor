@@ -47,8 +47,6 @@ vendors:
   rev: 57710b0229272260f1fa2b31838a0dc4baa22a0a
 - path: github.com/pmezard/go-difflib
   rev: 792786c7400a136282c1664665ae0a8db921c6c2
-- path: github.com/qor/inflection
-  rev: 8f4d3a0d04ce0b7c0cf3126fb98524246d00d102
 - path: github.com/qor/qor
   rev: 0dd0f9c7ec1f94f879192e8a06efe956fd9a4c48
 - path: github.com/qor/validations

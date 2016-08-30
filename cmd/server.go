@@ -52,6 +52,13 @@ func Server() cli.Command {
 				Destination: &config.Database.Host,
 			},
 			cli.StringFlag{
+				Name:        "host",
+				Value:       "http://localhost:8080",
+				Usage:       "External access to server",
+				EnvVar:      "UMSCHLAG_SERVER_HOST",
+				Destination: &config.Server.Host,
+			},
+			cli.StringFlag{
 				Name:        "addr",
 				Value:       ":8080",
 				Usage:       "Address to bind the server",
