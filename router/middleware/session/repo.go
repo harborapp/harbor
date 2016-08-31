@@ -58,37 +58,49 @@ func SetRepo() gin.HandlerFunc {
 // MustRepos validates the repos access.
 func MustRepos(action string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		user := Current(c)
+		current := Current(c)
 
-		if user == nil {
-			c.JSON(
-				http.StatusUnauthorized,
-				gin.H{
-					"status":  http.StatusUnauthorized,
-					"message": "You have to be authenticated",
-				},
-			)
+		if current.Admin {
+			c.Next()
+			return
+		}
 
-			c.Abort()
-		} else {
-			switch {
-			case action == "display": // && user.Permission.DisplayRepos:
+		switch {
+		case action == "display":
+			if allowRepoDisplay(c) {
 				c.Next()
-			case action == "change": // && user.Permission.ChangeRepos:
+				return
+			}
+		case action == "change":
+			if allowRepoChange(c) {
 				c.Next()
-			case action == "delete": // && user.Permission.DeleteRepos:
+				return
+			}
+		case action == "delete":
+			if allowRepoDelete(c) {
 				c.Next()
-			default:
-				c.JSON(
-					http.StatusForbidden,
-					gin.H{
-						"status":  http.StatusForbidden,
-						"message": "You are not authorized to request this resource",
-					},
-				)
-
-				c.Abort()
+				return
 			}
 		}
+
+		AbortUnauthorized(c)
 	}
+}
+
+// allowRepoDisplay checks if the given user is allowed to display the resource.
+func allowRepoDisplay(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowRepoChange checks if the given user is allowed to change the resource.
+func allowRepoChange(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowRepoDelete checks if the given user is allowed to delete the resource.
+func allowRepoDelete(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
 }

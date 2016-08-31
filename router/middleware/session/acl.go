@@ -84,9 +84,10 @@ func MustCurrent() gin.HandlerFunc {
 			)
 
 			c.Abort()
-		} else {
-			c.Next()
+			return
 		}
+
+		c.Next()
 	}
 }
 
@@ -105,9 +106,10 @@ func MustAdmin() gin.HandlerFunc {
 			)
 
 			c.Abort()
-		} else {
-			c.Next()
+			return
 		}
+
+		c.Next()
 	}
 }
 
@@ -126,8 +128,22 @@ func MustNobody() gin.HandlerFunc {
 			)
 
 			c.Abort()
-		} else {
-			c.Next()
+			return
 		}
+
+		c.Next()
 	}
+}
+
+// AbortUnauthorized stops the middleware execution with JSON error.
+func AbortUnauthorized(c *gin.Context) {
+	c.JSON(
+		http.StatusForbidden,
+		gin.H{
+			"status":  http.StatusForbidden,
+			"message": "You are not authorized to request this resource",
+		},
+	)
+
+	c.Abort()
 }

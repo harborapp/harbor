@@ -58,37 +58,127 @@ func SetTeam() gin.HandlerFunc {
 // MustTeams validates the teams access.
 func MustTeams(action string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		user := Current(c)
+		current := Current(c)
 
-		if user == nil {
-			c.JSON(
-				http.StatusUnauthorized,
-				gin.H{
-					"status":  http.StatusUnauthorized,
-					"message": "You have to be authenticated",
-				},
-			)
+		if current.Admin {
+			c.Next()
+			return
+		}
 
-			c.Abort()
-		} else {
-			switch {
-			case action == "display": // && user.Permission.DisplayTeams:
+		switch {
+		case action == "display":
+			if allowTeamDisplay(c) {
 				c.Next()
-			case action == "change": // && user.Permission.ChangeTeams:
+				return
+			}
+		case action == "change":
+			if allowTeamChange(c) {
 				c.Next()
-			case action == "delete": // && user.Permission.DeleteTeams:
+				return
+			}
+		case action == "delete":
+			if allowTeamDelete(c) {
 				c.Next()
-			default:
-				c.JSON(
-					http.StatusForbidden,
-					gin.H{
-						"status":  http.StatusForbidden,
-						"message": "You are not authorized to request this resource",
-					},
-				)
-
-				c.Abort()
+				return
 			}
 		}
+
+		AbortUnauthorized(c)
 	}
+}
+
+// allowTeamDisplay checks if the given user is allowed to display the resource.
+func allowTeamDisplay(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowTeamChange checks if the given user is allowed to change the resource.
+func allowTeamChange(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowTeamDelete checks if the given user is allowed to delete the resource.
+func allowTeamDelete(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// MustTeamUsers validates the minecraft builds access.
+func MustTeamUsers(action string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		current := Current(c)
+
+		if current.Admin {
+			c.Next()
+			return
+		}
+
+		switch {
+		case action == "display":
+			if allowTeamUserDisplay(c) {
+				c.Next()
+				return
+			}
+		case action == "change":
+			if allowTeamUserChange(c) {
+				c.Next()
+				return
+			}
+		}
+
+		AbortUnauthorized(c)
+	}
+}
+
+// allowTeamUserDisplay checks if the given user is allowed to display the resource.
+func allowTeamUserDisplay(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowTeamUserChange checks if the given user is allowed to change the resource.
+func allowTeamUserChange(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// MustTeamOrgs validates the minecraft builds access.
+func MustTeamOrgs(action string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		current := Current(c)
+
+		if current.Admin {
+			c.Next()
+			return
+		}
+
+		switch {
+		case action == "display":
+			if allowTeamOrgDisplay(c) {
+				c.Next()
+				return
+			}
+		case action == "change":
+			if allowTeamOrgChange(c) {
+				c.Next()
+				return
+			}
+		}
+
+		AbortUnauthorized(c)
+	}
+}
+
+// allowTeamOrgDisplay checks if the given user is allowed to display the resource.
+func allowTeamOrgDisplay(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowTeamOrgChange checks if the given user is allowed to change the resource.
+func allowTeamOrgChange(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
 }

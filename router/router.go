@@ -89,6 +89,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 			//
 			registries := base.Group("/registries")
 			{
+				registries.Use(session.MustCurrent())
 				registries.Use(session.MustRegistries("display"))
 
 				registries.GET("", api.RegistryIndex)
@@ -141,24 +142,24 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 
 			orgTeams := base.Group("/orgs/:org/teams")
 			{
-				orgTeams.Use(session.MustTeams("change"))
+				orgTeams.Use(session.MustCurrent())
 				orgTeams.Use(session.SetOrg())
 
-				orgTeams.GET("", api.OrgTeamIndex)
-				orgTeams.POST("", api.OrgTeamAppend)
-				orgTeams.PATCH("", api.OrgTeamPerm)
-				orgTeams.DELETE("", api.OrgTeamDelete)
+				orgTeams.GET("", session.MustOrgTeams("display"), api.OrgTeamIndex)
+				orgTeams.POST("", session.MustOrgTeams("change"), api.OrgTeamAppend)
+				orgTeams.PATCH("", session.MustOrgTeams("change"), api.OrgTeamPerm)
+				orgTeams.DELETE("", session.MustOrgTeams("change"), api.OrgTeamDelete)
 			}
 
 			orgUsers := base.Group("/orgs/:org/users")
 			{
-				orgUsers.Use(session.MustUsers("change"))
+				orgUsers.Use(session.MustCurrent())
 				orgUsers.Use(session.SetOrg())
 
-				orgUsers.GET("", api.OrgUserIndex)
-				orgUsers.POST("", api.OrgUserAppend)
-				orgUsers.PATCH("", api.OrgUserPerm)
-				orgUsers.DELETE("", api.OrgUserDelete)
+				orgUsers.GET("", session.MustOrgUsers("display"), api.OrgUserIndex)
+				orgUsers.POST("", session.MustOrgUsers("change"), api.OrgUserAppend)
+				orgUsers.PATCH("", session.MustOrgUsers("change"), api.OrgUserPerm)
+				orgUsers.DELETE("", session.MustOrgUsers("change"), api.OrgUserDelete)
 			}
 
 			//
@@ -177,24 +178,24 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 
 			userTeams := base.Group("/users/:user/teams")
 			{
-				userTeams.Use(session.MustTeams("change"))
+				userTeams.Use(session.MustCurrent())
 				userTeams.Use(session.SetUser())
 
-				userTeams.GET("", api.UserTeamIndex)
-				userTeams.POST("", api.UserTeamAppend)
-				userTeams.PATCH("", api.UserTeamPerm)
-				userTeams.DELETE("", api.UserTeamDelete)
+				userTeams.GET("", session.MustUserTeams("display"), api.UserTeamIndex)
+				userTeams.POST("", session.MustUserTeams("change"), api.UserTeamAppend)
+				userTeams.PATCH("", session.MustUserTeams("change"), api.UserTeamPerm)
+				userTeams.DELETE("", session.MustUserTeams("change"), api.UserTeamDelete)
 			}
 
 			userOrgs := base.Group("/users/:user/orgs")
 			{
-				userOrgs.Use(session.MustOrgs("change"))
+				userOrgs.Use(session.MustCurrent())
 				userOrgs.Use(session.SetUser())
 
-				userOrgs.GET("", api.UserOrgIndex)
-				userOrgs.POST("", api.UserOrgAppend)
-				userOrgs.PATCH("", api.UserOrgPerm)
-				userOrgs.DELETE("", api.UserOrgDelete)
+				userOrgs.GET("", session.MustUserOrgs("display"), api.UserOrgIndex)
+				userOrgs.POST("", session.MustUserOrgs("change"), api.UserOrgAppend)
+				userOrgs.PATCH("", session.MustUserOrgs("change"), api.UserOrgPerm)
+				userOrgs.DELETE("", session.MustUserOrgs("change"), api.UserOrgDelete)
 			}
 
 			//
@@ -213,24 +214,24 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 
 			teamUsers := base.Group("/teams/:team/users")
 			{
-				teamUsers.Use(session.MustUsers("change"))
+				teamUsers.Use(session.MustCurrent())
 				teamUsers.Use(session.SetTeam())
 
-				teamUsers.GET("", api.TeamUserIndex)
-				teamUsers.POST("", api.TeamUserAppend)
-				teamUsers.PATCH("", api.TeamUserPerm)
-				teamUsers.DELETE("", api.TeamUserDelete)
+				teamUsers.GET("", session.MustTeamUsers("display"), api.TeamUserIndex)
+				teamUsers.POST("", session.MustTeamUsers("change"), api.TeamUserAppend)
+				teamUsers.PATCH("", session.MustTeamUsers("change"), api.TeamUserPerm)
+				teamUsers.DELETE("", session.MustTeamUsers("change"), api.TeamUserDelete)
 			}
 
 			teamOrgs := base.Group("/teams/:team/orgs")
 			{
-				teamOrgs.Use(session.MustOrgs("change"))
+				teamOrgs.Use(session.MustCurrent())
 				teamOrgs.Use(session.SetTeam())
 
-				teamOrgs.GET("", api.TeamOrgIndex)
-				teamOrgs.POST("", api.TeamOrgAppend)
-				teamOrgs.PATCH("", api.TeamOrgPerm)
-				teamOrgs.DELETE("", api.TeamOrgDelete)
+				teamOrgs.GET("", session.MustTeamOrgs("display"), api.TeamOrgIndex)
+				teamOrgs.POST("", session.MustTeamOrgs("change"), api.TeamOrgAppend)
+				teamOrgs.PATCH("", session.MustTeamOrgs("change"), api.TeamOrgPerm)
+				teamOrgs.DELETE("", session.MustTeamOrgs("change"), api.TeamOrgDelete)
 			}
 		}
 	}
