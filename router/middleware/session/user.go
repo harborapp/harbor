@@ -58,37 +58,127 @@ func SetUser() gin.HandlerFunc {
 // MustUsers validates the users access.
 func MustUsers(action string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		user := Current(c)
+		current := Current(c)
 
-		if user == nil {
-			c.JSON(
-				http.StatusUnauthorized,
-				gin.H{
-					"status":  http.StatusUnauthorized,
-					"message": "You have to be authenticated",
-				},
-			)
+		if current.Admin {
+			c.Next()
+			return
+		}
 
-			c.Abort()
-		} else {
-			switch {
-			case action == "display": // && user.Permission.DisplayUsers:
+		switch {
+		case action == "display":
+			if allowUserDisplay(c) {
 				c.Next()
-			case action == "change": // && user.Permission.ChangeUsers:
+				return
+			}
+		case action == "change":
+			if allowUserChange(c) {
 				c.Next()
-			case action == "delete": // && user.Permission.DeleteUsers:
+				return
+			}
+		case action == "delete":
+			if allowUserDelete(c) {
 				c.Next()
-			default:
-				c.JSON(
-					http.StatusForbidden,
-					gin.H{
-						"status":  http.StatusForbidden,
-						"message": "You are not authorized to request this resource",
-					},
-				)
-
-				c.Abort()
+				return
 			}
 		}
+
+		AbortUnauthorized(c)
 	}
+}
+
+// allowUserDisplay checks if the given user is allowed to display the resource.
+func allowUserDisplay(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowUserChange checks if the given user is allowed to change the resource.
+func allowUserChange(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowUserDelete checks if the given user is allowed to delete the resource.
+func allowUserDelete(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// MustUserTeams validates the user teams access.
+func MustUserTeams(action string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		current := Current(c)
+
+		if current.Admin {
+			c.Next()
+			return
+		}
+
+		switch {
+		case action == "display":
+			if allowUserTeamDisplay(c) {
+				c.Next()
+				return
+			}
+		case action == "change":
+			if allowUserTeamChange(c) {
+				c.Next()
+				return
+			}
+		}
+
+		AbortUnauthorized(c)
+	}
+}
+
+// allowUserTeamDisplay checks if the given user is allowed to display the resource.
+func allowUserTeamDisplay(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowUserTeamChange checks if the given user is allowed to change the resource.
+func allowUserTeamChange(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// MustUserOrgs validates the user orgs access.
+func MustUserOrgs(action string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		current := Current(c)
+
+		if current.Admin {
+			c.Next()
+			return
+		}
+
+		switch {
+		case action == "display":
+			if allowUserOrgDisplay(c) {
+				c.Next()
+				return
+			}
+		case action == "change":
+			if allowUserOrgChange(c) {
+				c.Next()
+				return
+			}
+		}
+
+		AbortUnauthorized(c)
+	}
+}
+
+// allowUserOrgDisplay checks if the given user is allowed to display the resource.
+func allowUserOrgDisplay(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowUserOrgChange checks if the given user is allowed to change the resource.
+func allowUserOrgChange(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
 }

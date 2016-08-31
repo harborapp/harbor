@@ -14,6 +14,12 @@ func (db *data) GetTags() (*model.Tags, error) {
 
 	err := db.Order(
 		"name ASC",
+	).Preload(
+		"Repo",
+	).Preload(
+		"Repo.Org",
+	).Preload(
+		"Repo.Org.Registry",
 	).Find(
 		records,
 	).Error
@@ -22,21 +28,21 @@ func (db *data) GetTags() (*model.Tags, error) {
 }
 
 // CreateTag creates a new tag.
-func (db *data) CreateTag(record *model.Tag) error {
+func (db *data) CreateTag(record *model.Tag, current *model.User) error {
 	return db.Create(
 		record,
 	).Error
 }
 
 // UpdateTag updates a tag.
-func (db *data) UpdateTag(record *model.Tag) error {
+func (db *data) UpdateTag(record *model.Tag, current *model.User) error {
 	return db.Save(
 		record,
 	).Error
 }
 
 // DeleteTag deletes a tag.
-func (db *data) DeleteTag(record *model.Tag) error {
+func (db *data) DeleteTag(record *model.Tag, current *model.User) error {
 	return db.Delete(
 		record,
 	).Error
@@ -65,6 +71,12 @@ func (db *data) GetTag(id string) (*model.Tag, *gorm.DB) {
 
 	res := query.Model(
 		record,
+	).Preload(
+		"Repo",
+	).Preload(
+		"Repo.Org",
+	).Preload(
+		"Repo.Org.Registry",
 	).First(
 		record,
 	)

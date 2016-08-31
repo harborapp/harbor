@@ -13,17 +13,17 @@ func GetRepos(c context.Context) (*model.Repos, error) {
 
 // CreateRepo creates a new repo.
 func CreateRepo(c context.Context, record *model.Repo) error {
-	return FromContext(c).CreateRepo(record)
+	return FromContext(c).CreateRepo(record, Current(c))
 }
 
 // UpdateRepo updates a repo.
 func UpdateRepo(c context.Context, record *model.Repo) error {
-	return FromContext(c).UpdateRepo(record)
+	return FromContext(c).UpdateRepo(record, Current(c))
 }
 
 // DeleteRepo deletes a repo.
 func DeleteRepo(c context.Context, record *model.Repo) error {
-	return FromContext(c).DeleteRepo(record)
+	return FromContext(c).DeleteRepo(record, Current(c))
 }
 
 // GetRepo retrieves a specific repo from the database.

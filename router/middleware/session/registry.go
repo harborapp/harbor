@@ -58,37 +58,49 @@ func SetRegistry() gin.HandlerFunc {
 // MustRegistries validates the registries access.
 func MustRegistries(action string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		registry := Current(c)
+		current := Current(c)
 
-		if registry == nil {
-			c.JSON(
-				http.StatusUnauthorized,
-				gin.H{
-					"status":  http.StatusUnauthorized,
-					"message": "You have to be authenticated",
-				},
-			)
+		if current.Admin {
+			c.Next()
+			return
+		}
 
-			c.Abort()
-		} else {
-			switch {
-			case action == "display": // && registry.Permission.DisplayRegistries:
+		switch {
+		case action == "display":
+			if allowRegistryDisplay(c) {
 				c.Next()
-			case action == "change": // && registry.Permission.ChangeRegistries:
+				return
+			}
+		case action == "change":
+			if allowRegistryChange(c) {
 				c.Next()
-			case action == "delete": // && registry.Permission.DeleteRegistries:
+				return
+			}
+		case action == "delete":
+			if allowRegistryDelete(c) {
 				c.Next()
-			default:
-				c.JSON(
-					http.StatusForbidden,
-					gin.H{
-						"status":  http.StatusForbidden,
-						"message": "You are not authorized to request this resource",
-					},
-				)
-
-				c.Abort()
+				return
 			}
 		}
+
+		AbortUnauthorized(c)
 	}
+}
+
+// allowRegistryDisplay checks if the given user is allowed to display the resource.
+func allowRegistryDisplay(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowRegistryChange checks if the given user is allowed to change the resource.
+func allowRegistryChange(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowRegistryDelete checks if the given user is allowed to delete the resource.
+func allowRegistryDelete(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
 }

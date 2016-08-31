@@ -15,6 +15,10 @@ func (db *data) GetRepos() (*model.Repos, error) {
 	err := db.Order(
 		"name ASC",
 	).Preload(
+		"Org",
+	).Preload(
+		"Org.Registry",
+	).Preload(
 		"Tags",
 	).Find(
 		&records,
@@ -24,21 +28,21 @@ func (db *data) GetRepos() (*model.Repos, error) {
 }
 
 // CreateRepo creates a new repo.
-func (db *data) CreateRepo(record *model.Repo) error {
+func (db *data) CreateRepo(record *model.Repo, current *model.User) error {
 	return db.Create(
 		&record,
 	).Error
 }
 
 // UpdateRepo updates a repo.
-func (db *data) UpdateRepo(record *model.Repo) error {
+func (db *data) UpdateRepo(record *model.Repo, current *model.User) error {
 	return db.Save(
 		&record,
 	).Error
 }
 
 // DeleteRepo deletes a repo.
-func (db *data) DeleteRepo(record *model.Repo) error {
+func (db *data) DeleteRepo(record *model.Repo, current *model.User) error {
 	return db.Delete(
 		&record,
 	).Error
@@ -67,6 +71,10 @@ func (db *data) GetRepo(id string) (*model.Repo, *gorm.DB) {
 
 	res := query.Model(
 		&record,
+	).Preload(
+		"Org",
+	).Preload(
+		"Org.Registry",
 	).Preload(
 		"Tags",
 	).First(

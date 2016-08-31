@@ -257,6 +257,71 @@ func TeamUserAppend(c *gin.Context) {
 	)
 }
 
+// TeamUserPerm updates the org team permission.
+func TeamUserPerm(c *gin.Context) {
+	form := &model.TeamUserParams{}
+
+	if err := c.BindJSON(&form); err != nil {
+		logrus.Warn("Failed to bind post data")
+		logrus.Warn(err)
+
+		c.JSON(
+			http.StatusPreconditionFailed,
+			gin.H{
+				"status":  http.StatusPreconditionFailed,
+				"message": "Failed to bind form data",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	assigned := store.GetTeamHasUser(
+		c,
+		form,
+	)
+
+	if assigned == false {
+		c.JSON(
+			http.StatusPreconditionFailed,
+			gin.H{
+				"status":  http.StatusPreconditionFailed,
+				"message": "User is not assigned",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	err := store.UpdateTeamUser(
+		c,
+		form,
+	)
+
+	if err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"status":  http.StatusInternalServerError,
+				"message": "Failed to update permissions",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"status":  http.StatusOK,
+			"message": "Successfully updated permissions",
+		},
+	)
+}
+
 // TeamUserDelete deleted a user from a team
 func TeamUserDelete(c *gin.Context) {
 	form := &model.TeamUserParams{}
@@ -411,6 +476,71 @@ func TeamOrgAppend(c *gin.Context) {
 		gin.H{
 			"status":  http.StatusOK,
 			"message": "Successfully appended org",
+		},
+	)
+}
+
+// TeamOrgPerm updates the org team permission.
+func TeamOrgPerm(c *gin.Context) {
+	form := &model.TeamOrgParams{}
+
+	if err := c.BindJSON(&form); err != nil {
+		logrus.Warn("Failed to bind post data")
+		logrus.Warn(err)
+
+		c.JSON(
+			http.StatusPreconditionFailed,
+			gin.H{
+				"status":  http.StatusPreconditionFailed,
+				"message": "Failed to bind form data",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	assigned := store.GetTeamHasOrg(
+		c,
+		form,
+	)
+
+	if assigned == false {
+		c.JSON(
+			http.StatusPreconditionFailed,
+			gin.H{
+				"status":  http.StatusPreconditionFailed,
+				"message": "Org is not assigned",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	err := store.UpdateTeamOrg(
+		c,
+		form,
+	)
+
+	if err != nil {
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"status":  http.StatusInternalServerError,
+				"message": "Failed to update permissions",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"status":  http.StatusOK,
+			"message": "Successfully updated permissions",
 		},
 	)
 }

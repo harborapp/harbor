@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 
@@ -14,6 +15,10 @@ func (db *data) GetTeams() (*model.Teams, error) {
 
 	err := db.Order(
 		"name ASC",
+	).Preload(
+		"Users",
+	).Preload(
+		"Orgs",
 	).Find(
 		records,
 	).Error
@@ -22,21 +27,28 @@ func (db *data) GetTeams() (*model.Teams, error) {
 }
 
 // CreateTeam creates a new team.
-func (db *data) CreateTeam(record *model.Team) error {
+func (db *data) CreateTeam(record *model.Team, current *model.User) error {
+	record.TeamUsers = model.TeamUsers{
+		&model.TeamUser{
+			UserID: current.ID,
+			Perm:   "owner",
+		},
+	}
+
 	return db.Create(
 		record,
 	).Error
 }
 
 // UpdateTeam updates a team.
-func (db *data) UpdateTeam(record *model.Team) error {
+func (db *data) UpdateTeam(record *model.Team, current *model.User) error {
 	return db.Save(
 		record,
 	).Error
 }
 
 // DeleteTeam deletes a team.
-func (db *data) DeleteTeam(record *model.Team) error {
+func (db *data) DeleteTeam(record *model.Team, current *model.User) error {
 	return db.Delete(
 		record,
 	).Error
@@ -65,6 +77,10 @@ func (db *data) GetTeam(id string) (*model.Team, *gorm.DB) {
 
 	res := query.Model(
 		record,
+	).Preload(
+		"Users",
+	).Preload(
+		"Orgs",
 	).First(
 		record,
 	)
@@ -73,15 +89,19 @@ func (db *data) GetTeam(id string) (*model.Team, *gorm.DB) {
 }
 
 // GetTeamUsers retrieves users for a team.
-func (db *data) GetTeamUsers(params *model.TeamUserParams) (*model.Users, error) {
+func (db *data) GetTeamUsers(params *model.TeamUserParams) (*model.TeamUsers, error) {
 	team, _ := db.GetTeam(params.Team)
+	records := &model.TeamUsers{}
 
-	records := &model.Users{}
-
-	err := db.Model(
-		team,
-	).Association(
-		"Users",
+	err := db.Where(
+		"team_id = ?",
+		team.ID,
+	).Model(
+		&model.TeamUser{},
+	).Preload(
+		"Team",
+	).Preload(
+		"User",
 	).Find(
 		records,
 	).Error
@@ -105,20 +125,42 @@ func (db *data) GetTeamHasUser(params *model.TeamUserParams) bool {
 	return res == nil
 }
 
-func (db *data) CreateTeamUser(params *model.TeamUserParams) error {
+func (db *data) CreateTeamUser(params *model.TeamUserParams, current *model.User) error {
+	team, _ := db.GetTeam(params.Team)
+	user, _ := db.GetUser(params.User)
+
+	for _, perm := range []string{"user", "admin", "owner"} {
+		if params.Perm == perm {
+			return db.Create(
+				&model.TeamUser{
+					TeamID: team.ID,
+					UserID: user.ID,
+					Perm:   params.Perm,
+				},
+			).Error
+		}
+	}
+
+	return fmt.Errorf("Invalid permission, can be user, admin or owner")
+}
+
+func (db *data) UpdateTeamUser(params *model.TeamUserParams, current *model.User) error {
 	team, _ := db.GetTeam(params.Team)
 	user, _ := db.GetUser(params.User)
 
 	return db.Model(
-		team,
-	).Association(
-		"Users",
-	).Append(
-		user,
+		&model.TeamUser{},
+	).Where(
+		"team_id = ? AND user_id = ?",
+		team.ID,
+		user.ID,
+	).Update(
+		"perm",
+		params.Perm,
 	).Error
 }
 
-func (db *data) DeleteTeamUser(params *model.TeamUserParams) error {
+func (db *data) DeleteTeamUser(params *model.TeamUserParams, current *model.User) error {
 	team, _ := db.GetTeam(params.Team)
 	user, _ := db.GetUser(params.User)
 
@@ -132,15 +174,19 @@ func (db *data) DeleteTeamUser(params *model.TeamUserParams) error {
 }
 
 // GetTeamOrgs retrieves orgs for a team.
-func (db *data) GetTeamOrgs(params *model.TeamOrgParams) (*model.Orgs, error) {
+func (db *data) GetTeamOrgs(params *model.TeamOrgParams) (*model.TeamOrgs, error) {
 	team, _ := db.GetTeam(params.Team)
+	records := &model.TeamOrgs{}
 
-	records := &model.Orgs{}
-
-	err := db.Model(
-		team,
-	).Association(
-		"Orgs",
+	err := db.Where(
+		"team_id = ?",
+		team.ID,
+	).Model(
+		&model.TeamOrg{},
+	).Preload(
+		"Team",
+	).Preload(
+		"Org",
 	).Find(
 		records,
 	).Error
@@ -164,20 +210,42 @@ func (db *data) GetTeamHasOrg(params *model.TeamOrgParams) bool {
 	return res == nil
 }
 
-func (db *data) CreateTeamOrg(params *model.TeamOrgParams) error {
+func (db *data) CreateTeamOrg(params *model.TeamOrgParams, current *model.User) error {
+	team, _ := db.GetTeam(params.Team)
+	org, _ := db.GetOrg(params.Org)
+
+	for _, perm := range []string{"user", "admin", "owner"} {
+		if params.Perm == perm {
+			return db.Create(
+				&model.TeamOrg{
+					TeamID: team.ID,
+					OrgID:  org.ID,
+					Perm:   params.Perm,
+				},
+			).Error
+		}
+	}
+
+	return fmt.Errorf("Invalid permission, can be user, admin or owner")
+}
+
+func (db *data) UpdateTeamOrg(params *model.TeamOrgParams, current *model.User) error {
 	team, _ := db.GetTeam(params.Team)
 	org, _ := db.GetOrg(params.Org)
 
 	return db.Model(
-		team,
-	).Association(
-		"Orgs",
-	).Append(
-		org,
+		&model.TeamOrg{},
+	).Where(
+		"team_id = ? AND org_id = ?",
+		team.ID,
+		org.ID,
+	).Update(
+		"perm",
+		params.Perm,
 	).Error
 }
 
-func (db *data) DeleteTeamOrg(params *model.TeamOrgParams) error {
+func (db *data) DeleteTeamOrg(params *model.TeamOrgParams, current *model.User) error {
 	team, _ := db.GetTeam(params.Team)
 	org, _ := db.GetOrg(params.Org)
 

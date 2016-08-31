@@ -6,16 +6,11 @@ import (
 	"runtime"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/sanbornm/go-selfupdate/selfupdate"
 	"github.com/umschlag/umschlag-api/cmd"
 	"github.com/umschlag/umschlag-api/config"
 	"github.com/urfave/cli"
 
 	_ "github.com/joho/godotenv/autoload"
-)
-
-var (
-	updates = "http://dl.webhippie.de/"
 )
 
 func main() {
@@ -28,12 +23,6 @@ func main() {
 	app.Usage = "A docker distribution management system"
 
 	app.Flags = []cli.Flag{
-		cli.BoolTFlag{
-			Name:        "update, u",
-			Usage:       "Enable auto update",
-			EnvVar:      "UMSCHLAG_UPDATE",
-			Destination: &config.Debug,
-		},
 		cli.BoolFlag{
 			Name:        "debug",
 			Usage:       "Activate debug information",
@@ -49,10 +38,6 @@ func main() {
 			logrus.SetLevel(logrus.DebugLevel)
 		} else {
 			logrus.SetLevel(logrus.InfoLevel)
-		}
-
-		if c.BoolT("update") {
-			Update()
 		}
 
 		return nil
@@ -75,28 +60,5 @@ func main() {
 	if err := app.Run(os.Args); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
-	}
-}
-
-// Update handles automated binary updates in the background.
-func Update() {
-	if config.VersionDev == "dev" {
-		fmt.Fprintf(os.Stderr, "Updates are disabled for development versions.\n")
-	} else {
-		updater := &selfupdate.Updater{
-			CurrentVersion: fmt.Sprintf(
-				"%d.%d.%d",
-				config.VersionMajor,
-				config.VersionMinor,
-				config.VersionPatch,
-			),
-			ApiURL:  updates,
-			BinURL:  updates,
-			DiffURL: updates,
-			Dir:     "updates/",
-			CmdName: "umschlag-api",
-		}
-
-		go updater.BackgroundRun()
 	}
 }

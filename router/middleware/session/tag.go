@@ -58,37 +58,49 @@ func SetTag() gin.HandlerFunc {
 // MustTags validates the tags access.
 func MustTags(action string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		user := Current(c)
+		current := Current(c)
 
-		if user == nil {
-			c.JSON(
-				http.StatusUnauthorized,
-				gin.H{
-					"status":  http.StatusUnauthorized,
-					"message": "You have to be authenticated",
-				},
-			)
+		if current.Admin {
+			c.Next()
+			return
+		}
 
-			c.Abort()
-		} else {
-			switch {
-			case action == "display": // && user.Permission.DisplayTags:
+		switch {
+		case action == "display":
+			if allowTagDisplay(c) {
 				c.Next()
-			case action == "change": // && user.Permission.ChangeTags:
+				return
+			}
+		case action == "change":
+			if allowTagChange(c) {
 				c.Next()
-			case action == "delete": // && user.Permission.DeleteTags:
+				return
+			}
+		case action == "delete":
+			if allowTagDelete(c) {
 				c.Next()
-			default:
-				c.JSON(
-					http.StatusForbidden,
-					gin.H{
-						"status":  http.StatusForbidden,
-						"message": "You are not authorized to request this resource",
-					},
-				)
-
-				c.Abort()
+				return
 			}
 		}
+
+		AbortUnauthorized(c)
 	}
+}
+
+// allowTagDisplay checks if the given user is allowed to display the resource.
+func allowTagDisplay(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowTagChange checks if the given user is allowed to change the resource.
+func allowTagChange(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowTagDelete checks if the given user is allowed to delete the resource.
+func allowTagDelete(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
 }

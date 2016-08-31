@@ -31,7 +31,9 @@ type User struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Teams     Teams     `json:"teams,omitempty" gorm:"many2many:team_users;"`
+	TeamUsers TeamUsers `json:"team_users,omitempty"`
 	Orgs      Orgs      `json:"orgs,omitempty" gorm:"many2many:user_orgs;"`
+	UserOrgs  UserOrgs  `json:"user_orgs,omitempty"`
 }
 
 // AfterFind invokes required after loading a record from the database.
@@ -104,6 +106,10 @@ func (u *User) BeforeSave(db *gorm.DB) (err error) {
 // AfterDelete invokes required actions after deletion.
 func (u *User) AfterDelete(tx *gorm.DB) error {
 	if err := tx.Model(u).Association("Teams").Clear().Error; err != nil {
+		return err
+	}
+
+	if err := tx.Model(u).Association("Orgs").Clear().Error; err != nil {
 		return err
 	}
 
