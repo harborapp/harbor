@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"regexp"
 	"strconv"
 
@@ -121,12 +122,34 @@ func (db *data) CreateOrgUser(params *model.OrgUserParams) error {
 	org, _ := db.GetOrg(params.Org)
 	user, _ := db.GetUser(params.User)
 
+	for _, perm := range []string{"user", "admin", "owner"} {
+		if params.Perm == perm {
+			return db.Create(
+				&model.UserOrg{
+					OrgID:  org.ID,
+					UserID: user.ID,
+					Perm:   params.Perm,
+				},
+			).Error
+		}
+	}
+
+	return fmt.Errorf("Invalid permission, can be user, admin or owner")
+}
+
+func (db *data) UpdateOrgUser(params *model.OrgUserParams) error {
+	org, _ := db.GetOrg(params.Org)
+	user, _ := db.GetUser(params.User)
+
 	return db.Model(
-		org,
-	).Association(
-		"Users",
-	).Append(
-		user,
+		&model.UserOrg{},
+	).Where(
+		"org_id = ? AND user_id = ?",
+		org.ID,
+		user.ID,
+	).Update(
+		"perm",
+		params.Perm,
 	).Error
 }
 
@@ -180,12 +203,34 @@ func (db *data) CreateOrgTeam(params *model.OrgTeamParams) error {
 	org, _ := db.GetOrg(params.Org)
 	team, _ := db.GetTeam(params.Team)
 
+	for _, perm := range []string{"user", "admin", "owner"} {
+		if params.Perm == perm {
+			return db.Create(
+				&model.TeamOrg{
+					OrgID:  org.ID,
+					TeamID: team.ID,
+					Perm:   params.Perm,
+				},
+			).Error
+		}
+	}
+
+	return fmt.Errorf("Invalid permission, can be user, admin or owner")
+}
+
+func (db *data) UpdateOrgTeam(params *model.OrgTeamParams) error {
+	org, _ := db.GetOrg(params.Org)
+	team, _ := db.GetTeam(params.Team)
+
 	return db.Model(
-		org,
-	).Association(
-		"Teams",
-	).Append(
-		team,
+		&model.TeamOrg{},
+	).Where(
+		"org_id = ? AND team_id = ?",
+		org.ID,
+		team.ID,
+	).Update(
+		"perm",
+		params.Perm,
 	).Error
 }
 

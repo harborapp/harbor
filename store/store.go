@@ -78,6 +78,9 @@ type Store interface {
 	// CreateOrgTeam assigns a team to a specific org.
 	CreateOrgTeam(*model.OrgTeamParams) error
 
+	// UpdateOrgTeam updates the org team permission.
+	UpdateOrgTeam(*model.OrgTeamParams) error
+
 	// DeleteOrgTeam removes a team from a specific org.
 	DeleteOrgTeam(*model.OrgTeamParams) error
 
@@ -89,6 +92,9 @@ type Store interface {
 
 	// CreateOrgUser assigns a user to a specific org.
 	CreateOrgUser(*model.OrgUserParams) error
+
+	// UpdateOrgUser updates the org user permission.
+	UpdateOrgUser(*model.OrgUserParams) error
 
 	// DeleteOrgUser removes a user from a specific org.
 	DeleteOrgUser(*model.OrgUserParams) error
@@ -117,6 +123,9 @@ type Store interface {
 	// CreateUserTeam assigns a team to a specific user.
 	CreateUserTeam(*model.UserTeamParams) error
 
+	// UpdateUserTeam updates the user team permission.
+	UpdateUserTeam(*model.UserTeamParams) error
+
 	// DeleteUserTeam removes a team from a specific user.
 	DeleteUserTeam(*model.UserTeamParams) error
 
@@ -128,6 +137,9 @@ type Store interface {
 
 	// CreateUserOrg assigns a org to a specific user.
 	CreateUserOrg(*model.UserOrgParams) error
+
+	// UpdateUserOrg updates the user org permission.
+	UpdateUserOrg(*model.UserOrgParams) error
 
 	// DeleteUserOrg removes a org from a specific user.
 	DeleteUserOrg(*model.UserOrgParams) error
@@ -156,6 +168,9 @@ type Store interface {
 	// CreateTeamUser assigns a user to a specific team.
 	CreateTeamUser(*model.TeamUserParams) error
 
+	// UpdateTeamUser updates the team user permission.
+	UpdateTeamUser(*model.TeamUserParams) error
+
 	// DeleteTeamUser removes a user from a specific team.
 	DeleteTeamUser(*model.TeamUserParams) error
 
@@ -167,6 +182,9 @@ type Store interface {
 
 	// CreateTeamOrg assigns a org to a specific team.
 	CreateTeamOrg(*model.TeamOrgParams) error
+
+	// UpdateTeamOrg updates the team org permission.
+	UpdateTeamOrg(*model.TeamOrgParams) error
 
 	// DeleteTeamOrg removes a org from a specific team.
 	DeleteTeamOrg(*model.TeamOrgParams) error

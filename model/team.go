@@ -20,7 +20,9 @@ type Team struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Users     Users     `json:"users,omitempty" gorm:"many2many:team_users;"`
+	TeamUsers TeamUsers `json:"team_users,omitempty"`
 	Orgs      Orgs      `json:"orgs,omitempty" gorm:"many2many:team_orgs;"`
+	TeamOrgs  TeamOrgs  `json:"team_orgs,omitempty"`
 }
 
 // BeforeSave invokes required actions before persisting.

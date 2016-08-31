@@ -24,7 +24,9 @@ type Org struct {
 	UpdatedAt  time.Time `json:"updated_at"`
 	Repos      Repos     `json:"repos,omitempty"`
 	Teams      Teams     `json:"teams,omitempty" gorm:"many2many:team_orgs;"`
+	TeamOrgs   TeamOrgs  `json:"team_orgs,omitempty"`
 	Users      Users     `json:"users,omitempty" gorm:"many2many:user_orgs;"`
+	UserOrgs   UserOrgs  `json:"user_orgs,omitempty"`
 }
 
 // AfterSave invokes required actions after persisting.

@@ -145,7 +145,8 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				orgTeams.Use(session.SetOrg())
 
 				orgTeams.GET("", api.OrgTeamIndex)
-				orgTeams.PATCH("", api.OrgTeamAppend)
+				orgTeams.POST("", api.OrgTeamAppend)
+				orgTeams.PATCH("", api.OrgTeamPerm)
 				orgTeams.DELETE("", api.OrgTeamDelete)
 			}
 
@@ -155,7 +156,8 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				orgUsers.Use(session.SetOrg())
 
 				orgUsers.GET("", api.OrgUserIndex)
-				orgUsers.PATCH("", api.OrgUserAppend)
+				orgUsers.POST("", api.OrgUserAppend)
+				orgUsers.PATCH("", api.OrgUserPerm)
 				orgUsers.DELETE("", api.OrgUserDelete)
 			}
 
@@ -179,7 +181,8 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				userTeams.Use(session.SetUser())
 
 				userTeams.GET("", api.UserTeamIndex)
-				userTeams.PATCH("", api.UserTeamAppend)
+				userTeams.POST("", api.UserTeamAppend)
+				userTeams.PATCH("", api.UserTeamPerm)
 				userTeams.DELETE("", api.UserTeamDelete)
 			}
 
@@ -189,7 +192,8 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				userOrgs.Use(session.SetUser())
 
 				userOrgs.GET("", api.UserOrgIndex)
-				userOrgs.PATCH("", api.UserOrgAppend)
+				userOrgs.POST("", api.UserOrgAppend)
+				userOrgs.PATCH("", api.UserOrgPerm)
 				userOrgs.DELETE("", api.UserOrgDelete)
 			}
 
@@ -213,7 +217,8 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				teamUsers.Use(session.SetTeam())
 
 				teamUsers.GET("", api.TeamUserIndex)
-				teamUsers.PATCH("", api.TeamUserAppend)
+				teamUsers.POST("", api.TeamUserAppend)
+				teamUsers.PATCH("", api.TeamUserPerm)
 				teamUsers.DELETE("", api.TeamUserDelete)
 			}
 
@@ -223,7 +228,8 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				teamOrgs.Use(session.SetTeam())
 
 				teamOrgs.GET("", api.TeamOrgIndex)
-				teamOrgs.PATCH("", api.TeamOrgAppend)
+				teamOrgs.POST("", api.TeamOrgAppend)
+				teamOrgs.PATCH("", api.TeamOrgPerm)
 				teamOrgs.DELETE("", api.TeamOrgDelete)
 			}
 		}

@@ -46,6 +46,11 @@ func CreateOrgUser(c context.Context, params *model.OrgUserParams) error {
 	return FromContext(c).CreateOrgUser(params)
 }
 
+// UpdateOrgUser updates the org user permission.
+func UpdateOrgUser(c context.Context, params *model.OrgUserParams) error {
+	return FromContext(c).UpdateOrgUser(params)
+}
+
 // DeleteOrgUser removes a user from a specific org.
 func DeleteOrgUser(c context.Context, params *model.OrgUserParams) error {
 	return FromContext(c).DeleteOrgUser(params)
@@ -64,6 +69,11 @@ func GetOrgHasTeam(c context.Context, params *model.OrgTeamParams) bool {
 // CreateOrgTeam assigns a team to a specific org.
 func CreateOrgTeam(c context.Context, params *model.OrgTeamParams) error {
 	return FromContext(c).CreateOrgTeam(params)
+}
+
+// UpdateOrgTeam updates the org team permission.
+func UpdateOrgTeam(c context.Context, params *model.OrgTeamParams) error {
+	return FromContext(c).UpdateOrgTeam(params)
 }
 
 // DeleteOrgTeam removes a team from a specific org.
