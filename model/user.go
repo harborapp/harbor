@@ -109,6 +109,10 @@ func (u *User) AfterDelete(tx *gorm.DB) error {
 		return err
 	}
 
+	if err := tx.Model(u).Association("Orgs").Clear().Error; err != nil {
+		return err
+	}
+
 	return nil
 }
 

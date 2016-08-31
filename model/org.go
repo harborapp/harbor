@@ -95,6 +95,10 @@ func (u *Org) AfterDelete(tx *gorm.DB) error {
 		}
 	}
 
+	if err := tx.Model(u).Association("Users").Clear().Error; err != nil {
+		return err
+	}
+
 	if err := tx.Model(u).Association("Teams").Clear().Error; err != nil {
 		return err
 	}
