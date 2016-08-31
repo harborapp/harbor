@@ -13,17 +13,17 @@ func GetRegistries(c context.Context) (*model.Registries, error) {
 
 // CreateRegistry creates a new registry.
 func CreateRegistry(c context.Context, record *model.Registry) error {
-	return FromContext(c).CreateRegistry(record)
+	return FromContext(c).CreateRegistry(record, Current(c))
 }
 
 // UpdateRegistry updates a registry.
 func UpdateRegistry(c context.Context, record *model.Registry) error {
-	return FromContext(c).UpdateRegistry(record)
+	return FromContext(c).UpdateRegistry(record, Current(c))
 }
 
 // DeleteRegistry deletes a registry.
 func DeleteRegistry(c context.Context, record *model.Registry) error {
-	return FromContext(c).DeleteRegistry(record)
+	return FromContext(c).DeleteRegistry(record, Current(c))
 }
 
 // GetRegistry retrieves a specific registry from the database.

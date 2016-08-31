@@ -18,6 +18,8 @@ func (db *data) GetOrgs() (*model.Orgs, error) {
 	).Preload(
 		"Registry",
 	).Preload(
+		"Repos",
+	).Preload(
 		"Users",
 	).Preload(
 		"Teams",
@@ -29,21 +31,28 @@ func (db *data) GetOrgs() (*model.Orgs, error) {
 }
 
 // CreateOrg creates a new org.
-func (db *data) CreateOrg(record *model.Org) error {
+func (db *data) CreateOrg(record *model.Org, current *model.User) error {
+	record.UserOrgs = model.UserOrgs{
+		&model.UserOrg{
+			UserID: current.ID,
+			Perm:   "owner",
+		},
+	}
+
 	return db.Create(
 		&record,
 	).Error
 }
 
 // UpdateOrg updates a org.
-func (db *data) UpdateOrg(record *model.Org) error {
+func (db *data) UpdateOrg(record *model.Org, current *model.User) error {
 	return db.Save(
 		&record,
 	).Error
 }
 
 // DeleteOrg deletes a org.
-func (db *data) DeleteOrg(record *model.Org) error {
+func (db *data) DeleteOrg(record *model.Org, current *model.User) error {
 	return db.Delete(
 		&record,
 	).Error
@@ -75,6 +84,8 @@ func (db *data) GetOrg(id string) (*model.Org, *gorm.DB) {
 	).Preload(
 		"Registry",
 	).Preload(
+		"Repos",
+	).Preload(
 		"Users",
 	).Preload(
 		"Teams",
@@ -86,15 +97,19 @@ func (db *data) GetOrg(id string) (*model.Org, *gorm.DB) {
 }
 
 // GetOrgUsers retrieves users for a org.
-func (db *data) GetOrgUsers(params *model.OrgUserParams) (*model.Users, error) {
+func (db *data) GetOrgUsers(params *model.OrgUserParams) (*model.UserOrgs, error) {
 	org, _ := db.GetOrg(params.Org)
+	records := &model.UserOrgs{}
 
-	records := &model.Users{}
-
-	err := db.Model(
-		org,
-	).Association(
-		"Users",
+	err := db.Where(
+		"org_id = ?",
+		org.ID,
+	).Model(
+		&model.UserOrg{},
+	).Preload(
+		"User",
+	).Preload(
+		"Org",
 	).Find(
 		records,
 	).Error
@@ -118,7 +133,7 @@ func (db *data) GetOrgHasUser(params *model.OrgUserParams) bool {
 	return res == nil
 }
 
-func (db *data) CreateOrgUser(params *model.OrgUserParams) error {
+func (db *data) CreateOrgUser(params *model.OrgUserParams, current *model.User) error {
 	org, _ := db.GetOrg(params.Org)
 	user, _ := db.GetUser(params.User)
 
@@ -137,7 +152,7 @@ func (db *data) CreateOrgUser(params *model.OrgUserParams) error {
 	return fmt.Errorf("Invalid permission, can be user, admin or owner")
 }
 
-func (db *data) UpdateOrgUser(params *model.OrgUserParams) error {
+func (db *data) UpdateOrgUser(params *model.OrgUserParams, current *model.User) error {
 	org, _ := db.GetOrg(params.Org)
 	user, _ := db.GetUser(params.User)
 
@@ -153,7 +168,7 @@ func (db *data) UpdateOrgUser(params *model.OrgUserParams) error {
 	).Error
 }
 
-func (db *data) DeleteOrgUser(params *model.OrgUserParams) error {
+func (db *data) DeleteOrgUser(params *model.OrgUserParams, current *model.User) error {
 	org, _ := db.GetOrg(params.Org)
 	user, _ := db.GetUser(params.User)
 
@@ -167,15 +182,19 @@ func (db *data) DeleteOrgUser(params *model.OrgUserParams) error {
 }
 
 // GetOrgTeams retrieves teams for a org.
-func (db *data) GetOrgTeams(params *model.OrgTeamParams) (*model.Teams, error) {
+func (db *data) GetOrgTeams(params *model.OrgTeamParams) (*model.TeamOrgs, error) {
 	org, _ := db.GetOrg(params.Org)
+	records := &model.TeamOrgs{}
 
-	records := &model.Teams{}
-
-	err := db.Model(
-		org,
-	).Association(
-		"Teams",
+	err := db.Where(
+		"org_id = ?",
+		org.ID,
+	).Model(
+		&model.TeamOrg{},
+	).Preload(
+		"Team",
+	).Preload(
+		"Org",
 	).Find(
 		records,
 	).Error
@@ -199,7 +218,7 @@ func (db *data) GetOrgHasTeam(params *model.OrgTeamParams) bool {
 	return res == nil
 }
 
-func (db *data) CreateOrgTeam(params *model.OrgTeamParams) error {
+func (db *data) CreateOrgTeam(params *model.OrgTeamParams, current *model.User) error {
 	org, _ := db.GetOrg(params.Org)
 	team, _ := db.GetTeam(params.Team)
 
@@ -218,7 +237,7 @@ func (db *data) CreateOrgTeam(params *model.OrgTeamParams) error {
 	return fmt.Errorf("Invalid permission, can be user, admin or owner")
 }
 
-func (db *data) UpdateOrgTeam(params *model.OrgTeamParams) error {
+func (db *data) UpdateOrgTeam(params *model.OrgTeamParams, current *model.User) error {
 	org, _ := db.GetOrg(params.Org)
 	team, _ := db.GetTeam(params.Team)
 
@@ -234,7 +253,7 @@ func (db *data) UpdateOrgTeam(params *model.OrgTeamParams) error {
 	).Error
 }
 
-func (db *data) DeleteOrgTeam(params *model.OrgTeamParams) error {
+func (db *data) DeleteOrgTeam(params *model.OrgTeamParams, current *model.User) error {
 	org, _ := db.GetOrg(params.Org)
 	team, _ := db.GetTeam(params.Team)
 

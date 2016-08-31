@@ -13,13 +13,13 @@ type Store interface {
 	GetRegistries() (*model.Registries, error)
 
 	// CreateRegistry creates a new registry.
-	CreateRegistry(*model.Registry) error
+	CreateRegistry(*model.Registry, *model.User) error
 
 	// UpdateRegistry updates a registry.
-	UpdateRegistry(*model.Registry) error
+	UpdateRegistry(*model.Registry, *model.User) error
 
 	// DeleteRegistry deletes a registry.
-	DeleteRegistry(*model.Registry) error
+	DeleteRegistry(*model.Registry, *model.User) error
 
 	// GetRegistry retrieves a specific registry from the database.
 	GetRegistry(string) (*model.Registry, *gorm.DB)
@@ -28,13 +28,13 @@ type Store interface {
 	GetTags() (*model.Tags, error)
 
 	// CreateTag creates a new tag.
-	CreateTag(*model.Tag) error
+	CreateTag(*model.Tag, *model.User) error
 
 	// UpdateTag updates a tag.
-	UpdateTag(*model.Tag) error
+	UpdateTag(*model.Tag, *model.User) error
 
 	// DeleteTag deletes a tag.
-	DeleteTag(*model.Tag) error
+	DeleteTag(*model.Tag, *model.User) error
 
 	// GetTag retrieves a specific tag from the database.
 	GetTag(string) (*model.Tag, *gorm.DB)
@@ -43,13 +43,13 @@ type Store interface {
 	GetRepos() (*model.Repos, error)
 
 	// CreateRepo creates a new repo.
-	CreateRepo(*model.Repo) error
+	CreateRepo(*model.Repo, *model.User) error
 
 	// UpdateRepo updates a repo.
-	UpdateRepo(*model.Repo) error
+	UpdateRepo(*model.Repo, *model.User) error
 
 	// DeleteRepo deletes a repo.
-	DeleteRepo(*model.Repo) error
+	DeleteRepo(*model.Repo, *model.User) error
 
 	// GetRepo retrieves a specific repo from the database.
 	GetRepo(string) (*model.Repo, *gorm.DB)
@@ -58,134 +58,134 @@ type Store interface {
 	GetOrgs() (*model.Orgs, error)
 
 	// CreateOrg creates a new org.
-	CreateOrg(*model.Org) error
+	CreateOrg(*model.Org, *model.User) error
 
 	// UpdateOrg updates a org.
-	UpdateOrg(*model.Org) error
+	UpdateOrg(*model.Org, *model.User) error
 
 	// DeleteOrg deletes a org.
-	DeleteOrg(*model.Org) error
+	DeleteOrg(*model.Org, *model.User) error
 
 	// GetOrg retrieves a specific org from the database.
 	GetOrg(string) (*model.Org, *gorm.DB)
 
 	// GetOrgTeams retrieves teams for a org.
-	GetOrgTeams(*model.OrgTeamParams) (*model.Teams, error)
+	GetOrgTeams(*model.OrgTeamParams) (*model.TeamOrgs, error)
 
 	// GetOrgHasTeam checks if a specific team is assigned to a org.
 	GetOrgHasTeam(*model.OrgTeamParams) bool
 
 	// CreateOrgTeam assigns a team to a specific org.
-	CreateOrgTeam(*model.OrgTeamParams) error
+	CreateOrgTeam(*model.OrgTeamParams, *model.User) error
 
 	// UpdateOrgTeam updates the org team permission.
-	UpdateOrgTeam(*model.OrgTeamParams) error
+	UpdateOrgTeam(*model.OrgTeamParams, *model.User) error
 
 	// DeleteOrgTeam removes a team from a specific org.
-	DeleteOrgTeam(*model.OrgTeamParams) error
+	DeleteOrgTeam(*model.OrgTeamParams, *model.User) error
 
 	// GetOrgUsers retrieves users for a org.
-	GetOrgUsers(*model.OrgUserParams) (*model.Users, error)
+	GetOrgUsers(*model.OrgUserParams) (*model.UserOrgs, error)
 
 	// GetOrgHasUser checks if a specific user is assigned to a org.
 	GetOrgHasUser(*model.OrgUserParams) bool
 
 	// CreateOrgUser assigns a user to a specific org.
-	CreateOrgUser(*model.OrgUserParams) error
+	CreateOrgUser(*model.OrgUserParams, *model.User) error
 
 	// UpdateOrgUser updates the org user permission.
-	UpdateOrgUser(*model.OrgUserParams) error
+	UpdateOrgUser(*model.OrgUserParams, *model.User) error
 
 	// DeleteOrgUser removes a user from a specific org.
-	DeleteOrgUser(*model.OrgUserParams) error
+	DeleteOrgUser(*model.OrgUserParams, *model.User) error
 
 	// GetUsers retrieves all available users from the database.
 	GetUsers() (*model.Users, error)
 
 	// CreateUser creates a new user.
-	CreateUser(*model.User) error
+	CreateUser(*model.User, *model.User) error
 
 	// UpdateUser updates a user.
-	UpdateUser(*model.User) error
+	UpdateUser(*model.User, *model.User) error
 
 	// DeleteUser deletes a user.
-	DeleteUser(*model.User) error
+	DeleteUser(*model.User, *model.User) error
 
 	// GetUser retrieves a specific user from the database.
 	GetUser(string) (*model.User, *gorm.DB)
 
 	// GetUserTeams retrieves teams for a user.
-	GetUserTeams(*model.UserTeamParams) (*model.Teams, error)
+	GetUserTeams(*model.UserTeamParams) (*model.TeamUsers, error)
 
 	// GetUserHasTeam checks if a specific team is assigned to a user.
 	GetUserHasTeam(*model.UserTeamParams) bool
 
 	// CreateUserTeam assigns a team to a specific user.
-	CreateUserTeam(*model.UserTeamParams) error
+	CreateUserTeam(*model.UserTeamParams, *model.User) error
 
 	// UpdateUserTeam updates the user team permission.
-	UpdateUserTeam(*model.UserTeamParams) error
+	UpdateUserTeam(*model.UserTeamParams, *model.User) error
 
 	// DeleteUserTeam removes a team from a specific user.
-	DeleteUserTeam(*model.UserTeamParams) error
+	DeleteUserTeam(*model.UserTeamParams, *model.User) error
 
 	// GetUserOrgs retrieves orgs for a user.
-	GetUserOrgs(*model.UserOrgParams) (*model.Orgs, error)
+	GetUserOrgs(*model.UserOrgParams) (*model.UserOrgs, error)
 
 	// GetUserHasOrg checks if a specific org is assigned to a user.
 	GetUserHasOrg(*model.UserOrgParams) bool
 
 	// CreateUserOrg assigns a org to a specific user.
-	CreateUserOrg(*model.UserOrgParams) error
+	CreateUserOrg(*model.UserOrgParams, *model.User) error
 
 	// UpdateUserOrg updates the user org permission.
-	UpdateUserOrg(*model.UserOrgParams) error
+	UpdateUserOrg(*model.UserOrgParams, *model.User) error
 
 	// DeleteUserOrg removes a org from a specific user.
-	DeleteUserOrg(*model.UserOrgParams) error
+	DeleteUserOrg(*model.UserOrgParams, *model.User) error
 
 	// GetTeams retrieves all available teams from the database.
 	GetTeams() (*model.Teams, error)
 
 	// CreateTeam creates a new team.
-	CreateTeam(*model.Team) error
+	CreateTeam(*model.Team, *model.User) error
 
 	// UpdateTeam updates a team.
-	UpdateTeam(*model.Team) error
+	UpdateTeam(*model.Team, *model.User) error
 
 	// DeleteTeam deletes a team.
-	DeleteTeam(*model.Team) error
+	DeleteTeam(*model.Team, *model.User) error
 
 	// GetTeam retrieves a specific team from the database.
 	GetTeam(string) (*model.Team, *gorm.DB)
 
 	// GetTeamUsers retrieves users for a team.
-	GetTeamUsers(*model.TeamUserParams) (*model.Users, error)
+	GetTeamUsers(*model.TeamUserParams) (*model.TeamUsers, error)
 
 	// GetTeamHasUser checks if a specific user is assigned to a team.
 	GetTeamHasUser(*model.TeamUserParams) bool
 
 	// CreateTeamUser assigns a user to a specific team.
-	CreateTeamUser(*model.TeamUserParams) error
+	CreateTeamUser(*model.TeamUserParams, *model.User) error
 
 	// UpdateTeamUser updates the team user permission.
-	UpdateTeamUser(*model.TeamUserParams) error
+	UpdateTeamUser(*model.TeamUserParams, *model.User) error
 
 	// DeleteTeamUser removes a user from a specific team.
-	DeleteTeamUser(*model.TeamUserParams) error
+	DeleteTeamUser(*model.TeamUserParams, *model.User) error
 
 	// GetTeamOrgs retrieves orgs for a team.
-	GetTeamOrgs(*model.TeamOrgParams) (*model.Orgs, error)
+	GetTeamOrgs(*model.TeamOrgParams) (*model.TeamOrgs, error)
 
 	// GetTeamHasOrg checks if a specific org is assigned to a team.
 	GetTeamHasOrg(*model.TeamOrgParams) bool
 
 	// CreateTeamOrg assigns a org to a specific team.
-	CreateTeamOrg(*model.TeamOrgParams) error
+	CreateTeamOrg(*model.TeamOrgParams, *model.User) error
 
 	// UpdateTeamOrg updates the team org permission.
-	UpdateTeamOrg(*model.TeamOrgParams) error
+	UpdateTeamOrg(*model.TeamOrgParams, *model.User) error
 
 	// DeleteTeamOrg removes a org from a specific team.
-	DeleteTeamOrg(*model.TeamOrgParams) error
+	DeleteTeamOrg(*model.TeamOrgParams, *model.User) error
 }

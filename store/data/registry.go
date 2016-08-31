@@ -24,21 +24,21 @@ func (db *data) GetRegistries() (*model.Registries, error) {
 }
 
 // CreateRegistry creates a new registry.
-func (db *data) CreateRegistry(record *model.Registry) error {
+func (db *data) CreateRegistry(record *model.Registry, current *model.User) error {
 	return db.Create(
 		&record,
 	).Error
 }
 
 // UpdateRegistry updates a registry.
-func (db *data) UpdateRegistry(record *model.Registry) error {
+func (db *data) UpdateRegistry(record *model.Registry, current *model.User) error {
 	return db.Save(
 		&record,
 	).Error
 }
 
 // DeleteRegistry deletes a registry.
-func (db *data) DeleteRegistry(record *model.Registry) error {
+func (db *data) DeleteRegistry(record *model.Registry, current *model.User) error {
 	return db.Delete(
 		&record,
 	).Error
