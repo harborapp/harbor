@@ -41,10 +41,6 @@ vendors:
   rev: 4ed13390c0acd2ff4e371e64d8b97c8954138243
 - path: github.com/jtolds/gls
   rev: 8ddce2a84170772b95dd5d576c48d517b22cac63
-- path: github.com/kardianos/osext
-  rev: c2c54e542fb797ad986b31721e1baedf214ca413
-- path: github.com/kr/binarydist
-  rev: 3035450ff8b987ec4373f65c40767f096b35f2d2
 - path: github.com/lib/pq
   rev: 80f8150043c80fb52dee6bc863a709cdac7ec8f8
 - path: github.com/manucorporat/sse
@@ -56,11 +52,9 @@ vendors:
 - path: github.com/pmezard/go-difflib
   rev: 792786c7400a136282c1664665ae0a8db921c6c2
 - path: github.com/qor/qor
-  rev: 0dd0f9c7ec1f94f879192e8a06efe956fd9a4c48
+  rev: dd91c8debf49008a5704ca2ba8c13330e1a41838
 - path: github.com/qor/validations
   rev: aa83180452b83a2325f13a30a2a8f4740c43c792
-- path: github.com/sanbornm/go-selfupdate
-  rev: 83c3c7d653a71718e36191c7c0dc6773e65629f2
 - path: github.com/smartystreets/assertions
   rev: 2063fd1cc7c975db70502811a34b06ad034ccdf2
 - path: github.com/smartystreets/goconvey
@@ -74,7 +68,7 @@ vendors:
 - path: golang.org/x/crypto
   rev: b13fc1fd382d01861b16b2e6474487d3d4d27f20
 - path: golang.org/x/net
-  rev: 6250b412798208e6c90b03b7c4f226de5aa299e2
+  rev: 9bc2a3340c92c17a20edcd0080e93851ed58f5d5
 - path: golang.org/x/sys
   rev: a646d33e2ee3172a661fc09bca23bb4889a41bc8
 - path: gopkg.in/check.v1
@@ -83,7 +77,5 @@ vendors:
   rev: 4f4dfbc7d1c48336cf93399deae81aa9067e88af
 - path: gopkg.in/go-playground/validator.v8
   rev: 5f57d2222ad794d0dffb07e664ea05e2ee07d60c
-- path: gopkg.in/inconshreveable/go-update.v0
-  rev: d8b0b1d421aa1cbf392c05869f8abbc669bb7066
 - path: gopkg.in/yaml.v2
   rev: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
