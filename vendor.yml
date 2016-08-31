@@ -66,7 +66,7 @@ vendors:
 - path: github.com/urfave/cli
   rev: 33bb4c121333cd8eb7d8cc8d74474f4ec156f371
 - path: golang.org/x/crypto
-  rev: b13fc1fd382d01861b16b2e6474487d3d4d27f20
+  rev: 055d4bfb5c396e3c3dcd9aad97c9086d48b23189
 - path: golang.org/x/net
   rev: 9bc2a3340c92c17a20edcd0080e93851ed58f5d5
 - path: golang.org/x/sys
@@ -77,5 +77,9 @@ vendors:
   rev: 4f4dfbc7d1c48336cf93399deae81aa9067e88af
 - path: gopkg.in/go-playground/validator.v8
   rev: 5f57d2222ad794d0dffb07e664ea05e2ee07d60c
+- path: gopkg.in/gormigrate.v1
+  rev: 92a8cdffde84870ead5aeca2891ad14112a29005
+- path: gopkg.in/stretchr/testify.v1
+  rev: f390dcf405f7b83c997eac1b06768bb9f44dec18
 - path: gopkg.in/yaml.v2
   rev: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
