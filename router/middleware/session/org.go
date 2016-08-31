@@ -105,7 +105,7 @@ func allowOrgDelete(c *gin.Context) bool {
 	return false
 }
 
-// MustOrgUsers validates the minecraft builds access.
+// MustOrgUsers validates the org users access.
 func MustOrgUsers(action string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		current := Current(c)
@@ -144,7 +144,7 @@ func allowOrgUserChange(c *gin.Context) bool {
 	return false
 }
 
-// MustOrgTeams validates the minecraft builds access.
+// MustOrgTeams validates the org teams access.
 func MustOrgTeams(action string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		current := Current(c)

@@ -105,7 +105,7 @@ func allowUserDelete(c *gin.Context) bool {
 	return false
 }
 
-// MustUserTeams validates the minecraft teams access.
+// MustUserTeams validates the user teams access.
 func MustUserTeams(action string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		current := Current(c)
@@ -144,7 +144,7 @@ func allowUserTeamChange(c *gin.Context) bool {
 	return false
 }
 
-// MustUsers validates the minecraft orgs access.
+// MustUserOrgs validates the user orgs access.
 func MustUserOrgs(action string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		current := Current(c)
