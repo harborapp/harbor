@@ -25,7 +25,7 @@ var (
 					UpdatedAt time.Time
 				}
 
-				return tx.AutoMigrate(&User{}).Error
+				return tx.CreateTable(&User{}).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
 				return tx.DropTable("users").Error
@@ -42,7 +42,7 @@ var (
 					UpdatedAt time.Time
 				}
 
-				return tx.AutoMigrate(&Team{}).Error
+				return tx.CreateTable(&Team{}).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
 				return tx.DropTable("teams").Error
@@ -57,7 +57,7 @@ var (
 					Perm   string
 				}
 
-				return tx.AutoMigrate(&TeamUser{}).Error
+				return tx.CreateTable(&TeamUser{}).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
 				return tx.DropTable("team_users").Error
@@ -108,7 +108,7 @@ var (
 					UpdatedAt time.Time
 				}
 
-				return tx.AutoMigrate(&Registry{}).Error
+				return tx.CreateTable(&Registry{}).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
 				return tx.DropTable("registries").Error
@@ -127,7 +127,7 @@ var (
 					UpdatedAt  time.Time
 				}
 
-				return tx.AutoMigrate(&Org{}).Error
+				return tx.CreateTable(&Org{}).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
 				return tx.DropTable("orgs").Error
@@ -196,7 +196,7 @@ var (
 					Perm   string
 				}
 
-				return tx.AutoMigrate(&TeamOrg{}).Error
+				return tx.CreateTable(&TeamOrg{}).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
 				return tx.DropTable("team_orgs").Error
@@ -243,7 +243,7 @@ var (
 					Perm   string
 				}
 
-				return tx.AutoMigrate(&UserOrg{}).Error
+				return tx.CreateTable(&UserOrg{}).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
 				return tx.DropTable("user_orgs").Error
@@ -295,7 +295,7 @@ var (
 					UpdatedAt time.Time
 				}
 
-				return tx.AutoMigrate(&Repo{}).Error
+				return tx.CreateTable(&Repo{}).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
 				return tx.DropTable("repos").Error
@@ -369,7 +369,7 @@ var (
 					UpdatedAt time.Time
 				}
 
-				return tx.AutoMigrate(&Tag{}).Error
+				return tx.CreateTable(&Tag{}).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
 				return tx.DropTable("tags").Error
