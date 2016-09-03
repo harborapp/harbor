@@ -5,8 +5,6 @@ import (
 	"github.com/umschlag/umschlag-api/model"
 )
 
-//go:generate mockery -all -case=underscore
-
 // Store implements all required data-layer functions for Umschlag.
 type Store interface {
 	// GetRegistries retrieves all available registries from the database.
