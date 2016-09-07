@@ -81,6 +81,11 @@ func MustRegistries(action string) gin.HandlerFunc {
 				c.Next()
 				return
 			}
+		case action == "sync":
+			if allowRegistrySync(c) {
+				c.Next()
+				return
+			}
 		}
 
 		AbortUnauthorized(c)
@@ -101,6 +106,12 @@ func allowRegistryChange(c *gin.Context) bool {
 
 // allowRegistryDelete checks if the given user is allowed to delete the resource.
 func allowRegistryDelete(c *gin.Context) bool {
+	// TODO(tboerger): Add real implementation
+	return false
+}
+
+// allowRegistrySync checks if the given user is allowed to sync the resource.
+func allowRegistrySync(c *gin.Context) bool {
 	// TODO(tboerger): Add real implementation
 	return false
 }

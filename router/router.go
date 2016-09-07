@@ -98,6 +98,13 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				registries.DELETE("/:registry", session.SetRegistry(), session.MustRegistries("delete"), api.RegistryDelete)
 				registries.PATCH("/:registry", session.SetRegistry(), session.MustRegistries("change"), api.RegistryUpdate)
 				registries.POST("", session.MustRegistries("change"), api.RegistryCreate)
+
+				members := registries.Group("/:registry")
+				{
+					members.Use(session.SetRegistry())
+
+					members.POST("/sync", session.MustRegistries("sync"), api.RegistrySync)
+				}
 			}
 
 			//

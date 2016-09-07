@@ -169,3 +169,32 @@ func RegistryCreate(c *gin.Context) {
 		record,
 	)
 }
+
+// RegistrySync syncs a specific registry.
+func RegistrySync(c *gin.Context) {
+	err := store.SyncRegistry(
+		c,
+		session.Registry(c),
+	)
+
+	if err != nil {
+		c.JSON(
+			http.StatusBadRequest,
+			gin.H{
+				"status":  http.StatusBadRequest,
+				"message": "Failed to sync registry",
+			},
+		)
+
+		c.Abort()
+		return
+	}
+
+	c.JSON(
+		http.StatusOK,
+		gin.H{
+			"status":  http.StatusOK,
+			"message": "Successfully synced registry",
+		},
+	)
+}
