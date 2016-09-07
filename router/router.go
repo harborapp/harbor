@@ -237,6 +237,14 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				teamOrgs.PATCH("", session.MustTeamOrgs("change"), api.TeamOrgPerm)
 				teamOrgs.DELETE("", session.MustTeamOrgs("change"), api.TeamOrgDelete)
 			}
+
+			//
+			// Callbacks
+			//
+			callbacks := base.Group("/callbacks")
+			{
+				callbacks.POST("/events", api.CallbackEvents)
+			}
 		}
 	}
 
