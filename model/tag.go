@@ -88,8 +88,8 @@ func (u *Tag) BeforeSave(db *gorm.DB) (err error) {
 	return u.UpdateFullName(db)
 }
 
-// AfterDelete invokes required actions after deletion.
-func (u *Tag) AfterDelete(tx *gorm.DB) error {
+// BeforeDelete invokes required actions before deletion.
+func (u *Tag) BeforeDelete(tx *gorm.DB) error {
 	return nil
 }
 

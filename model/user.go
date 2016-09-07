@@ -103,12 +103,13 @@ func (u *User) BeforeSave(db *gorm.DB) (err error) {
 	return nil
 }
 
-// AfterDelete invokes required actions after deletion.
-func (u *User) AfterDelete(tx *gorm.DB) error {
+// BeforeDelete invokes required actions before deletion.
+func (u *User) BeforeDelete(tx *gorm.DB) error {
 	if err := tx.Model(u).Association("Teams").Clear().Error; err != nil {
 		return err
 	}
 
+	// TODO(tboerger): Prevent delete if user is last owner
 	if err := tx.Model(u).Association("Orgs").Clear().Error; err != nil {
 		return err
 	}

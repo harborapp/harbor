@@ -26,7 +26,7 @@ type Registry struct {
 
 // AfterSave invokes required actions after persisting.
 func (u *Registry) AfterSave(db *gorm.DB) (err error) {
-	orgs := &Orgs{}
+	orgs := Orgs{}
 
 	err = db.Model(
 		u,
@@ -38,7 +38,7 @@ func (u *Registry) AfterSave(db *gorm.DB) (err error) {
 		return err
 	}
 
-	for _, org := range *orgs {
+	for _, org := range orgs {
 		err = db.Save(
 			org,
 		).Error
@@ -82,12 +82,18 @@ func (u *Registry) BeforeSave(db *gorm.DB) (err error) {
 	return nil
 }
 
-// AfterDelete invokes required actions after deletion.
-func (u *Registry) AfterDelete(tx *gorm.DB) error {
-	for _, org := range u.Orgs {
-		if err := tx.Delete(org).Error; err != nil {
-			return err
-		}
+// BeforeDelete invokes required actions before deletion.
+func (u *Registry) BeforeDelete(tx *gorm.DB) error {
+	orgs := Orgs{}
+
+	tx.Model(
+		u,
+	).Related(
+		&orgs,
+	)
+
+	if len(orgs) > 0 {
+		return fmt.Errorf("Can't delete, still assigned to orgs.")
 	}
 
 	return nil

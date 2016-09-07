@@ -31,7 +31,7 @@ type Org struct {
 
 // AfterSave invokes required actions after persisting.
 func (u *Org) AfterSave(db *gorm.DB) (err error) {
-	repos := &Repos{}
+	repos := Repos{}
 
 	err = db.Model(
 		u,
@@ -43,7 +43,7 @@ func (u *Org) AfterSave(db *gorm.DB) (err error) {
 		return err
 	}
 
-	for _, repo := range *repos {
+	for _, repo := range repos {
 		err = db.Save(
 			repo,
 		).Error
@@ -87,12 +87,18 @@ func (u *Org) BeforeSave(db *gorm.DB) (err error) {
 	return nil
 }
 
-// AfterDelete invokes required actions after deletion.
-func (u *Org) AfterDelete(tx *gorm.DB) error {
-	for _, repo := range u.Repos {
-		if err := tx.Delete(repo).Error; err != nil {
-			return err
-		}
+// BeforeDelete invokes required actions before deletion.
+func (u *Org) BeforeDelete(tx *gorm.DB) error {
+	repos := Repos{}
+
+	tx.Model(
+		u,
+	).Related(
+		&repos,
+	)
+
+	if len(repos) > 0 {
+		return fmt.Errorf("Can't delete, still assigned to repos.")
 	}
 
 	if err := tx.Model(u).Association("Users").Clear().Error; err != nil {

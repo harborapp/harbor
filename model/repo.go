@@ -54,7 +54,7 @@ func (u *Repo) UpdateFullName(db *gorm.DB) (err error) {
 
 // AfterSave invokes required actions after persisting.
 func (u *Repo) AfterSave(db *gorm.DB) (err error) {
-	tags := &Tags{}
+	tags := Tags{}
 
 	err = db.Model(
 		u,
@@ -66,7 +66,7 @@ func (u *Repo) AfterSave(db *gorm.DB) (err error) {
 		return err
 	}
 
-	for _, tag := range *tags {
+	for _, tag := range tags {
 		err = db.Save(
 			tag,
 		).Error
@@ -110,9 +110,17 @@ func (u *Repo) BeforeSave(db *gorm.DB) (err error) {
 	return u.UpdateFullName(db)
 }
 
-// AfterDelete invokes required actions after deletion.
-func (u *Repo) AfterDelete(tx *gorm.DB) error {
-	for _, tag := range u.Tags {
+// BeforeDelete invokes required actions before deletion.
+func (u *Repo) BeforeDelete(tx *gorm.DB) error {
+	tags := Tags{}
+
+	tx.Model(
+		u,
+	).Related(
+		&tags,
+	)
+
+	for _, tag := range tags {
 		if err := tx.Delete(tag).Error; err != nil {
 			return err
 		}
