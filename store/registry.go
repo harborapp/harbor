@@ -1,8 +1,11 @@
 package store
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	"github.com/umschlag/umschlag-api/model"
+	"github.com/umschlag/umschlag-api/model/distribution"
 	"golang.org/x/net/context"
 )
 
@@ -29,4 +32,19 @@ func DeleteRegistry(c context.Context, record *model.Registry) error {
 // GetRegistry retrieves a specific registry from the database.
 func GetRegistry(c context.Context, id string) (*model.Registry, *gorm.DB) {
 	return FromContext(c).GetRegistry(id)
+}
+
+// SyncRegistry retrieves a specific registry from the database.
+func SyncRegistry(c context.Context, record *model.Registry) error {
+	repos, err := distribution.Load(record.Host)
+
+	if err != nil {
+		return err
+	}
+
+	for _, repo := range repos {
+		fmt.Printf("%v\n", repo)
+	}
+
+	return nil
 }
