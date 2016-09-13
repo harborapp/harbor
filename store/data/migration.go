@@ -66,6 +66,10 @@ var (
 		{
 			ID: "201608311538",
 			Migrate: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return tx.Table(
 					"team_users",
 				).AddForeignKey(
@@ -76,12 +80,20 @@ var (
 				).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return gormigrate.ErrRollbackImpossible
 			},
 		},
 		{
 			ID: "201608311538",
 			Migrate: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return tx.Table(
 					"team_users",
 				).AddForeignKey(
@@ -92,6 +104,10 @@ var (
 				).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return gormigrate.ErrRollbackImpossible
 			},
 		},
@@ -136,6 +152,10 @@ var (
 		{
 			ID: "201608311542",
 			Migrate: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return tx.Table(
 					"orgs",
 				).AddForeignKey(
@@ -146,6 +166,10 @@ var (
 				).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return gormigrate.ErrRollbackImpossible
 			},
 		},
@@ -205,6 +229,10 @@ var (
 		{
 			ID: "201608311546",
 			Migrate: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return tx.Table(
 					"team_orgs",
 				).AddForeignKey(
@@ -215,12 +243,20 @@ var (
 				).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return gormigrate.ErrRollbackImpossible
 			},
 		},
 		{
 			ID: "201608311547",
 			Migrate: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return tx.Table(
 					"team_orgs",
 				).AddForeignKey(
@@ -231,6 +267,10 @@ var (
 				).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return gormigrate.ErrRollbackImpossible
 			},
 		},
@@ -252,6 +292,10 @@ var (
 		{
 			ID: "201608311549",
 			Migrate: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return tx.Table(
 					"user_orgs",
 				).AddForeignKey(
@@ -262,12 +306,20 @@ var (
 				).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return gormigrate.ErrRollbackImpossible
 			},
 		},
 		{
 			ID: "201608311550",
 			Migrate: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return tx.Table(
 					"user_orgs",
 				).AddForeignKey(
@@ -278,6 +330,10 @@ var (
 				).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return gormigrate.ErrRollbackImpossible
 			},
 		},
@@ -304,6 +360,10 @@ var (
 		{
 			ID: "201608311552",
 			Migrate: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return tx.Table(
 					"repos",
 				).AddForeignKey(
@@ -314,6 +374,10 @@ var (
 				).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return gormigrate.ErrRollbackImpossible
 			},
 		},
@@ -378,6 +442,10 @@ var (
 		{
 			ID: "201608311556",
 			Migrate: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return tx.Table(
 					"tags",
 				).AddForeignKey(
@@ -388,6 +456,10 @@ var (
 				).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
+				if tx.Dialect().GetName() == "sqlite3" {
+					return nil
+				}
+
 				return gormigrate.ErrRollbackImpossible
 			},
 		},
