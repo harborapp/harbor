@@ -62,9 +62,6 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 		{
 			base.GET("", api.IndexInfo)
 
-			// Shortcut to auth
-			base.GET("/verify/:token", api.AuthVerify)
-
 			//
 			// Auth
 			//
