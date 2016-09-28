@@ -14,9 +14,9 @@ type Orgs []*Org
 
 // Org represents a org model definition.
 type Org struct {
-	ID         int       `json:"id" gorm:"primary_key"`
+	ID         int64     `json:"id" gorm:"primary_key"`
 	Registry   *Registry `json:"registry,omitempty"`
-	RegistryID int       `json:"registry_id" sql:"index"`
+	RegistryID int64     `json:"registry_id" sql:"index"`
 	Slug       string    `json:"slug"`
 	Name       string    `json:"name"`
 	Public     bool      `json:"public" sql:"default:false"`

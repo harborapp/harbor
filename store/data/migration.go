@@ -13,7 +13,7 @@ var (
 			ID: "201608311535",
 			Migrate: func(tx *gorm.DB) error {
 				type User struct {
-					ID        int    `gorm:"primary_key"`
+					ID        int64  `gorm:"primary_key"`
 					Slug      string `sql:"unique_index"`
 					Username  string `sql:"unique_index"`
 					Email     string `sql:"unique_index"`
@@ -35,7 +35,7 @@ var (
 			ID: "201608311536",
 			Migrate: func(tx *gorm.DB) error {
 				type Team struct {
-					ID        int    `gorm:"primary_key"`
+					ID        int64  `gorm:"primary_key"`
 					Slug      string `sql:"unique_index"`
 					Name      string `sql:"unique_index"`
 					CreatedAt time.Time
@@ -52,8 +52,8 @@ var (
 			ID: "201608311537",
 			Migrate: func(tx *gorm.DB) error {
 				type TeamUser struct {
-					TeamID int `sql:"index"`
-					UserID int `sql:"index"`
+					TeamID int64 `sql:"index"`
+					UserID int64 `sql:"index"`
 					Perm   string
 				}
 
@@ -115,7 +115,7 @@ var (
 			ID: "201608311540",
 			Migrate: func(tx *gorm.DB) error {
 				type Registry struct {
-					ID        int    `gorm:"primary_key"`
+					ID        int64  `gorm:"primary_key"`
 					Slug      string `sql:"unique_index"`
 					Name      string `sql:"unique_index"`
 					Host      string `sql:"unique_index"`
@@ -134,8 +134,8 @@ var (
 			ID: "201608311541",
 			Migrate: func(tx *gorm.DB) error {
 				type Org struct {
-					ID         int `gorm:"primary_key"`
-					RegistryID int `sql:"index"`
+					ID         int64 `gorm:"primary_key"`
+					RegistryID int64 `sql:"index"`
 					Slug       string
 					Name       string
 					Public     bool `sql:"default:false"`
@@ -215,8 +215,8 @@ var (
 			ID: "201608311545",
 			Migrate: func(tx *gorm.DB) error {
 				type TeamOrg struct {
-					TeamID int `sql:"index"`
-					OrgID  int `sql:"index"`
+					TeamID int64 `sql:"index"`
+					OrgID  int64 `sql:"index"`
 					Perm   string
 				}
 
@@ -278,8 +278,8 @@ var (
 			ID: "201608311548",
 			Migrate: func(tx *gorm.DB) error {
 				type UserOrg struct {
-					UserID int `sql:"index"`
-					OrgID  int `sql:"index"`
+					UserID int64 `sql:"index"`
+					OrgID  int64 `sql:"index"`
 					Perm   string
 				}
 
@@ -341,8 +341,8 @@ var (
 			ID: "201608311551",
 			Migrate: func(tx *gorm.DB) error {
 				type Repo struct {
-					ID        int `gorm:"primary_key"`
-					OrgID     int `sql:"index"`
+					ID        int64 `gorm:"primary_key"`
+					OrgID     int64 `sql:"index"`
 					Slug      string
 					Name      string
 					FullName  string
@@ -423,8 +423,8 @@ var (
 			ID: "201608311555",
 			Migrate: func(tx *gorm.DB) error {
 				type Tag struct {
-					ID        int `gorm:"primary_key"`
-					RepoID    int `sql:"index"`
+					ID        int64 `gorm:"primary_key"`
+					RepoID    int64 `sql:"index"`
 					Slug      string
 					Name      string
 					FullName  string
