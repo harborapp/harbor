@@ -17,6 +17,8 @@ func RegistryIndex(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to fetch registries. %s", err)
+
 		c.JSON(
 			http.StatusInternalServerError,
 			gin.H{
@@ -55,11 +57,13 @@ func RegistryDelete(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to delete registry. %s", err)
+
 		c.JSON(
 			http.StatusBadRequest,
 			gin.H{
 				"status":  http.StatusBadRequest,
-				"message": err.Error(),
+				"message": "Failed to delete registry",
 			},
 		)
 
@@ -81,8 +85,7 @@ func RegistryUpdate(c *gin.Context) {
 	record := session.Registry(c)
 
 	if err := c.BindJSON(&record); err != nil {
-		logrus.Warn("Failed to bind registry data")
-		logrus.Warn(err)
+		logrus.Warnf("Failed to bind registry data. %s", err)
 
 		c.JSON(
 			http.StatusPreconditionFailed,
@@ -102,6 +105,8 @@ func RegistryUpdate(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to update registry. %s", err)
+
 		c.JSON(
 			http.StatusBadRequest,
 			gin.H{
@@ -125,8 +130,7 @@ func RegistryCreate(c *gin.Context) {
 	record := &model.Registry{}
 
 	if err := c.BindJSON(&record); err != nil {
-		logrus.Warn("Failed to bind registry data")
-		logrus.Warn(err)
+		logrus.Warnf("Failed to bind registry data. %s", err)
 
 		c.JSON(
 			http.StatusPreconditionFailed,
@@ -146,6 +150,8 @@ func RegistryCreate(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to create registry. %s", err)
+
 		c.JSON(
 			http.StatusBadRequest,
 			gin.H{

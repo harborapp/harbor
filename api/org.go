@@ -17,6 +17,8 @@ func OrgIndex(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to fetch orgs. %s", err)
+
 		c.JSON(
 			http.StatusInternalServerError,
 			gin.H{
@@ -55,11 +57,13 @@ func OrgDelete(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to delete org. %s", err)
+
 		c.JSON(
 			http.StatusBadRequest,
 			gin.H{
 				"status":  http.StatusBadRequest,
-				"message": err.Error(),
+				"message": "Failed to delete org",
 			},
 		)
 
@@ -81,8 +85,7 @@ func OrgUpdate(c *gin.Context) {
 	record := session.Org(c)
 
 	if err := c.BindJSON(&record); err != nil {
-		logrus.Warn("Failed to bind org data")
-		logrus.Warn(err)
+		logrus.Warnf("Failed to bind org data. %s", err)
 
 		c.JSON(
 			http.StatusPreconditionFailed,
@@ -102,6 +105,8 @@ func OrgUpdate(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to update org. %s", err)
+
 		c.JSON(
 			http.StatusBadRequest,
 			gin.H{
@@ -125,8 +130,7 @@ func OrgCreate(c *gin.Context) {
 	record := &model.Org{}
 
 	if err := c.BindJSON(&record); err != nil {
-		logrus.Warn("Failed to bind org data")
-		logrus.Warn(err)
+		logrus.Warnf("Failed to bind org data. %s", err)
 
 		c.JSON(
 			http.StatusPreconditionFailed,
@@ -146,6 +150,8 @@ func OrgCreate(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to create org. %s", err)
+
 		c.JSON(
 			http.StatusBadRequest,
 			gin.H{
@@ -174,6 +180,8 @@ func OrgUserIndex(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to fetch org users. %s", err)
+
 		c.JSON(
 			http.StatusInternalServerError,
 			gin.H{
@@ -197,14 +205,13 @@ func OrgUserAppend(c *gin.Context) {
 	form := &model.OrgUserParams{}
 
 	if err := c.BindJSON(&form); err != nil {
-		logrus.Warn("Failed to bind post data")
-		logrus.Warn(err)
+		logrus.Warnf("Failed to bind org user data. %s", err)
 
 		c.JSON(
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Failed to bind form data",
+				"message": "Failed to bind org user data",
 			},
 		)
 
@@ -236,6 +243,8 @@ func OrgUserAppend(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to append org user. %s", err)
+
 		c.JSON(
 			http.StatusInternalServerError,
 			gin.H{
@@ -262,14 +271,13 @@ func OrgUserPerm(c *gin.Context) {
 	form := &model.OrgUserParams{}
 
 	if err := c.BindJSON(&form); err != nil {
-		logrus.Warn("Failed to bind post data")
-		logrus.Warn(err)
+		logrus.Warnf("Failed to bind org user data. %s", err)
 
 		c.JSON(
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Failed to bind form data",
+				"message": "Failed to bind org user data",
 			},
 		)
 
@@ -301,6 +309,8 @@ func OrgUserPerm(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to update permissions. %s", err)
+
 		c.JSON(
 			http.StatusInternalServerError,
 			gin.H{
@@ -327,14 +337,13 @@ func OrgUserDelete(c *gin.Context) {
 	form := &model.OrgUserParams{}
 
 	if err := c.BindJSON(&form); err != nil {
-		logrus.Warn("Failed to bind post data")
-		logrus.Warn(err)
+		logrus.Warnf("Failed to bind org user data. %s", err)
 
 		c.JSON(
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Failed to bind form data",
+				"message": "Failed to bind org user data",
 			},
 		)
 
@@ -366,6 +375,8 @@ func OrgUserDelete(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to delete org user. %s", err)
+
 		c.JSON(
 			http.StatusInternalServerError,
 			gin.H{
@@ -397,6 +408,8 @@ func OrgTeamIndex(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to fetch org teams. %s", err)
+
 		c.JSON(
 			http.StatusInternalServerError,
 			gin.H{
@@ -420,14 +433,14 @@ func OrgTeamAppend(c *gin.Context) {
 	form := &model.OrgTeamParams{}
 
 	if err := c.BindJSON(&form); err != nil {
-		logrus.Warn("Failed to bind post data")
+		logrus.Warnf("Failed to bind org team data. %s", err)
 		logrus.Warn(err)
 
 		c.JSON(
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Failed to bind form data",
+				"message": "Failed to bind org team data",
 			},
 		)
 
@@ -459,6 +472,8 @@ func OrgTeamAppend(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to append org team. %s", err)
+
 		c.JSON(
 			http.StatusInternalServerError,
 			gin.H{
@@ -485,14 +500,13 @@ func OrgTeamPerm(c *gin.Context) {
 	form := &model.OrgTeamParams{}
 
 	if err := c.BindJSON(&form); err != nil {
-		logrus.Warn("Failed to bind post data")
-		logrus.Warn(err)
+		logrus.Warnf("Failed to bind org team data. %s", err)
 
 		c.JSON(
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Failed to bind form data",
+				"message": "Failed to bind org team data",
 			},
 		)
 
@@ -524,6 +538,8 @@ func OrgTeamPerm(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to update permissions. %s", err)
+
 		c.JSON(
 			http.StatusInternalServerError,
 			gin.H{
@@ -550,14 +566,13 @@ func OrgTeamDelete(c *gin.Context) {
 	form := &model.OrgTeamParams{}
 
 	if err := c.BindJSON(&form); err != nil {
-		logrus.Warn("Failed to bind post data")
-		logrus.Warn(err)
+		logrus.Warnf("Failed to bind org team data. %s", err)
 
 		c.JSON(
 			http.StatusPreconditionFailed,
 			gin.H{
 				"status":  http.StatusPreconditionFailed,
-				"message": "Failed to bind form data",
+				"message": "Failed to bind org team data",
 			},
 		)
 
@@ -589,6 +604,8 @@ func OrgTeamDelete(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to delete org team. %s", err)
+
 		c.JSON(
 			http.StatusInternalServerError,
 			gin.H{
