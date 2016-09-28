@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/Machiel/slugify"
@@ -18,10 +19,16 @@ type Registry struct {
 	Slug      string    `json:"slug" sql:"unique_index"`
 	Name      string    `json:"name" sql:"unique_index"`
 	Host      string    `json:"host" sql:"unique_index"`
-	UseSSL    bool      `json:"use_ssl" sql:"default:false"`
+	PlainHost string    `json:"-" sql:"-"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Orgs      Orgs      `json:"orgs,omitempty"`
+}
+
+// AfterFind invokes required after loading a record from the database.
+func (u *Registry) AfterFind(db *gorm.DB) {
+	parsedURL, _ := url.Parse(u.Host)
+	u.PlainHost = parsedURL.Host
 }
 
 // AfterSave invokes required actions after persisting.
@@ -123,6 +130,12 @@ func (u *Registry) Validate(db *gorm.DB) {
 
 	if !govalidator.StringLength(u.Host, "1", "255") {
 		db.AddError(fmt.Errorf("Host should be longer than 1 and shorter than 255"))
+	}
+
+	if !govalidator.IsRequestURL(u.Host) {
+		db.AddError(fmt.Errorf(
+			"Host must be a valid URL",
+		))
 	}
 
 	if u.Host != "" {

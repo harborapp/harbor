@@ -44,7 +44,7 @@ func (u *Repo) UpdateFullName(db *gorm.DB) (err error) {
 
 	u.FullName = fmt.Sprintf(
 		"%s/%s/%s",
-		registry.Host,
+		registry.PlainHost,
 		org.Name,
 		u.Name,
 	)
