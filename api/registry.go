@@ -178,6 +178,8 @@ func RegistrySync(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to sync registry. %s", err)
+
 		c.JSON(
 			http.StatusBadRequest,
 			gin.H{
