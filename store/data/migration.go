@@ -119,7 +119,6 @@ var (
 					Slug      string `sql:"unique_index"`
 					Name      string `sql:"unique_index"`
 					Host      string `sql:"unique_index"`
-					UseSSL    bool   `sql:"default:false"`
 					CreatedAt time.Time
 					UpdatedAt time.Time
 				}
