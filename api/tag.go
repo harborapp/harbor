@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"github.com/umschlag/umschlag-api/router/middleware/session"
 	"github.com/umschlag/umschlag-api/store"
@@ -15,6 +16,8 @@ func TagIndex(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to fetch tags. %s", err)
+
 		c.JSON(
 			http.StatusInternalServerError,
 			gin.H{
@@ -53,11 +56,13 @@ func TagDelete(c *gin.Context) {
 	)
 
 	if err != nil {
+		logrus.Warnf("Failed to delete tag. %s", err)
+
 		c.JSON(
 			http.StatusBadRequest,
 			gin.H{
 				"status":  http.StatusBadRequest,
-				"message": err.Error(),
+				"message": "Failed to delete tag",
 			},
 		)
 
