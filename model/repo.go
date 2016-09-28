@@ -14,9 +14,9 @@ type Repos []*Repo
 
 // Repo represents a repo model definition.
 type Repo struct {
-	ID        int       `json:"id" gorm:"primary_key"`
+	ID        int64     `json:"id" gorm:"primary_key"`
 	Org       *Org      `json:"org,omitempty"`
-	OrgID     int       `json:"org_id" sql:"index"`
+	OrgID     int64     `json:"org_id" sql:"index"`
 	Slug      string    `json:"slug"`
 	Name      string    `json:"name"`
 	FullName  string    `json:"full_name"`
