@@ -6,7 +6,7 @@ vendors:
 - path: github.com/asaskevich/govalidator
   rev: 593d64559f7600f29581a3ee42177f5dbded27a9
 - path: github.com/aws/aws-sdk-go
-  rev: db5d68bbb6761e5800a4c4e646642eb18b08a2a6
+  rev: 6061082a165c9c3e8fb9c681a287af83c2464fb3
 - path: github.com/denisenkom/go-mssqldb
   rev: fbf0a491e5ec011522c8870da9b0553135e2f9da
 - path: github.com/dgrijalva/jwt-go
@@ -23,6 +23,8 @@ vendors:
   rev: 87c000235d3d852c1628dc9490cd21ab36a7d69f
 - path: github.com/gorilla/securecookie
   rev: c13558c2b1c44da35e0eb043053609a5ba3a1f19
+- path: github.com/jackspirou/syscerts
+  rev: b68f5469dff16e102bd6a2d5b3e79341c938d736
 - path: github.com/jinzhu/gorm
   rev: 5ec2f6ceb66dbb99077a2b48a5a963d073d5459d
 - path: github.com/jinzhu/inflection
@@ -39,6 +41,8 @@ vendors:
   rev: 4b0af852c17164dce48e6754e3094c55192e4934
 - path: github.com/o1egl/gormrus
   rev: 57710b0229272260f1fa2b31838a0dc4baa22a0a
+- path: github.com/peterhellberg/link
+  rev: d1cebc7ea14a5fc0de7cb4a45acae773161642c6
 - path: github.com/qor/validations
   rev: aa83180452b83a2325f13a30a2a8f4740c43c792
 - path: github.com/ungerik/go-gravatar
