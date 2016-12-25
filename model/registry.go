@@ -100,7 +100,7 @@ func (u *Registry) BeforeDelete(tx *gorm.DB) error {
 	)
 
 	if len(orgs) > 0 {
-		return fmt.Errorf("Can't delete, still assigned to orgs.")
+		return fmt.Errorf("Can't delete, still assigned to orgs")
 	}
 
 	return nil

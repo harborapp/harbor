@@ -98,7 +98,7 @@ func (u *Org) BeforeDelete(tx *gorm.DB) error {
 	)
 
 	if len(repos) > 0 {
-		return fmt.Errorf("Can't delete, still assigned to repos.")
+		return fmt.Errorf("Can't delete, still assigned to repos")
 	}
 
 	if err := tx.Model(u).Association("Users").Clear().Error; err != nil {
