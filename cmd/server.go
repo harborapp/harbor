@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/facebookgo/grace/gracehttp"
 	"github.com/umschlag/umschlag-api/config"
 	"github.com/umschlag/umschlag-api/router"
 	"github.com/umschlag/umschlag-api/shared/s3client"
@@ -173,6 +174,10 @@ func Server() cli.Command {
 		Action: func(c *cli.Context) {
 			logrus.Infof("Starting the API on %s", config.Server.Addr)
 
+			var (
+				server *http.Server
+			)
+
 			if config.Server.LetsEncrypt || (config.Server.Cert != "" && config.Server.Key != "") {
 				curves := []tls.CurveID{
 					tls.CurveP521,
@@ -201,32 +206,39 @@ func Server() cli.Command {
 					}
 
 					cfg.GetCertificate = certManager.GetCertificate
+				} else {
+					cert, err := tls.LoadX509KeyPair(
+						config.Server.Cert,
+						config.Server.Key,
+					)
 
-					config.Server.Cert = ""
-					config.Server.Key = ""
+					if err != nil {
+						logrus.Fatal("Failed to load SSL certificates. %s", err)
+					}
+
+					cfg.Certificates = []tls.Certificate{
+						cert,
+					}
 				}
 
-				server := &http.Server{
+				server = &http.Server{
 					Addr:         config.Server.Addr,
 					Handler:      router.Load(),
 					ReadTimeout:  5 * time.Second,
 					WriteTimeout: 10 * time.Second,
 					TLSConfig:    cfg,
 				}
-
-				logrus.Fatal(
-					server.ListenAndServeTLS(
-						config.Server.Cert,
-						config.Server.Key,
-					),
-				)
 			} else {
-				logrus.Fatal(
-					http.ListenAndServe(
-						config.Server.Addr,
-						router.Load(),
-					),
-				)
+				server = &http.Server{
+					Addr:         config.Server.Addr,
+					Handler:      router.Load(),
+					ReadTimeout:  5 * time.Second,
+					WriteTimeout: 10 * time.Second,
+				}
+			}
+
+			if err := gracehttp.Serve(server); err != nil {
+				logrus.Fatal(err)
 			}
 		},
 	}
