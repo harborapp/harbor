@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/umschlag/umschlag-api/config"
 	"github.com/umschlag/umschlag-api/model"
 	"github.com/umschlag/umschlag-api/shared/token"
 	"github.com/umschlag/umschlag-api/store"
@@ -96,7 +97,7 @@ func MustAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user := Current(c)
 
-		if user == nil || !user.Admin {
+		if user == nil || !user.Admin || !isAdmin(user.Username) {
 			c.JSON(
 				http.StatusUnauthorized,
 				gin.H{
@@ -146,4 +147,14 @@ func AbortUnauthorized(c *gin.Context) {
 	)
 
 	c.Abort()
+}
+
+func isAdmin(username string) bool {
+	for _, admin := range config.Admin.Users {
+		if admin == username {
+			return true
+		}
+	}
+
+	return false
 }
