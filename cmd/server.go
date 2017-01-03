@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/facebookgo/grace/gracehttp"
 	"github.com/umschlag/umschlag-api/config"
 	"github.com/umschlag/umschlag-api/router"
 	"github.com/umschlag/umschlag-api/shared/s3client"
@@ -254,7 +253,7 @@ func Server() cli.Command {
 				}
 			}
 
-			if err := gracehttp.Serve(server); err != nil {
+			if err := startServer(server); err != nil {
 				logrus.Fatal(err)
 			}
 		},
