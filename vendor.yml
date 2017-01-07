@@ -58,7 +58,7 @@ vendors:
 - path: golang.org/x/crypto
   rev: cb497ae8f18e3c55f81bc9f3876c8f4c3d8a2813
 - path: golang.org/x/net
-  rev: 279e8088146c98d22b601754aa950b3d449af152
+  rev: ae05321a78c1401cec22ba7bc203b597ea372496
 - path: golang.org/x/sys
   rev: d75a52659825e75fff6158388dddc6a5b04f9ba5
 - path: gopkg.in/go-playground/validator.v8
