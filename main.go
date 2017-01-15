@@ -5,15 +5,18 @@ import (
 	"runtime"
 
 	"github.com/Sirupsen/logrus"
+	"github.com/joho/godotenv"
 	"github.com/umschlag/umschlag-api/cmd"
 	"github.com/umschlag/umschlag-api/config"
 	"github.com/urfave/cli"
-
-	_ "github.com/joho/godotenv/autoload"
 )
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
+
+	if env := os.Getenv("UMSCHLAG_ENV_FILE"); env != "" {
+		godotenv.Load(env)
+	}
 
 	app := cli.NewApp()
 	app.Name = "umschlag"
