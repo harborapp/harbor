@@ -82,7 +82,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 
 				profile.GET("/token", api.ProfileToken)
 				profile.GET("/self", api.ProfileShow)
-				profile.PATCH("/self", api.ProfileUpdate)
+				profile.PUT("/self", api.ProfileUpdate)
 			}
 
 			//
@@ -96,7 +96,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				registries.GET("", api.RegistryIndex)
 				registries.GET("/:registry", session.SetRegistry(), api.RegistryShow)
 				registries.DELETE("/:registry", session.SetRegistry(), session.MustRegistries("delete"), api.RegistryDelete)
-				registries.PATCH("/:registry", session.SetRegistry(), session.MustRegistries("change"), api.RegistryUpdate)
+				registries.PUT("/:registry", session.SetRegistry(), session.MustRegistries("change"), api.RegistryUpdate)
 				registries.POST("", session.MustRegistries("change"), api.RegistryCreate)
 			}
 
@@ -137,7 +137,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				orgs.GET("", api.OrgIndex)
 				orgs.GET("/:org", session.SetOrg(), api.OrgShow)
 				orgs.DELETE("/:org", session.SetOrg(), session.MustOrgs("delete"), api.OrgDelete)
-				orgs.PATCH("/:org", session.SetOrg(), session.MustOrgs("change"), api.OrgUpdate)
+				orgs.PUT("/:org", session.SetOrg(), session.MustOrgs("change"), api.OrgUpdate)
 				orgs.POST("", session.MustOrgs("change"), api.OrgCreate)
 			}
 
@@ -148,7 +148,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 
 				orgTeams.GET("", session.MustOrgTeams("display"), api.OrgTeamIndex)
 				orgTeams.POST("", session.MustOrgTeams("change"), api.OrgTeamAppend)
-				orgTeams.PATCH("", session.MustOrgTeams("change"), api.OrgTeamPerm)
+				orgTeams.PUT("", session.MustOrgTeams("change"), api.OrgTeamPerm)
 				orgTeams.DELETE("", session.MustOrgTeams("change"), api.OrgTeamDelete)
 			}
 
@@ -159,7 +159,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 
 				orgUsers.GET("", session.MustOrgUsers("display"), api.OrgUserIndex)
 				orgUsers.POST("", session.MustOrgUsers("change"), api.OrgUserAppend)
-				orgUsers.PATCH("", session.MustOrgUsers("change"), api.OrgUserPerm)
+				orgUsers.PUT("", session.MustOrgUsers("change"), api.OrgUserPerm)
 				orgUsers.DELETE("", session.MustOrgUsers("change"), api.OrgUserDelete)
 			}
 
@@ -173,7 +173,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				users.GET("", api.UserIndex)
 				users.GET("/:user", session.SetUser(), api.UserShow)
 				users.DELETE("/:user", session.SetUser(), session.MustUsers("delete"), api.UserDelete)
-				users.PATCH("/:user", session.SetUser(), session.MustUsers("change"), api.UserUpdate)
+				users.PUT("/:user", session.SetUser(), session.MustUsers("change"), api.UserUpdate)
 				users.POST("", session.MustUsers("change"), api.UserCreate)
 			}
 
@@ -184,7 +184,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 
 				userTeams.GET("", session.MustUserTeams("display"), api.UserTeamIndex)
 				userTeams.POST("", session.MustUserTeams("change"), api.UserTeamAppend)
-				userTeams.PATCH("", session.MustUserTeams("change"), api.UserTeamPerm)
+				userTeams.PUT("", session.MustUserTeams("change"), api.UserTeamPerm)
 				userTeams.DELETE("", session.MustUserTeams("change"), api.UserTeamDelete)
 			}
 
@@ -195,7 +195,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 
 				userOrgs.GET("", session.MustUserOrgs("display"), api.UserOrgIndex)
 				userOrgs.POST("", session.MustUserOrgs("change"), api.UserOrgAppend)
-				userOrgs.PATCH("", session.MustUserOrgs("change"), api.UserOrgPerm)
+				userOrgs.PUT("", session.MustUserOrgs("change"), api.UserOrgPerm)
 				userOrgs.DELETE("", session.MustUserOrgs("change"), api.UserOrgDelete)
 			}
 
@@ -209,7 +209,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 				teams.GET("", api.TeamIndex)
 				teams.GET("/:team", session.SetTeam(), api.TeamShow)
 				teams.DELETE("/:team", session.SetTeam(), session.MustTeams("delete"), api.TeamDelete)
-				teams.PATCH("/:team", session.SetTeam(), session.MustTeams("change"), api.TeamUpdate)
+				teams.PUT("/:team", session.SetTeam(), session.MustTeams("change"), api.TeamUpdate)
 				teams.POST("", session.MustTeams("change"), api.TeamCreate)
 			}
 
@@ -220,7 +220,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 
 				teamUsers.GET("", session.MustTeamUsers("display"), api.TeamUserIndex)
 				teamUsers.POST("", session.MustTeamUsers("change"), api.TeamUserAppend)
-				teamUsers.PATCH("", session.MustTeamUsers("change"), api.TeamUserPerm)
+				teamUsers.PUT("", session.MustTeamUsers("change"), api.TeamUserPerm)
 				teamUsers.DELETE("", session.MustTeamUsers("change"), api.TeamUserDelete)
 			}
 
@@ -231,7 +231,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 
 				teamOrgs.GET("", session.MustTeamOrgs("display"), api.TeamOrgIndex)
 				teamOrgs.POST("", session.MustTeamOrgs("change"), api.TeamOrgAppend)
-				teamOrgs.PATCH("", session.MustTeamOrgs("change"), api.TeamOrgPerm)
+				teamOrgs.PUT("", session.MustTeamOrgs("change"), api.TeamOrgPerm)
 				teamOrgs.DELETE("", session.MustTeamOrgs("change"), api.TeamOrgDelete)
 			}
 		}
