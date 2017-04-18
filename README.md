@@ -1,7 +1,6 @@
 # Umschlag: API server
 
 [![Build Status](http://github.dronehippie.de/api/badges/umschlag/umschlag-api/status.svg)](http://github.dronehippie.de/umschlag/umschlag-api)
-[![Coverage Status](http://coverage.dronehippie.de/badges/umschlag/umschlag-api/coverage.svg)](http://coverage.dronehippie.de/umschlag/umschlag-api)
 [![Go Doc](https://godoc.org/github.com/umschlag/umschlag-api?status.svg)](http://godoc.org/github.com/umschlag/umschlag-api)
 [![Go Report](http://goreportcard.com/badge/github.com/umschlag/umschlag-api)](http://goreportcard.com/report/github.com/umschlag/umschlag-api)
 [![](https://images.microbadger.com/badges/image/umschlag/umschlag-api.svg)](http://microbadger.com/images/umschlag/umschlag-api "Get your own image badge on microbadger.com")
@@ -50,7 +49,7 @@ go get -d github.com/umschlag/umschlag-api
 cd $GOPATH/src/github.com/umschlag/umschlag-api
 make clean build
 
-bin/umschlag-api -h
+./umschlag-api -h
 ```
 
 
