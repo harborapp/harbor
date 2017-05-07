@@ -6,7 +6,6 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/joho/godotenv"
-	"github.com/umschlag/umschlag-api/cmd"
 	"github.com/umschlag/umschlag-api/config"
 	"github.com/urfave/cli"
 )
@@ -46,7 +45,7 @@ func main() {
 	}
 
 	app.Commands = []cli.Command{
-		cmd.Server(),
+		Server(),
 	}
 
 	cli.HelpFlag = cli.BoolFlag{
