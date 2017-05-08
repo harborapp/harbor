@@ -13,9 +13,9 @@ import (
 	"github.com/umschlag/umschlag-api/config"
 	"github.com/umschlag/umschlag-api/router"
 	"github.com/umschlag/umschlag-api/shared/s3client"
-	"github.com/urfave/cli"
 	"golang.org/x/crypto/acme/autocert"
 	"golang.org/x/sync/errgroup"
+	"gopkg.in/urfave/cli.v2"
 )
 
 var (
@@ -23,181 +23,190 @@ var (
 )
 
 // Server provides the sub-command to start the API server.
-func Server() cli.Command {
-	return cli.Command{
+func Server() *cli.Command {
+	return &cli.Command{
 		Name:  "server",
 		Usage: "Start the Umschlag API",
 		Flags: []cli.Flag{
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "db-driver",
 				Value:       "mysql",
 				Usage:       "Database driver selection",
-				EnvVar:      "UMSCHLAG_DB_DRIVER",
+				EnvVars:     []string{"UMSCHLAG_DB_DRIVER"},
 				Destination: &config.Database.Driver,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "db-name",
 				Value:       "umschlag",
 				Usage:       "Name for database connection",
-				EnvVar:      "UMSCHLAG_DB_NAME",
+				EnvVars:     []string{"UMSCHLAG_DB_NAME"},
 				Destination: &config.Database.Name,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "db-username",
 				Value:       "root",
 				Usage:       "Username for database connection",
-				EnvVar:      "UMSCHLAG_DB_USERNAME",
+				EnvVars:     []string{"UMSCHLAG_DB_USERNAME"},
 				Destination: &config.Database.Username,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "db-password",
 				Value:       "root",
 				Usage:       "Password for database connection",
-				EnvVar:      "UMSCHLAG_DB_PASSWORD",
+				EnvVars:     []string{"UMSCHLAG_DB_PASSWORD"},
 				Destination: &config.Database.Password,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "db-host",
 				Value:       "localhost:3306",
 				Usage:       "Host for database connection",
-				EnvVar:      "UMSCHLAG_DB_HOST",
+				EnvVars:     []string{"UMSCHLAG_DB_HOST"},
 				Destination: &config.Database.Host,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "host",
 				Value:       "http://localhost:8080",
 				Usage:       "External access to server",
-				EnvVar:      "UMSCHLAG_SERVER_HOST",
+				EnvVars:     []string{"UMSCHLAG_SERVER_HOST"},
 				Destination: &config.Server.Host,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "addr",
 				Value:       defaultAddr,
 				Usage:       "Address to bind the server",
-				EnvVar:      "UMSCHLAG_SERVER_ADDR",
+				EnvVars:     []string{"UMSCHLAG_SERVER_ADDR"},
 				Destination: &config.Server.Addr,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "root",
 				Value:       "/",
 				Usage:       "Root folder of the app",
-				EnvVar:      "UMSCHLAG_SERVER_ROOT",
+				EnvVars:     []string{"UMSCHLAG_SERVER_ROOT"},
 				Destination: &config.Server.Root,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "storage",
 				Value:       "storage/",
 				Usage:       "Folder for storing uploads",
-				EnvVar:      "UMSCHLAG_SERVER_STORAGE",
+				EnvVars:     []string{"UMSCHLAG_SERVER_STORAGE"},
 				Destination: &config.Server.Storage,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "assets",
 				Value:       "",
 				Usage:       "Path to custom assets and templates",
-				EnvVar:      "UMSCHLAG_SERVER_ASSETS",
+				EnvVars:     []string{"UMSCHLAG_SERVER_ASSETS"},
 				Destination: &config.Server.Assets,
 			},
-			cli.BoolFlag{
+			&cli.BoolFlag{
 				Name:        "pprof",
+				Value:       false,
 				Usage:       "Enable pprof debugging server",
-				EnvVar:      "UMSCHLAG_SERVER_PPROF",
+				EnvVars:     []string{"UMSCHLAG_SERVER_PPROF"},
 				Destination: &config.Server.Pprof,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "cert",
 				Value:       "",
 				Usage:       "Path to SSL cert",
-				EnvVar:      "UMSCHLAG_SERVER_CERT",
+				EnvVars:     []string{"UMSCHLAG_SERVER_CERT"},
 				Destination: &config.Server.Cert,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "key",
 				Value:       "",
 				Usage:       "Path to SSL key",
-				EnvVar:      "UMSCHLAG_SERVER_KEY",
+				EnvVars:     []string{"UMSCHLAG_SERVER_KEY"},
 				Destination: &config.Server.Key,
 			},
-			cli.BoolFlag{
+			&cli.BoolFlag{
 				Name:        "letsencrypt",
+				Value:       false,
 				Usage:       "Enable Let's Encrypt SSL",
-				EnvVar:      "UMSCHLAG_SERVER_LETSENCRYPT",
+				EnvVars:     []string{"UMSCHLAG_SERVER_LETSENCRYPT"},
 				Destination: &config.Server.LetsEncrypt,
 			},
-			cli.BoolFlag{
-				Name:   "strict-curves",
-				Usage:  "Use strict SSL curves",
-				EnvVar: "UMSCHLAG_STRICT_CURVES",
+			&cli.BoolFlag{
+				Name:        "strict-curves",
+				Value:       false,
+				Usage:       "Use strict SSL curves",
+				EnvVars:     []string{"UMSCHLAG_STRICT_CURVES"},
+				Destination: &config.Server.StrictCurves,
 			},
-			cli.BoolFlag{
-				Name:   "strict-ciphers",
-				Usage:  "Use strict SSL ciphers",
-				EnvVar: "UMSCHLAG_STRICT_CIPHERS",
+			&cli.BoolFlag{
+				Name:        "strict-ciphers",
+				Value:       false,
+				Usage:       "Use strict SSL ciphers",
+				EnvVars:     []string{"UMSCHLAG_STRICT_CIPHERS"},
+				Destination: &config.Server.StrictCiphers,
 			},
-			cli.DurationFlag{
+			&cli.DurationFlag{
 				Name:        "expire",
 				Value:       time.Hour * 24,
 				Usage:       "Session expire duration",
-				EnvVar:      "UMSCHLAG_SESSION_EXPIRE",
+				EnvVars:     []string{"UMSCHLAG_SESSION_EXPIRE"},
 				Destination: &config.Session.Expire,
 			},
-			cli.StringSliceFlag{
-				Name:   "admin-user",
-				Value:  &cli.StringSlice{},
-				Usage:  "Enforce user as an admin",
-				EnvVar: "UMSCHLAG_ADMIN_USERS",
+			&cli.StringSliceFlag{
+				Name:    "admin-user",
+				Value:   &cli.StringSlice{},
+				Usage:   "Enforce user as an admin",
+				EnvVars: []string{"UMSCHLAG_ADMIN_USERS"},
 			},
-			cli.BoolTFlag{
+			&cli.BoolFlag{
 				Name:        "admin-create",
+				Value:       true,
 				Usage:       "Create an initial admin user",
-				EnvVar:      "UMSCHLAG_ADMIN_CREATE",
+				EnvVars:     []string{"UMSCHLAG_ADMIN_CREATE"},
 				Destination: &config.Admin.Create,
 			},
-			cli.BoolFlag{
+			&cli.BoolFlag{
 				Name:        "s3-enabled",
+				Value:       false,
 				Usage:       "Enable S3 uploads",
-				EnvVar:      "UMSCHLAG_S3_ENABLED",
+				EnvVars:     []string{"UMSCHLAG_S3_ENABLED"},
 				Destination: &config.S3.Enabled,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "s3-endpoint",
 				Value:       "",
 				Usage:       "S3 API endpoint",
-				EnvVar:      "UMSCHLAG_S3_ENDPOINT",
+				EnvVars:     []string{"UMSCHLAG_S3_ENDPOINT"},
 				Destination: &config.S3.Endpoint,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "s3-bucket",
 				Value:       "umschlag",
 				Usage:       "S3 bucket name",
-				EnvVar:      "UMSCHLAG_S3_BUCKET",
+				EnvVars:     []string{"UMSCHLAG_S3_BUCKET"},
 				Destination: &config.S3.Bucket,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "s3-region",
 				Value:       "us-east-1",
 				Usage:       "S3 region name",
-				EnvVar:      "UMSCHLAG_S3_REGION",
+				EnvVars:     []string{"UMSCHLAG_S3_REGION"},
 				Destination: &config.S3.Region,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "s3-access",
 				Value:       "",
 				Usage:       "S3 public key",
-				EnvVar:      "UMSCHLAG_S3_ACCESS_KEY",
+				EnvVars:     []string{"UMSCHLAG_S3_ACCESS_KEY"},
 				Destination: &config.S3.Access,
 			},
-			cli.StringFlag{
+			&cli.StringFlag{
 				Name:        "s3-secret",
 				Value:       "",
 				Usage:       "S3 secret key",
-				EnvVar:      "UMSCHLAG_S3_SECRET_KEY",
+				EnvVars:     []string{"UMSCHLAG_S3_SECRET_KEY"},
 				Destination: &config.S3.Secret,
 			},
-			cli.BoolFlag{
+			&cli.BoolFlag{
 				Name:        "s3-path-style",
+				Value:       false,
 				Usage:       "S3 path style",
-				EnvVar:      "UMSCHLAG_S3_PATH_STYLE",
+				EnvVars:     []string{"UMSCHLAG_S3_PATH_STYLE"},
 				Destination: &config.S3.PathStyle,
 			},
 		},
@@ -217,16 +226,14 @@ func Server() cli.Command {
 
 			return nil
 		},
-		Action: func(c *cli.Context) {
-			logrus.Infof("Starting on %s", config.Server.Addr)
-
+		Action: func(c *cli.Context) error {
 			if config.Server.LetsEncrypt || (config.Server.Cert != "" && config.Server.Key != "") {
 				cfg := &tls.Config{
 					PreferServerCipherSuites: true,
 					MinVersion:               tls.VersionTLS12,
 				}
 
-				if c.Bool("strict-curves") {
+				if config.Server.StrictCurves {
 					cfg.CurvePreferences = []tls.CurveID{
 						tls.CurveP521,
 						tls.CurveP384,
@@ -234,7 +241,7 @@ func Server() cli.Command {
 					}
 				}
 
-				if c.Bool("strict-ciphers") {
+				if config.Server.StrictCiphers {
 					cfg.CipherSuites = []uint16{
 						tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
 						tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
@@ -331,6 +338,8 @@ func Server() cli.Command {
 					logrus.Fatal(err)
 				}
 			}
+
+			return nil
 		},
 	}
 }
