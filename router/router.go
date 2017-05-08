@@ -11,6 +11,7 @@ import (
 	"github.com/umschlag/umschlag-api/config"
 	"github.com/umschlag/umschlag-api/router/middleware/header"
 	"github.com/umschlag/umschlag-api/router/middleware/logger"
+	"github.com/umschlag/umschlag-api/router/middleware/prometheus"
 	"github.com/umschlag/umschlag-api/router/middleware/recovery"
 	"github.com/umschlag/umschlag-api/router/middleware/session"
 	"github.com/umschlag/umschlag-api/router/middleware/store"
@@ -68,6 +69,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 
 		root.GET("/favicon.ico", web.Favicon)
 		root.GET("", web.Index)
+		root.GET("/metrics", prometheus.Handler())
 
 		base := root.Group("/api")
 		{
