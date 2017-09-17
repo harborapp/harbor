@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/umschlag/umschlag-api/config"
+	"github.com/umschlag/umschlag-api/pkg/version"
 )
 
 // IndexInfo represents the API index.
@@ -13,7 +13,7 @@ func IndexInfo(c *gin.Context) {
 		http.StatusOK,
 		gin.H{
 			"api":     "Umschlag API",
-			"version": config.Version,
+			"version": version.Version.String(),
 			"stream":  "master",
 		},
 	)

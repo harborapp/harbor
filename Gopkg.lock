@@ -38,6 +38,12 @@
   revision = "4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9"
 
 [[projects]]
+  name = "github.com/coreos/go-semver"
+  packages = ["semver"]
+  revision = "8ab6407b697782a06568d4b7f1db25550ec2e4c6"
+  version = "v0.2.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/denisenkom/go-mssqldb"
   packages = ["."]
@@ -262,6 +268,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "bbcb74bd536629ea4d929870567e52a8b3c8c2f442afcfd0aadac76bbec26b27"
+  inputs-digest = "17e183ead63463bf75b6ac9ddd6c98fc71a7607c513fdec60f8cf4aba9654d89"
   solver-name = "gps-cdcl"
   solver-version = 1
