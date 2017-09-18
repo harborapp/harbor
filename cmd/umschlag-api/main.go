@@ -8,6 +8,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/joho/godotenv"
 	"github.com/umschlag/umschlag-api/config"
+	"github.com/umschlag/umschlag-api/pkg/version"
 	"gopkg.in/urfave/cli.v2"
 )
 
@@ -20,7 +21,7 @@ func main() {
 
 	app := &cli.App{
 		Name:     "umschlag-api",
-		Version:  config.Version,
+		Version:  version.Version.String(),
 		Usage:    "A docker distribution management system",
 		Compiled: time.Now(),
 
