@@ -5,9 +5,8 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/joho/godotenv"
-	"github.com/umschlag/umschlag-api/config"
+	"github.com/umschlag/umschlag-api/pkg/config"
 	"github.com/umschlag/umschlag-api/pkg/version"
 	"gopkg.in/urfave/cli.v2"
 )
@@ -22,7 +21,7 @@ func main() {
 	app := &cli.App{
 		Name:     "umschlag-api",
 		Version:  version.Version.String(),
-		Usage:    "A docker distribution management system",
+		Usage:    "docker distribution management system",
 		Compiled: time.Now(),
 
 		Authors: []*cli.Author{
@@ -33,43 +32,77 @@ func main() {
 		},
 
 		Flags: []cli.Flag{
-			&cli.BoolFlag{
-				Name:        "debug",
-				Value:       false,
-				Usage:       "Activate debug information",
-				EnvVars:     []string{"UMSCHLAG_DEBUG"},
-				Destination: &config.Debug,
-				Hidden:      true,
+			&cli.StringFlag{
+				Name:        "log-level",
+				Value:       "info",
+				Usage:       "set logging level",
+				EnvVars:     []string{"UMSCHLAG_LOG_LEVEL"},
+				Destination: &config.LogLevel,
+			},
+			&cli.StringFlag{
+				Name:        "db-driver",
+				Value:       "mysql",
+				Usage:       "database driver selection",
+				EnvVars:     []string{"UMSCHLAG_DB_DRIVER"},
+				Destination: &config.Database.Driver,
+			},
+			&cli.StringFlag{
+				Name:        "db-name",
+				Value:       "umschlag",
+				Usage:       "name for database to use",
+				EnvVars:     []string{"UMSCHLAG_DB_NAME"},
+				Destination: &config.Database.Name,
+			},
+			&cli.StringFlag{
+				Name:        "db-username",
+				Value:       "root",
+				Usage:       "username for database",
+				EnvVars:     []string{"UMSCHLAG_DB_USERNAME"},
+				Destination: &config.Database.Username,
+			},
+			&cli.StringFlag{
+				Name:        "db-password",
+				Value:       "root",
+				Usage:       "password for database",
+				EnvVars:     []string{"UMSCHLAG_DB_PASSWORD"},
+				Destination: &config.Database.Password,
+			},
+			&cli.StringFlag{
+				Name:        "db-host",
+				Value:       "localhost:3306",
+				Usage:       "host for database",
+				EnvVars:     []string{"UMSCHLAG_DB_HOST"},
+				Destination: &config.Database.Host,
+			},
+			&cli.IntFlag{
+				Name:        "db-timeout",
+				Value:       60,
+				Usage:       "timeout for waiting on db",
+				EnvVars:     []string{"UMSCHLAG_DB_TIMEOUT"},
+				Destination: &config.Database.Timeout,
 			},
 		},
 
 		Before: func(c *cli.Context) error {
-			logrus.SetOutput(os.Stdout)
-
-			if config.Debug {
-				logrus.SetLevel(logrus.DebugLevel)
-			} else {
-				logrus.SetLevel(logrus.InfoLevel)
-			}
-
 			return nil
 		},
 
 		Commands: []*cli.Command{
 			Server(),
+			Health(),
 		},
 	}
 
 	cli.HelpFlag = &cli.BoolFlag{
 		Name:    "help",
 		Aliases: []string{"h"},
-		Usage:   "Show the help, so what you see now",
+		Usage:   "show the help, so what you see now",
 	}
 
 	cli.VersionFlag = &cli.BoolFlag{
 		Name:    "version",
 		Aliases: []string{"v"},
-		Usage:   "Print the current version of that tool",
+		Usage:   "print the current version of that tool",
 	}
 
 	if err := app.Run(os.Args); err != nil {

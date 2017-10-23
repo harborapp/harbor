@@ -1,211 +1,188 @@
 package main
 
 import (
+	"context"
 	"crypto/tls"
-	"fmt"
+	"net"
 	"net/http"
 	"net/url"
+	"os"
+	"os/signal"
 	"path"
 	"strings"
 	"time"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/umschlag/umschlag-api/config"
-	"github.com/umschlag/umschlag-api/router"
-	"github.com/umschlag/umschlag-api/shared/s3client"
+	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
+	"github.com/oklog/oklog/pkg/group"
+	"github.com/umschlag/umschlag-api/pkg/config"
+	"github.com/umschlag/umschlag-api/pkg/router"
+	"github.com/umschlag/umschlag-api/pkg/s3client"
+	"github.com/umschlag/umschlag-api/pkg/storage"
 	"golang.org/x/crypto/acme/autocert"
-	"golang.org/x/sync/errgroup"
 	"gopkg.in/urfave/cli.v2"
 )
 
 var (
-	defaultAddr = ":8080"
+	defaultAddr = "0.0.0.0:8080"
 )
 
-// Server provides the sub-command to start the API server.
+// Server provides the sub-command to start the server.
 func Server() *cli.Command {
 	return &cli.Command{
 		Name:  "server",
-		Usage: "Start the Umschlag API",
+		Usage: "start integrated server",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:        "db-driver",
-				Value:       "mysql",
-				Usage:       "Database driver selection",
-				EnvVars:     []string{"UMSCHLAG_DB_DRIVER"},
-				Destination: &config.Database.Driver,
-			},
-			&cli.StringFlag{
-				Name:        "db-name",
-				Value:       "umschlag",
-				Usage:       "Name for database connection",
-				EnvVars:     []string{"UMSCHLAG_DB_NAME"},
-				Destination: &config.Database.Name,
-			},
-			&cli.StringFlag{
-				Name:        "db-username",
-				Value:       "root",
-				Usage:       "Username for database connection",
-				EnvVars:     []string{"UMSCHLAG_DB_USERNAME"},
-				Destination: &config.Database.Username,
-			},
-			&cli.StringFlag{
-				Name:        "db-password",
-				Value:       "root",
-				Usage:       "Password for database connection",
-				EnvVars:     []string{"UMSCHLAG_DB_PASSWORD"},
-				Destination: &config.Database.Password,
-			},
-			&cli.StringFlag{
-				Name:        "db-host",
-				Value:       "localhost:3306",
-				Usage:       "Host for database connection",
-				EnvVars:     []string{"UMSCHLAG_DB_HOST"},
-				Destination: &config.Database.Host,
-			},
-			&cli.StringFlag{
-				Name:        "host",
+				Name:        "server-host",
 				Value:       "http://localhost:8080",
-				Usage:       "External access to server",
+				Usage:       "external access to server",
 				EnvVars:     []string{"UMSCHLAG_SERVER_HOST"},
 				Destination: &config.Server.Host,
 			},
 			&cli.StringFlag{
-				Name:        "addr",
+				Name:        "server-addr",
 				Value:       defaultAddr,
-				Usage:       "Address to bind the server",
+				Usage:       "address to bind the server",
 				EnvVars:     []string{"UMSCHLAG_SERVER_ADDR"},
 				Destination: &config.Server.Addr,
 			},
 			&cli.StringFlag{
-				Name:        "root",
+				Name:        "server-root",
 				Value:       "/",
-				Usage:       "Root folder of the app",
+				Usage:       "root folder of the app",
 				EnvVars:     []string{"UMSCHLAG_SERVER_ROOT"},
 				Destination: &config.Server.Root,
 			},
 			&cli.StringFlag{
-				Name:        "storage",
+				Name:        "storage-path",
 				Value:       "storage/",
-				Usage:       "Folder for storing uploads",
+				Usage:       "folder for storing uploads",
 				EnvVars:     []string{"UMSCHLAG_SERVER_STORAGE"},
 				Destination: &config.Server.Storage,
 			},
 			&cli.StringFlag{
-				Name:        "assets",
+				Name:        "assets-path",
 				Value:       "",
-				Usage:       "Path to custom assets and templates",
+				Usage:       "path to custom assets and templates",
 				EnvVars:     []string{"UMSCHLAG_SERVER_ASSETS"},
 				Destination: &config.Server.Assets,
 			},
 			&cli.BoolFlag{
-				Name:        "pprof",
+				Name:        "enable-pprof",
 				Value:       false,
-				Usage:       "Enable pprof debugging server",
+				Usage:       "enable pprof debugging server",
 				EnvVars:     []string{"UMSCHLAG_SERVER_PPROF"},
 				Destination: &config.Server.Pprof,
 			},
+			&cli.BoolFlag{
+				Name:        "enable-prometheus",
+				Value:       false,
+				Usage:       "enable prometheus exporter",
+				EnvVars:     []string{"UMSCHLAG_SERVER_PROMETHEUS"},
+				Destination: &config.Server.Prometheus,
+			},
 			&cli.StringFlag{
-				Name:        "cert",
+				Name:        "server-cert",
 				Value:       "",
-				Usage:       "Path to SSL cert",
+				Usage:       "path to ssl cert",
 				EnvVars:     []string{"UMSCHLAG_SERVER_CERT"},
 				Destination: &config.Server.Cert,
 			},
 			&cli.StringFlag{
-				Name:        "key",
+				Name:        "server-key",
 				Value:       "",
-				Usage:       "Path to SSL key",
+				Usage:       "path to ssl key",
 				EnvVars:     []string{"UMSCHLAG_SERVER_KEY"},
 				Destination: &config.Server.Key,
 			},
 			&cli.BoolFlag{
-				Name:        "letsencrypt",
+				Name:        "enable-letsencrypt",
 				Value:       false,
-				Usage:       "Enable Let's Encrypt SSL",
+				Usage:       "enable let's encrypt ssl",
 				EnvVars:     []string{"UMSCHLAG_SERVER_LETSENCRYPT"},
 				Destination: &config.Server.LetsEncrypt,
 			},
 			&cli.BoolFlag{
 				Name:        "strict-curves",
 				Value:       false,
-				Usage:       "Use strict SSL curves",
+				Usage:       "use strict ssl curves",
 				EnvVars:     []string{"UMSCHLAG_STRICT_CURVES"},
 				Destination: &config.Server.StrictCurves,
 			},
 			&cli.BoolFlag{
 				Name:        "strict-ciphers",
 				Value:       false,
-				Usage:       "Use strict SSL ciphers",
+				Usage:       "use strict ssl ciphers",
 				EnvVars:     []string{"UMSCHLAG_STRICT_CIPHERS"},
 				Destination: &config.Server.StrictCiphers,
 			},
 			&cli.DurationFlag{
-				Name:        "expire",
+				Name:        "session-expire",
 				Value:       time.Hour * 24,
-				Usage:       "Session expire duration",
+				Usage:       "session expire duration",
 				EnvVars:     []string{"UMSCHLAG_SESSION_EXPIRE"},
 				Destination: &config.Session.Expire,
 			},
 			&cli.StringSliceFlag{
 				Name:    "admin-user",
 				Value:   &cli.StringSlice{},
-				Usage:   "Enforce user as an admin",
+				Usage:   "enforce user as an admin",
 				EnvVars: []string{"UMSCHLAG_ADMIN_USERS"},
 			},
 			&cli.BoolFlag{
 				Name:        "admin-create",
 				Value:       true,
-				Usage:       "Create an initial admin user",
+				Usage:       "create an initial admin user",
 				EnvVars:     []string{"UMSCHLAG_ADMIN_CREATE"},
 				Destination: &config.Admin.Create,
 			},
 			&cli.BoolFlag{
 				Name:        "s3-enabled",
 				Value:       false,
-				Usage:       "Enable S3 uploads",
+				Usage:       "enable s3 uploads",
 				EnvVars:     []string{"UMSCHLAG_S3_ENABLED"},
 				Destination: &config.S3.Enabled,
 			},
 			&cli.StringFlag{
 				Name:        "s3-endpoint",
 				Value:       "",
-				Usage:       "S3 API endpoint",
+				Usage:       "s3 api endpoint",
 				EnvVars:     []string{"UMSCHLAG_S3_ENDPOINT"},
 				Destination: &config.S3.Endpoint,
 			},
 			&cli.StringFlag{
 				Name:        "s3-bucket",
 				Value:       "umschlag",
-				Usage:       "S3 bucket name",
+				Usage:       "s3 bucket name",
 				EnvVars:     []string{"UMSCHLAG_S3_BUCKET"},
 				Destination: &config.S3.Bucket,
 			},
 			&cli.StringFlag{
 				Name:        "s3-region",
 				Value:       "us-east-1",
-				Usage:       "S3 region name",
+				Usage:       "s3 region name",
 				EnvVars:     []string{"UMSCHLAG_S3_REGION"},
 				Destination: &config.S3.Region,
 			},
 			&cli.StringFlag{
 				Name:        "s3-access",
 				Value:       "",
-				Usage:       "S3 public key",
+				Usage:       "s3 public key",
 				EnvVars:     []string{"UMSCHLAG_S3_ACCESS_KEY"},
 				Destination: &config.S3.Access,
 			},
 			&cli.StringFlag{
 				Name:        "s3-secret",
 				Value:       "",
-				Usage:       "S3 secret key",
+				Usage:       "s3 secret key",
 				EnvVars:     []string{"UMSCHLAG_S3_SECRET_KEY"},
 				Destination: &config.S3.Secret,
 			},
 			&cli.BoolFlag{
-				Name:        "s3-path-style",
+				Name:        "s3-pathstyle",
 				Value:       false,
-				Usage:       "S3 path style",
+				Usage:       "s3 path style",
 				EnvVars:     []string{"UMSCHLAG_S3_PATH_STYLE"},
 				Destination: &config.S3.PathStyle,
 			},
@@ -216,17 +193,52 @@ func Server() *cli.Command {
 				config.Admin.Users = c.StringSlice("admin-user")
 			}
 
-			if config.S3.Enabled {
-				_, err := s3client.New().List()
-
-				if err != nil {
-					return fmt.Errorf("Failed to connect to S3. %s", err)
-				}
-			}
-
 			return nil
 		},
 		Action: func(c *cli.Context) error {
+			logger := log.NewLogfmtLogger(log.NewSyncWriter(os.Stdout))
+
+			switch strings.ToLower(config.LogLevel) {
+			case "debug":
+				logger = level.NewFilter(logger, level.AllowDebug())
+			case "warn":
+				logger = level.NewFilter(logger, level.AllowWarn())
+			case "error":
+				logger = level.NewFilter(logger, level.AllowError())
+			default:
+				logger = level.NewFilter(logger, level.AllowInfo())
+			}
+
+			logger = log.WithPrefix(logger,
+				"app", c.App.Name,
+				"ts", log.DefaultTimestampUTC,
+			)
+
+			if config.S3.Enabled {
+
+				if err := s3client.New().Ping(); err != nil {
+					level.Error(logger).Log(
+						"msg", "failed to connect to s3",
+						"err", err,
+					)
+
+					return err
+				}
+			}
+
+			store, err := storage.Load(logger)
+
+			if err != nil {
+				level.Error(logger).Log(
+					"msg", "failed to initialize database",
+					"err", err,
+				)
+
+				return err
+			}
+
+			var gr group.Group
+
 			if config.Server.LetsEncrypt || (config.Server.Cert != "" && config.Server.Key != "") {
 				cfg := &tls.Config{
 					PreferServerCipherSuites: true,
@@ -252,13 +264,20 @@ func Server() *cli.Command {
 
 				if config.Server.LetsEncrypt {
 					if config.Server.Addr != defaultAddr {
-						logrus.Infof("With Let's Encrypt bind port have been overwritten!")
+						level.Info(logger).Log(
+							"msg", "enabled let's encrypt, overwriting the port",
+						)
 					}
 
 					parsed, err := url.Parse(config.Server.Host)
 
 					if err != nil {
-						logrus.Fatal("Failed to parse host name. %s", err)
+						level.Error(logger).Log(
+							"msg", "failed to parse host",
+							"err", err,
+						)
+
+						return err
 					}
 
 					certManager := autocert.Manager{
@@ -269,43 +288,99 @@ func Server() *cli.Command {
 
 					cfg.GetCertificate = certManager.GetCertificate
 
-					var (
-						g errgroup.Group
+					splitAddr := strings.SplitN(
+						config.Server.Addr,
+						":",
+						2,
 					)
 
-					splitAddr := strings.SplitN(config.Server.Addr, ":", 2)
-					logrus.Infof("Starting on %s:80 and %s:443", splitAddr[0], splitAddr[0])
+					{
+						addr := net.JoinHostPort(splitAddr[0], "80")
 
-					g.Go(func() error {
-						return http.ListenAndServe(
-							fmt.Sprintf("%s:80", splitAddr[0]),
-							http.HandlerFunc(redirect),
-						)
-					})
+						server := &http.Server{
+							Addr:         addr,
+							Handler:      redirect(logger),
+							ReadTimeout:  5 * time.Second,
+							WriteTimeout: 10 * time.Second,
+						}
 
-					g.Go(func() error {
-						return startServer(&http.Server{
-							Addr:         fmt.Sprintf("%s:443", splitAddr[0]),
-							Handler:      router.Load(),
+						gr.Add(func() error {
+							level.Info(logger).Log(
+								"msg", "starting http server",
+								"addr", addr,
+							)
+
+							return server.ListenAndServe()
+						}, func(reason error) {
+							ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+							defer cancel()
+
+							if err := server.Shutdown(ctx); err != nil {
+								level.Error(logger).Log(
+									"msg", "failed to shutdown http server gracefully",
+									"err", err,
+								)
+
+								return
+							}
+
+							level.Info(logger).Log(
+								"msg", "http server shutdown gracefully",
+								"reason", reason,
+							)
+						})
+					}
+
+					{
+						addr := net.JoinHostPort(splitAddr[0], "443")
+
+						server := &http.Server{
+							Addr:         addr,
+							Handler:      router.Load(store, logger),
 							ReadTimeout:  5 * time.Second,
 							WriteTimeout: 10 * time.Second,
 							TLSConfig:    cfg,
-						})
-					})
+						}
 
-					if err := g.Wait(); err != nil {
-						logrus.Fatal(err)
+						gr.Add(func() error {
+							level.Info(logger).Log(
+								"msg", "starting https server",
+								"addr", addr,
+							)
+
+							return server.ListenAndServeTLS("", "")
+						}, func(reason error) {
+							ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+							defer cancel()
+
+							if err := server.Shutdown(ctx); err != nil {
+								level.Error(logger).Log(
+									"msg", "failed to shutdown https server gracefully",
+									"err", err,
+								)
+
+								return
+							}
+
+							level.Info(logger).Log(
+								"msg", "https server shutdown gracefully",
+								"reason", reason,
+							)
+						})
 					}
 				} else {
-					logrus.Infof("Starting on %s", config.Server.Addr)
-
 					cert, err := tls.LoadX509KeyPair(
 						config.Server.Cert,
 						config.Server.Key,
 					)
 
 					if err != nil {
-						logrus.Fatal("Failed to load SSL certificates. %s", err)
+						level.Error(logger).Log(
+							"msg", "failed to load certificates",
+							"err", err,
+						)
+
+						return err
 					}
 
 					cfg.Certificates = []tls.Certificate{
@@ -314,43 +389,115 @@ func Server() *cli.Command {
 
 					server := &http.Server{
 						Addr:         config.Server.Addr,
-						Handler:      router.Load(),
+						Handler:      router.Load(store, logger),
 						ReadTimeout:  5 * time.Second,
 						WriteTimeout: 10 * time.Second,
 						TLSConfig:    cfg,
 					}
 
-					if err := startServer(server); err != nil {
-						logrus.Fatal(err)
+					{
+						gr.Add(func() error {
+							level.Info(logger).Log(
+								"msg", "starting https server",
+								"addr", config.Server.Addr,
+							)
+
+							return server.ListenAndServeTLS("", "")
+						}, func(reason error) {
+							ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+							defer cancel()
+
+							if err := server.Shutdown(ctx); err != nil {
+								level.Error(logger).Log(
+									"msg", "failed to shutdown https server gracefully",
+									"err", err,
+								)
+
+								return
+							}
+
+							level.Info(logger).Log(
+								"msg", "https server shutdown gracefully",
+								"reason", reason,
+							)
+						})
 					}
 				}
 			} else {
-				logrus.Infof("Starting on %s", config.Server.Addr)
-
 				server := &http.Server{
 					Addr:         config.Server.Addr,
-					Handler:      router.Load(),
+					Handler:      router.Load(store, logger),
 					ReadTimeout:  5 * time.Second,
 					WriteTimeout: 10 * time.Second,
 				}
 
-				if err := startServer(server); err != nil {
-					logrus.Fatal(err)
+				{
+					gr.Add(func() error {
+						level.Info(logger).Log(
+							"msg", "starting http server",
+							"addr", config.Server.Addr,
+						)
+
+						return server.ListenAndServe()
+					}, func(reason error) {
+						ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+						defer cancel()
+
+						if err := server.Shutdown(ctx); err != nil {
+							level.Error(logger).Log(
+								"msg", "failed to shutdown http server gracefully",
+								"err", err,
+							)
+
+							return
+						}
+
+						level.Info(logger).Log(
+							"msg", "http server shutdown gracefully",
+							"reason", reason,
+						)
+					})
 				}
 			}
 
-			return nil
+			{
+				gr.Add(func() error {
+					stop := make(chan os.Signal, 1)
+					signal.Notify(stop, os.Interrupt)
+
+					<-stop
+
+					return nil
+				}, func(err error) {
+
+				})
+			}
+
+			return gr.Run()
 		},
 	}
 }
 
-func redirect(w http.ResponseWriter, req *http.Request) {
-	target := "https://" + req.Host + req.URL.Path
+func redirect(logger log.Logger) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		target := strings.Join(
+			[]string{
+				"https://",
+				r.Host,
+				r.URL.Path,
+			},
+			"",
+		)
 
-	if len(req.URL.RawQuery) > 0 {
-		target += "?" + req.URL.RawQuery
-	}
+		if len(r.URL.RawQuery) > 0 {
+			target += "?" + r.URL.RawQuery
+		}
 
-	logrus.Debugf("Redirecting to %s", target)
-	http.Redirect(w, req, target, http.StatusTemporaryRedirect)
+		level.Debug(logger).Log(
+			"msg", "redirecting to https",
+			"target", target,
+		)
+
+		http.Redirect(w, r, target, http.StatusPermanentRedirect)
+	})
 }
