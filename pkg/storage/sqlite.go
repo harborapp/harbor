@@ -4,7 +4,7 @@ package storage
 
 import (
 	// Register SQLite driver
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 func init() {

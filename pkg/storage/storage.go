@@ -1,32 +1,36 @@
 package storage
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"time"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
-	"github.com/go-xorm/core"
-	"github.com/go-xorm/xorm"
-	"github.com/go-xorm/xorm/migrate"
+	"github.com/jinzhu/gorm"
+	"github.com/qor/validations"
 	"github.com/umschlag/umschlag-api/pkg/config"
 	"github.com/umschlag/umschlag-api/pkg/dblog"
 	"github.com/umschlag/umschlag-api/pkg/model"
+	"gopkg.in/gormigrate.v1"
 
 	// Register MySQL driver
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 
 	// Register PostgreSQL driver
-	_ "github.com/lib/pq"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 
 	// Register MSSQL driver
-	_ "github.com/denisenkom/go-mssqldb"
+	_ "github.com/jinzhu/gorm/dialects/mssql"
 )
 
 var (
-	// EnableSQLite3 controls the SQLite3 integration.
-	EnableSQLite3 bool
+	// EnableSQLite3 just indicates if SQLite3 is enabled.
+	EnableSQLite3 = false
+
+	// ErrRecordNotFound defines an error for non-existant records.
+	ErrRecordNotFound = errors.New("record not found")
 )
 
 // Load prepares a database connection.
@@ -82,7 +86,7 @@ func Load(logger log.Logger) (Store, error) {
 
 // New initializes a database connection.
 func New(logger log.Logger, driver string, config string) (Store, error) {
-	engine, err := xorm.NewEngine(driver, config)
+	engine, err := gorm.Open(driver, config)
 
 	if err != nil {
 		level.Error(logger).Log(
@@ -93,11 +97,8 @@ func New(logger log.Logger, driver string, config string) (Store, error) {
 		return nil, err
 	}
 
-	dblogger := dblog.New(logger)
-	dblogger.ShowSQL(true)
-
-	engine.SetLogger(dblogger)
-	engine.SetMapper(core.GonicMapper{})
+	engine.SetLogger(dblog.New(logger))
+	validations.RegisterCallbacks(engine)
 
 	handle := &data{
 		engine: engine,
@@ -120,13 +121,13 @@ func New(logger log.Logger, driver string, config string) (Store, error) {
 }
 
 type data struct {
-	engine *xorm.Engine
+	engine *gorm.DB
 	logger log.Logger
 }
 
 func (db *data) prepare() error {
-	if db.engine.DriverName() == "mysql" {
-		db.engine.SetMaxIdleConns(0)
+	if db.engine.Dialect().GetName() == "mysql" {
+		db.engine.DB().SetMaxIdleConns(0)
 	}
 
 	return nil
@@ -134,7 +135,7 @@ func (db *data) prepare() error {
 
 func (db *data) ping() error {
 	for i := 0; i < config.Database.Timeout; i++ {
-		err := db.engine.Ping()
+		err := db.engine.DB().Ping()
 
 		if err == nil {
 			return nil
@@ -151,10 +152,10 @@ func (db *data) ping() error {
 }
 
 func (db *data) migrate() error {
-	m := migrate.New(
+	m := gormigrate.New(
 		db.engine,
-		&migrate.Options{
-			TableName:    "migration",
+		&gormigrate.Options{
+			TableName:    "migrations",
 			IDColumnName: "id",
 		},
 		migrations,
@@ -164,11 +165,7 @@ func (db *data) migrate() error {
 		return err
 	}
 
-	count, _ := db.engine.Count(
-		&model.User{},
-	)
-
-	if config.Admin.Create && count == 0 {
+	if config.Admin.Create && db.engine.First(&model.User{}).RecordNotFound() {
 		record := &model.User{
 			Username: "admin",
 			Password: "admin",
@@ -177,9 +174,9 @@ func (db *data) migrate() error {
 			Admin:    true,
 		}
 
-		_, err := db.engine.Insert(
+		err := db.engine.Create(
 			record,
-		)
+		).Error
 
 		if err != nil {
 			level.Warn(db.logger).Log(
@@ -194,16 +191,15 @@ func (db *data) migrate() error {
 	}
 
 	if len(config.Admin.Users) > 0 {
-		_, err := db.engine.Table(
+		err := db.engine.Model(
 			&model.User{},
-		).In(
-			"username",
+		).Where(
+			"username IN (?)",
 			config.Admin.Users,
-		).Update(
-			map[string]interface{}{
-				"admin": true,
-			},
-		)
+		).UpdateColumn(
+			"admin",
+			true,
+		).Error
 
 		if err != nil {
 			level.Warn(db.logger).Log(

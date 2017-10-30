@@ -1,106 +1,118 @@
 package session
 
 import (
+	"context"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/codehack/fail"
+	"github.com/go-chi/chi"
+	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
 	"github.com/umschlag/umschlag-api/pkg/model"
-	"github.com/umschlag/umschlag-api/pkg/store"
+	"github.com/umschlag/umschlag-api/pkg/storage"
 )
 
-const (
-	// RepoContextKey defines the context key that stores the repo.
-	RepoContextKey = "repo"
+var (
+	// RepoContextKey defines the context key for the repo context store.
+	RepoContextKey = &contextKey{"repo"}
 )
 
 // Repo gets the repo from the context.
-func Repo(c *gin.Context) *model.Repo {
-	v, ok := c.Get(RepoContextKey)
+func Repo(c context.Context) *model.Repo {
+	v, ok := c.Value(RepoContextKey).(*model.Repo)
 
 	if !ok {
 		return nil
 	}
 
-	r, ok := v.(*model.Repo)
-
-	if !ok {
-		return nil
-	}
-
-	return r
+	return v
 }
 
 // SetRepo injects the repo into the context.
-func SetRepo() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		record, res := store.GetRepo(
-			c,
-			c.Param("repo"),
-		)
+func SetRepo(store storage.Store, logger log.Logger) func(next http.Handler) http.Handler {
+	logger = log.WithPrefix(logger, "session", "repo")
 
-		if res.Error != nil || res.RecordNotFound() {
-			c.JSON(
-				http.StatusNotFound,
-				gin.H{
-					"status":  http.StatusNotFound,
-					"message": "Failed to find repo",
-				},
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			record, err := store.GetRepo(
+				chi.URLParam(r, "repo"),
 			)
 
-			c.Abort()
-		} else {
-			c.Set(RepoContextKey, record)
-			c.Next()
-		}
+			if err != nil {
+				level.Warn(logger).Log(
+					"msg", "failed to find repo",
+					"err", err,
+				)
+
+				fail.Error(w, fail.Cause(err).NotFound("failed to find repo"))
+				return
+			}
+
+			ctx := context.WithValue(r.Context(), RepoContextKey, record)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
 	}
 }
 
 // MustRepos validates the repos access.
-func MustRepos(action string) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		current := Current(c)
+func MustRepos(action string, store storage.Store, logger log.Logger) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			current := Current(r.Context())
 
-		if current.Admin {
-			c.Next()
-			return
-		}
-
-		switch {
-		case action == "display":
-			if allowRepoDisplay(c) {
-				c.Next()
+			if current.Admin {
+				next.ServeHTTP(w, r)
 				return
 			}
-		case action == "change":
-			if allowRepoChange(c) {
-				c.Next()
-				return
-			}
-		case action == "delete":
-			if allowRepoDelete(c) {
-				c.Next()
-				return
-			}
-		}
 
-		AbortUnauthorized(c)
+			switch {
+			case action == "display":
+				if allowRepoDisplay(r.Context(), store, logger) {
+					next.ServeHTTP(w, r)
+					return
+				}
+			case action == "delete":
+				if allowRepoDelete(r.Context(), store, logger) {
+					next.ServeHTTP(w, r)
+					return
+				}
+			case action == "update":
+				if allowRepoUpdate(r.Context(), store, logger) {
+					next.ServeHTTP(w, r)
+					return
+				}
+			case action == "create":
+				if allowRepoCreate(r.Context(), store, logger) {
+					next.ServeHTTP(w, r)
+					return
+				}
+			}
+
+			fail.Error(w, fail.Forbidden("not allowed to access this resource"))
+		})
 	}
 }
 
 // allowRepoDisplay checks if the given user is allowed to display the resource.
-func allowRepoDisplay(c *gin.Context) bool {
-	// TODO(tboerger): Add real implementation
-	return false
-}
-
-// allowRepoChange checks if the given user is allowed to change the resource.
-func allowRepoChange(c *gin.Context) bool {
-	// TODO(tboerger): Add real implementation
+func allowRepoDisplay(ctx context.Context, store storage.Store, logger log.Logger) bool {
+	// TODO(tboerger): add real implementation
 	return false
 }
 
 // allowRepoDelete checks if the given user is allowed to delete the resource.
-func allowRepoDelete(c *gin.Context) bool {
-	// TODO(tboerger): Add real implementation
+func allowRepoDelete(ctx context.Context, store storage.Store, logger log.Logger) bool {
+	// TODO(tboerger): add real implementation
+	return false
+}
+
+// allowRepoUpdate checks if the given user is allowed to change the resource.
+func allowRepoUpdate(ctx context.Context, store storage.Store, logger log.Logger) bool {
+	// TODO(tboerger): add real implementation
+	return false
+}
+
+// allowRepoCreate checks if the given user is allowed to change the resource.
+func allowRepoCreate(ctx context.Context, store storage.Store, logger log.Logger) bool {
+	// TODO(tboerger): add real implementation
 	return false
 }

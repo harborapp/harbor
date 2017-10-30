@@ -1,106 +1,121 @@
 package session
 
 import (
+	"context"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/codehack/fail"
+	"github.com/go-chi/chi"
+	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
 	"github.com/umschlag/umschlag-api/pkg/model"
-	"github.com/umschlag/umschlag-api/pkg/store"
+	"github.com/umschlag/umschlag-api/pkg/storage"
 )
 
-const (
-	// RegistryContextKey defines the context key that stores the registry.
-	RegistryContextKey = "registry"
+var (
+	// RegistryBodyLimit defines the maximum allowed POST body size.
+	RegistryBodyLimit int64 = 3 * 1024 * 1024
+
+	// RegistryContextKey defines the context key for the registry context store.
+	RegistryContextKey = &contextKey{"registry"}
 )
 
 // Registry gets the registry from the context.
-func Registry(c *gin.Context) *model.Registry {
-	v, ok := c.Get(RegistryContextKey)
+func Registry(c context.Context) *model.Registry {
+	v, ok := c.Value(RegistryContextKey).(*model.Registry)
 
 	if !ok {
 		return nil
 	}
 
-	r, ok := v.(*model.Registry)
-
-	if !ok {
-		return nil
-	}
-
-	return r
+	return v
 }
 
 // SetRegistry injects the registry into the context.
-func SetRegistry() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		record, res := store.GetRegistry(
-			c,
-			c.Param("registry"),
-		)
+func SetRegistry(store storage.Store, logger log.Logger) func(next http.Handler) http.Handler {
+	logger = log.WithPrefix(logger, "session", "registry")
 
-		if res.Error != nil || res.RecordNotFound() {
-			c.JSON(
-				http.StatusNotFound,
-				gin.H{
-					"status":  http.StatusNotFound,
-					"message": "Failed to find registry",
-				},
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			record, err := store.GetRegistry(
+				chi.URLParam(r, "registry"),
 			)
 
-			c.Abort()
-		} else {
-			c.Set(RegistryContextKey, record)
-			c.Next()
-		}
+			if err != nil {
+				level.Warn(logger).Log(
+					"msg", "failed to find registry",
+					"err", err,
+				)
+
+				fail.Error(w, fail.Cause(err).NotFound("failed to find registry"))
+				return
+			}
+
+			ctx := context.WithValue(r.Context(), RegistryContextKey, record)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
 	}
 }
 
 // MustRegistries validates the registries access.
-func MustRegistries(action string) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		current := Current(c)
+func MustRegistries(action string, store storage.Store, logger log.Logger) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			current := Current(r.Context())
 
-		if current.Admin {
-			c.Next()
-			return
-		}
-
-		switch {
-		case action == "display":
-			if allowRegistryDisplay(c) {
-				c.Next()
+			if current.Admin {
+				next.ServeHTTP(w, r)
 				return
 			}
-		case action == "change":
-			if allowRegistryChange(c) {
-				c.Next()
-				return
-			}
-		case action == "delete":
-			if allowRegistryDelete(c) {
-				c.Next()
-				return
-			}
-		}
 
-		AbortUnauthorized(c)
+			switch {
+			case action == "display":
+				if allowRegistryDisplay(r.Context(), store, logger) {
+					next.ServeHTTP(w, r)
+					return
+				}
+			case action == "delete":
+				if allowRegistryDelete(r.Context(), store, logger) {
+					next.ServeHTTP(w, r)
+					return
+				}
+			case action == "update":
+				if allowRegistryUpdate(r.Context(), store, logger) {
+					next.ServeHTTP(w, r)
+					return
+				}
+			case action == "create":
+				if allowRegistryCreate(r.Context(), store, logger) {
+					next.ServeHTTP(w, r)
+					return
+				}
+			}
+
+			fail.Error(w, fail.Forbidden("not allowed to access this resource"))
+		})
 	}
 }
 
 // allowRegistryDisplay checks if the given user is allowed to display the resource.
-func allowRegistryDisplay(c *gin.Context) bool {
-	// TODO(tboerger): Add real implementation
-	return false
-}
-
-// allowRegistryChange checks if the given user is allowed to change the resource.
-func allowRegistryChange(c *gin.Context) bool {
-	// TODO(tboerger): Add real implementation
+func allowRegistryDisplay(ctx context.Context, store storage.Store, logger log.Logger) bool {
+	// TODO(tboerger): add real implementation
 	return false
 }
 
 // allowRegistryDelete checks if the given user is allowed to delete the resource.
-func allowRegistryDelete(c *gin.Context) bool {
-	// TODO(tboerger): Add real implementation
+func allowRegistryDelete(ctx context.Context, store storage.Store, logger log.Logger) bool {
+	// TODO(tboerger): add real implementation
+	return false
+}
+
+// allowRegistryUpdate checks if the given user is allowed to change the resource.
+func allowRegistryUpdate(ctx context.Context, store storage.Store, logger log.Logger) bool {
+	// TODO(tboerger): add real implementation
+	return false
+}
+
+// allowRegistryCreate checks if the given user is allowed to change the resource.
+func allowRegistryCreate(ctx context.Context, store storage.Store, logger log.Logger) bool {
+	// TODO(tboerger): add real implementation
 	return false
 }

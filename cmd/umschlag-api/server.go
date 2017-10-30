@@ -62,9 +62,16 @@ func Server() *cli.Command {
 				Destination: &config.Server.Storage,
 			},
 			&cli.StringFlag{
+				Name:        "templates-path",
+				Value:       "",
+				Usage:       "path to custom templates",
+				EnvVars:     []string{"UMSCHLAG_SERVER_TEMPLATES"},
+				Destination: &config.Server.Templates,
+			},
+			&cli.StringFlag{
 				Name:        "assets-path",
 				Value:       "",
-				Usage:       "path to custom assets and templates",
+				Usage:       "path to custom assets",
 				EnvVars:     []string{"UMSCHLAG_SERVER_ASSETS"},
 				Destination: &config.Server.Assets,
 			},
@@ -215,7 +222,6 @@ func Server() *cli.Command {
 			)
 
 			if config.S3.Enabled {
-
 				if err := s3client.New().Ping(); err != nil {
 					level.Error(logger).Log(
 						"msg", "failed to connect to s3",
@@ -237,68 +243,21 @@ func Server() *cli.Command {
 				return err
 			}
 
-			var gr group.Group
+			var (
+				gr group.Group
+			)
 
 			if config.Server.LetsEncrypt || (config.Server.Cert != "" && config.Server.Key != "") {
-				cfg := &tls.Config{
-					PreferServerCipherSuites: true,
-					MinVersion:               tls.VersionTLS12,
-				}
+				cfg, err := ssl(logger)
 
-				if config.Server.StrictCurves {
-					cfg.CurvePreferences = []tls.CurveID{
-						tls.CurveP521,
-						tls.CurveP384,
-						tls.CurveP256,
-					}
-				}
-
-				if config.Server.StrictCiphers {
-					cfg.CipherSuites = []uint16{
-						tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-						tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
-						tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-						tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-					}
+				if err != nil {
+					return err
 				}
 
 				if config.Server.LetsEncrypt {
-					if config.Server.Addr != defaultAddr {
-						level.Info(logger).Log(
-							"msg", "enabled let's encrypt, overwriting the port",
-						)
-					}
-
-					parsed, err := url.Parse(config.Server.Host)
-
-					if err != nil {
-						level.Error(logger).Log(
-							"msg", "failed to parse host",
-							"err", err,
-						)
-
-						return err
-					}
-
-					certManager := autocert.Manager{
-						Prompt:     autocert.AcceptTOS,
-						HostPolicy: autocert.HostWhitelist(parsed.Host),
-						Cache:      autocert.DirCache(path.Join(config.Server.Storage, "certs")),
-					}
-
-					cfg.GetCertificate = certManager.GetCertificate
-
-					splitAddr := strings.SplitN(
-						config.Server.Addr,
-						":",
-						2,
-					)
-
 					{
-						addr := net.JoinHostPort(splitAddr[0], "80")
-
 						server := &http.Server{
-							Addr:         addr,
+							Addr:         net.JoinHostPort(addr(), "80"),
 							Handler:      redirect(logger),
 							ReadTimeout:  5 * time.Second,
 							WriteTimeout: 10 * time.Second,
@@ -307,7 +266,7 @@ func Server() *cli.Command {
 						gr.Add(func() error {
 							level.Info(logger).Log(
 								"msg", "starting http server",
-								"addr", addr,
+								"addr", net.JoinHostPort(addr(), "80"),
 							)
 
 							return server.ListenAndServe()
@@ -332,10 +291,8 @@ func Server() *cli.Command {
 					}
 
 					{
-						addr := net.JoinHostPort(splitAddr[0], "443")
-
 						server := &http.Server{
-							Addr:         addr,
+							Addr:         net.JoinHostPort(addr(), "443"),
 							Handler:      router.Load(store, logger),
 							ReadTimeout:  5 * time.Second,
 							WriteTimeout: 10 * time.Second,
@@ -345,7 +302,7 @@ func Server() *cli.Command {
 						gr.Add(func() error {
 							level.Info(logger).Log(
 								"msg", "starting https server",
-								"addr", addr,
+								"addr", net.JoinHostPort(addr(), "443"),
 							)
 
 							return server.ListenAndServeTLS("", "")
@@ -369,33 +326,15 @@ func Server() *cli.Command {
 						})
 					}
 				} else {
-					cert, err := tls.LoadX509KeyPair(
-						config.Server.Cert,
-						config.Server.Key,
-					)
-
-					if err != nil {
-						level.Error(logger).Log(
-							"msg", "failed to load certificates",
-							"err", err,
-						)
-
-						return err
-					}
-
-					cfg.Certificates = []tls.Certificate{
-						cert,
-					}
-
-					server := &http.Server{
-						Addr:         config.Server.Addr,
-						Handler:      router.Load(store, logger),
-						ReadTimeout:  5 * time.Second,
-						WriteTimeout: 10 * time.Second,
-						TLSConfig:    cfg,
-					}
-
 					{
+						server := &http.Server{
+							Addr:         config.Server.Addr,
+							Handler:      router.Load(store, logger),
+							ReadTimeout:  5 * time.Second,
+							WriteTimeout: 10 * time.Second,
+							TLSConfig:    cfg,
+						}
+
 						gr.Add(func() error {
 							level.Info(logger).Log(
 								"msg", "starting https server",
@@ -424,14 +363,14 @@ func Server() *cli.Command {
 					}
 				}
 			} else {
-				server := &http.Server{
-					Addr:         config.Server.Addr,
-					Handler:      router.Load(store, logger),
-					ReadTimeout:  5 * time.Second,
-					WriteTimeout: 10 * time.Second,
-				}
-
 				{
+					server := &http.Server{
+						Addr:         config.Server.Addr,
+						Handler:      router.Load(store, logger),
+						ReadTimeout:  5 * time.Second,
+						WriteTimeout: 10 * time.Second,
+					}
+
 					gr.Add(func() error {
 						level.Info(logger).Log(
 							"msg", "starting http server",
@@ -477,6 +416,104 @@ func Server() *cli.Command {
 			return gr.Run()
 		},
 	}
+}
+
+func addr() string {
+	splitAddr := strings.SplitN(
+		config.Server.Addr,
+		":",
+		2,
+	)
+
+	return splitAddr[0]
+}
+
+func curves() []tls.CurveID {
+	if config.Server.StrictCurves {
+		return []tls.CurveID{
+			tls.CurveP521,
+			tls.CurveP384,
+			tls.CurveP256,
+		}
+	}
+
+	return nil
+}
+
+func ciphers() []uint16 {
+	if config.Server.StrictCiphers {
+		return []uint16{
+			tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+			tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+			tls.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+		}
+	}
+
+	return nil
+}
+
+func ssl(logger log.Logger) (*tls.Config, error) {
+	if config.Server.LetsEncrypt {
+		if config.Server.Addr != defaultAddr {
+			level.Info(logger).Log(
+				"msg", "enabled let's encrypt, overwriting the port",
+			)
+		}
+
+		parsed, err := url.Parse(
+			config.Server.Host,
+		)
+
+		if err != nil {
+			level.Error(logger).Log(
+				"msg", "failed to parse host",
+				"err", err,
+			)
+
+			return nil, err
+		}
+
+		certManager := autocert.Manager{
+			Prompt:     autocert.AcceptTOS,
+			HostPolicy: autocert.HostWhitelist(parsed.Host),
+			Cache:      autocert.DirCache(path.Join(config.Server.Storage, "certs")),
+		}
+
+		return &tls.Config{
+			PreferServerCipherSuites: true,
+			MinVersion:               tls.VersionTLS12,
+			CurvePreferences:         curves(),
+			CipherSuites:             ciphers(),
+			GetCertificate:           certManager.GetCertificate,
+		}, nil
+	}
+
+	if config.Server.Cert != "" && config.Server.Key != "" {
+		cert, err := tls.LoadX509KeyPair(
+			config.Server.Cert,
+			config.Server.Key,
+		)
+
+		if err != nil {
+			level.Error(logger).Log(
+				"msg", "failed to load certificates",
+				"err", err,
+			)
+
+			return nil, err
+		}
+
+		return &tls.Config{
+			PreferServerCipherSuites: true,
+			MinVersion:               tls.VersionTLS12,
+			CurvePreferences:         curves(),
+			CipherSuites:             ciphers(),
+			Certificates:             []tls.Certificate{cert},
+		}, nil
+	}
+
+	return nil, nil
 }
 
 func redirect(logger log.Logger) http.Handler {

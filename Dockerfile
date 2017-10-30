@@ -4,6 +4,11 @@ MAINTAINER Thomas Boerger <thomas@webhippie.de>
 EXPOSE 8080 80 443
 VOLUME ["/var/lib/umschlag"]
 
+LABEL org.label-schema.version=latest
+LABEL org.label-schema.name="Umschlag API"
+LABEL org.label-schema.vendor="Thomas Boerger"
+LABEL org.label-schema.schema-version="1.0"
+
 RUN apk update && \
   apk add \
     ca-certificates \

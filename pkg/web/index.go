@@ -8,7 +8,7 @@ import (
 	"github.com/go-kit/kit/log/level"
 	"github.com/umschlag/umschlag-api/pkg/config"
 	"github.com/umschlag/umschlag-api/pkg/storage"
-	"github.com/umschlag/umschlag-api/pkg/template"
+	"github.com/umschlag/umschlag-api/pkg/templates"
 )
 
 // Index represents the index page.
@@ -16,14 +16,7 @@ func Index(store storage.Store, logger log.Logger) http.HandlerFunc {
 	logger = log.WithPrefix(logger, "web", "index")
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		err := template.Load(logger).Execute(
-			w,
-			map[string]string{
-				"Root": config.Server.Root,
-			},
-		)
-
-		if err != nil {
+		if err := templates.Load(logger).ExecuteTemplate(w, "index.html", indexVars()); err != nil {
 			level.Warn(logger).Log(
 				"msg", "failed to process index template",
 				"err", err,
@@ -32,5 +25,11 @@ func Index(store storage.Store, logger log.Logger) http.HandlerFunc {
 			fail.Error(w, fail.Cause(err).Unexpected())
 			return
 		}
+	}
+}
+
+func indexVars() map[string]string {
+	return map[string]string{
+		"Root": config.Server.Root,
 	}
 }

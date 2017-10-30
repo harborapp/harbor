@@ -9,6 +9,12 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+// TagsFilter represents a filter for the repos.
+type TagsFilter struct {
+	Org  *Org  `json:"org"`
+	Repo *Repo `json:"repo"`
+}
+
 // Tags is simply a collection of tag structs.
 type Tags []*Tag
 

@@ -20,6 +20,7 @@ type server struct {
 	Key           string
 	Root          string
 	Storage       string
+	Templates     string
 	Assets        string
 	LetsEncrypt   bool
 	StrictCurves  bool

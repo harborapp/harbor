@@ -25,6 +25,13 @@ func Health() *cli.Command {
 				EnvVars:     []string{"UMSCHLAG_SERVER_ADDR"},
 				Destination: &config.Server.Addr,
 			},
+			&cli.StringFlag{
+				Name:        "server-root",
+				Value:       "/",
+				Usage:       "root folder of the app",
+				EnvVars:     []string{"UMSCHLAG_SERVER_ROOT"},
+				Destination: &config.Server.Root,
+			},
 		},
 		Before: func(c *cli.Context) error {
 			return nil
@@ -50,8 +57,9 @@ func Health() *cli.Command {
 
 			resp, err := http.Get(
 				fmt.Sprintf(
-					"http://%s/healthz",
+					"http://%s%shealthz",
 					config.Server.Addr,
+					config.Server.Root,
 				),
 			)
 
