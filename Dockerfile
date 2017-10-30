@@ -24,8 +24,12 @@ RUN apk update && \
     -s /bin/bash \
     -G umschlag \
     -u 1000 \
-    umschlag
+    umschlag && \
+  mkdir -p \
+    /usr/share/umschlag
 
+COPY assets /usr/share/umschlag/
+COPY templates /usr/share/umschlag/
 COPY umschlag-api /usr/bin/
 
 ENV UMSCHLAG_SERVER_STORAGE /var/lib/umschlag
