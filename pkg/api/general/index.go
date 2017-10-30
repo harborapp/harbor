@@ -11,6 +11,8 @@ import (
 
 // Index represents the API index.
 func Index(store storage.Store, logger log.Logger) http.HandlerFunc {
+	// logger = log.WithPrefix(logger, "general", "index")
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)

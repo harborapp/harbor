@@ -1,0 +1,12 @@
+pkg: "templates"
+dest: "."
+fmt: true
+
+compression:
+  compress: true
+
+custom:
+  - files:
+    - "../../templates/"
+    base: "../../templates/"
+    prefix: ""

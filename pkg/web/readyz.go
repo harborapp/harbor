@@ -1,6 +1,7 @@
 package web
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-kit/kit/log"
@@ -10,6 +11,9 @@ import (
 // Readyz is a simple ready check used by Docker and Kubernetes.
 func Readyz(store storage.Store, logger log.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		plain(w)
+		w.Header().Set("Content-Type", "text/plain")
+		w.WriteHeader(http.StatusOK)
+
+		fmt.Fprintln(w, http.StatusText(http.StatusOK))
 	}
 }

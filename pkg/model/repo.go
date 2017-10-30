@@ -9,6 +9,11 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+// ReposFilter represents a filter for the repos.
+type ReposFilter struct {
+	Org *Org `json:"org"`
+}
+
 // Repos is simply a collection of repo structs.
 type Repos []*Repo
 
