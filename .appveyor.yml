@@ -1,0 +1,65 @@
+version: '{build}'
+image: 'Visual Studio 2017'
+
+clone_folder: 'c:\gopath\src\github.com\umschlag\umschlag-api'
+
+environment:
+  GOPATH: c:\gopath
+  DOCKER_USERNAME:
+    secure: '4YzzahbEiMZQJpOCOd1LAw=='
+  DOCKER_PASSWORD:
+    secure: 'VqO/G3Zfslu6zSLdwHKO+Q=='
+
+install:
+  - ps: |
+      choco install make
+  - ps: |
+      docker version
+      go version
+  - ps: |
+      $env:Path = "c:\gopath\bin;$env:Path"
+
+build_script:
+  - cmd: |
+      make retool
+  - cmd: |
+      make sync
+  - cmd: |
+      make generate
+  - cmd: |
+      make build
+  - cmd: |
+      docker build -f Dockerfile.windows -t umschlag/umschlag-api:windows .
+
+test_script:
+  - cmd: |
+      docker run --rm umschlag/umschlag-api:windows --help
+
+deploy_script:
+  - ps: |
+      if ( $env:APPVEYOR_PULL_REQUEST_NUMBER ) {
+        Write-Host Nothing to deploy.
+      } else {
+        echo $env:DOCKER_PASSWORD | docker login --username $env:DOCKER_USERNAME --password-stdin
+
+        if ( $env:APPVEYOR_REPO_TAG -eq 'true' ) {
+          $major,$minor,$patch = $env:APPVEYOR_REPO_TAG_NAME.substring(1).split('.')
+
+          docker push umschlag/umschlag-api:windows
+
+          docker tag umschlag/umschlag-api:windows umschlag/umschlag-api:$major.$minor.$patch-windows
+          docker push umschlag/umschlag-api:$major.$minor.$patch-windows
+
+          docker tag umschlag/umschlag-api:windows umschlag/umschlag-api:$major.$minor-windows
+          docker push umschlag/umschlag-api:$major.$minor-windows
+
+          docker tag umschlag/umschlag-api:windows umschlag/umschlag-api:$major-windows
+          docker push umschlag/umschlag-api:$major-windows
+        } else {
+          if ( $env:APPVEYOR_REPO_BRANCH -eq 'master' ) {
+            docker push umschlag/umschlag-api:windows
+          } else {
+            Write-Host Ignoring feature branch.
+          }
+        }
+      }
