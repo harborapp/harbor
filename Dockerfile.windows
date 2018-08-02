@@ -1,0 +1,17 @@
+# escape=`
+FROM microsoft/nanoserver:10.0.14393.1593
+
+LABEL maintainer="Thomas Boerger <thomas@webhippie.de>" `
+  org.label-schema.name="Umschlag API" `
+  org.label-schema.vendor="Thomas Boerger" `
+  org.label-schema.schema-version="1.0"
+
+EXPOSE 8080 8090
+VOLUME c:\umschlag
+
+ENTRYPOINT ["c:\\umschlag-api.exe"]
+CMD ["server"]
+
+ENV GOPAD_API_UPLOAD_DSN file://umschlag/
+
+COPY bin/umschlag-api.exe c:\umschlag-api.exe
