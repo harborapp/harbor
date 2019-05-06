@@ -1,5 +1,5 @@
 # escape=`
-FROM microsoft/nanoserver:10.0.14393.1593
+FROM microsoft/nanoserver:10.0.14393.2430
 
 LABEL maintainer="Thomas Boerger <thomas@webhippie.de>" `
   org.label-schema.name="Umschlag API" `
@@ -9,9 +9,10 @@ LABEL maintainer="Thomas Boerger <thomas@webhippie.de>" `
 EXPOSE 8080 8090
 VOLUME c:\umschlag
 
+ENV UMSCHLAG_API_DB_DSN boltdb:///umschlag/database.db
+ENV UMSCHLAG_API_UPLOAD_DSN file:///umschlag/uploads
+
 ENTRYPOINT ["c:\\umschlag-api.exe"]
 CMD ["server"]
-
-ENV GOPAD_API_UPLOAD_DSN file://umschlag/
 
 COPY bin/umschlag-api.exe c:\umschlag-api.exe

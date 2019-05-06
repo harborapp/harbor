@@ -1,57 +1,53 @@
 # Umschlag: API server
 
-[![Build Status](http://github.dronehippie.de/api/badges/umschlag/umschlag-api/status.svg)](http://github.dronehippie.de/umschlag/umschlag-api)
+[![Build Status](http://drone.umschlag.tech/api/badges/umschlag/umschlag-api/status.svg)](http://drone.umschlag.tech/umschlag/umschlag-api)
+[![Build Status](https://ci.appveyor.com/api/projects/status/t83ftl76m5w4g1fw?svg=true)](https://ci.appveyor.com/project/umschlagz/umschlag-api)
+[![Stories in Ready](https://badge.waffle.io/umschlag/umschlag-api.svg?label=ready&title=Ready)](http://waffle.io/umschlag/umschlag-api)
+[![Join the Matrix chat at https://matrix.to/#/#umschlag:matrix.org](https://img.shields.io/badge/matrix-%23umschlag-7bc9a4.svg)](https://matrix.to/#/#umschlag:matrix.org)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/cbe28cf646c34c98b58967079e9ae990)](https://www.codacy.com/app/umschlag/umschlag-api?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=umschlag/umschlag-api&amp;utm_campaign=Badge_Grade)
 [![Go Doc](https://godoc.org/github.com/umschlag/umschlag-api?status.svg)](http://godoc.org/github.com/umschlag/umschlag-api)
 [![Go Report](http://goreportcard.com/badge/github.com/umschlag/umschlag-api)](http://goreportcard.com/report/github.com/umschlag/umschlag-api)
-[![Sourcegraph](https://sourcegraph.com/github.com/umschlag/umschlag-api/-/badge.svg)](https://sourcegraph.com/github.com/umschlag/umschlag-api?badge)
 [![](https://images.microbadger.com/badges/image/umschlag/umschlag-api.svg)](http://microbadger.com/images/umschlag/umschlag-api "Get your own image badge on microbadger.com")
-[![Join the chat at https://gitter.im/umschlag/umschlag](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/umschlag/umschlag)
-[![Stories in Ready](https://badge.waffle.io/umschlag/umschlag-api.svg?label=ready&title=Ready)](http://waffle.io/umschlag/umschlag-api)
 
 **This project is under heavy development, it's not in a working state yet!**
 
-Where does this name come from or what does it mean? It's quite simple, it's one
-german word for transshipment, I thought it's a good match as it is related to
-containers and a harbor.
+Umschlag will be a pretty simple web interface and authentication method for the new docker distribution, the new open-source private docker registry. I thought it's time to implement a shiny application with Go for the API and with VueJS for the UI.
 
-Umschlag will be a pretty simple web interface and authentication method for the
-new docker distribution, the new opensource private docker registry. I thought
-it's time to implement a shiny application with Go for the API and with React
-for the UI.
-
-The structure of the code base is heavily inspired by Drone, so those credits
-are getting to [bradrydzewski](https://github.com/bradrydzewski), thank you for
-this awesome project!
+*Where does this name come from or what does it mean? It's quite simple, it's one german word for transshipment, I thought it's a good match as it is related to containers and a harbor.*
 
 
 ## Install
 
-You can download prebuilt binaries from the GitHub releases or from our
-[download site](http://dl.webhippie.de/umschlag-api). You are a Mac user? Just take
-a look at our [homebrew formula](https://github.com/umschlag/homebrew-umschlag).
-If you are missing an architecture just write us on our nice
-[Gitter](https://gitter.im/umschlag/umschlag) chat. Take a look at the help
-output, you can enable auto updates to the binary to avoid bugs related to old
-versions. If you find a security issue please contact thomas@webhippie.de first.
+You can download prebuilt binaries from the GitHub releases or from our [download site](http://dl.umschlag.tech/api). You are a Mac user? Just take a look at our [homebrew formula](https://github.com/umschlag/homebrew-umschlag).
 
 
 ## Development
 
-Make sure you have a working Go environment, for further reference or a guide
-take a look at the [install instructions](http://golang.org/doc/install.html).
-As this project relies on vendoring of the dependencies and we are not
-exporting `GO15VENDOREXPERIMENT=1` within our makefile you have to use a Go
-version `>= 1.6`. It is also possible to just simply execute the
-`go get github.com/umschlag/umschlag-api/cmd/umschlag-api` command, but we
-prefer to use our `Makefile`:
+Make sure you have a working Go environment, for further reference or a guide take a look at the [install instructions](http://golang.org/doc/install.html). This project requires Go >= v1.8. It is possible to just execute `go get github.com/umschlag/umschlag-api/cmd/umschlag-api`, but we prefer to use our `Makefile`:
 
 ```bash
 go get -d github.com/umschlag/umschlag-api
 cd $GOPATH/src/github.com/umschlag/umschlag-api
-make clean build
 
-./umschlag-api -h
+# install retool
+make retool
+
+# sync dependencies
+make sync
+
+# generate code
+make generate
+
+# build binary
+make build
+
+./bin/umschlag-api -h
 ```
+
+
+## Security
+
+If you find a security issue please contact umschlag@webhippie.de first.
 
 
 ## Contributing
@@ -72,5 +68,5 @@ Apache-2.0
 ## Copyright
 
 ```
-Copyright (c) 2016 Thomas Boerger <http://www.webhippie.de>
+Copyright (c) 2018 Thomas Boerger <thomas@webhippie.de>
 ```

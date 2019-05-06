@@ -11,12 +11,13 @@ LABEL maintainer="Thomas Boerger <thomas@webhippie.de>" \
 EXPOSE 8080 8090
 VOLUME ["/var/lib/umschlag"]
 
+ENV UMSCHLAG_API_DB_DSN boltdb:///var/lib/umschlag/database.db
+ENV UMSCHLAG_API_UPLOAD_DSN file:///var/lib/umschlag/uploads
+
 ENTRYPOINT ["/usr/bin/umschlag-api"]
 CMD ["server"]
-
-ENV GOPAD_API_UPLOAD_DSN file://var/lib/umschlag/
 
 COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=build /etc/mime.types /etc/
 
-COPY dist/binaries/umschlag-api-*-linux-386 /usr/bin/
+COPY dist/binaries/umschlag-api-*-linux-arm-7 /usr/bin/umschlag-api
