@@ -1,7 +1,6 @@
 # Umschlag: API server
 
-[![Build Status](http://drone.umschlag.tech/api/badges/umschlag/umschlag-api/status.svg)](http://drone.umschlag.tech/umschlag/umschlag-api)
-[![Build Status](https://ci.appveyor.com/api/projects/status/t83ftl76m5w4g1fw?svg=true)](https://ci.appveyor.com/project/umschlagz/umschlag-api)
+[![Build Status](https://cloud.drone.io/api/badges/umschlag/umschlag-api/status.svg)](https://cloud.drone.io/umschlag/umschlag-api)
 [![Stories in Ready](https://badge.waffle.io/umschlag/umschlag-api.svg?label=ready&title=Ready)](http://waffle.io/umschlag/umschlag-api)
 [![Join the Matrix chat at https://matrix.to/#/#umschlag:matrix.org](https://img.shields.io/badge/matrix-%23umschlag-7bc9a4.svg)](https://matrix.to/#/#umschlag:matrix.org)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/cbe28cf646c34c98b58967079e9ae990)](https://www.codacy.com/app/umschlag/umschlag-api?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=umschlag/umschlag-api&amp;utm_campaign=Badge_Grade)
@@ -23,23 +22,13 @@ You can download prebuilt binaries from the GitHub releases or from our [downloa
 
 ## Development
 
-Make sure you have a working Go environment, for further reference or a guide take a look at the [install instructions](http://golang.org/doc/install.html). This project requires Go >= v1.8. It is possible to just execute `go get github.com/umschlag/umschlag-api/cmd/umschlag-api`, but we prefer to use our `Makefile`:
+Make sure you have a working Go environment, for further reference or a guide take a look at the [install instructions](http://golang.org/doc/install.html). This project requires Go >= v1.11.
 
 ```bash
-go get -d github.com/umschlag/umschlag-api
-cd $GOPATH/src/github.com/umschlag/umschlag-api
+git clone https://github.com/umschlag/umschlag-api.git
+cd umschlag-api
 
-# install retool
-make retool
-
-# sync dependencies
-make sync
-
-# generate code
-make generate
-
-# build binary
-make build
+make sync generate build
 
 ./bin/umschlag-api -h
 ```

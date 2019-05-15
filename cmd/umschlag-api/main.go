@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/umschlag/umschlag-api/pkg/config"
 	"github.com/umschlag/umschlag-api/pkg/version"
-	"github.com/joho/godotenv"
 	"gopkg.in/urfave/cli.v2"
 )
 
@@ -18,7 +18,7 @@ func main() {
 
 	app := &cli.App{
 		Name:     "umschlag-api",
-		Version:  version.Version.String(),
+		Version:  version.String,
 		Usage:    "docker distribution management system",
 		Authors:  authorList(),
 		Flags:    globalFlags(cfg),
