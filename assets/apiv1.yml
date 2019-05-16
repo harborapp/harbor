@@ -236,7 +236,7 @@ paths:
           schema:
             $ref: "#/definitions/general_error"
 
-  /teams/{team}:
+  /teams/{teamID}:
     get:
       summary: "Fetch a specific team"
       operationId: "TeamShow"
@@ -244,7 +244,7 @@ paths:
         - "team"
       parameters:
         - in: "path"
-          name: "team"
+          name: "teamID"
           description: "A team UUID or slug"
           type: "string"
           required: true
@@ -269,7 +269,7 @@ paths:
         - "team"
       parameters:
         - in: "path"
-          name: "team"
+          name: "teamID"
           description: "A team UUID or slug"
           type: "string"
           required: true
@@ -308,7 +308,7 @@ paths:
         - "team"
       parameters:
         - in: "path"
-          name: "team"
+          name: "teamID"
           description: "A team UUID or slug"
           type: "string"
           required: true
@@ -330,7 +330,7 @@ paths:
           schema:
             $ref: "#/definitions/general_error"
 
-  /teams/{team}/users:
+  /teams/{teamID}/users:
     get:
       summary: "Fetch all users assigned to team"
       operationId: "TeamUserIndex"
@@ -338,7 +338,7 @@ paths:
         - "team"
       parameters:
         - in: "path"
-          name: "team"
+          name: "teamID"
           description: "A team UUID or slug"
           type: "string"
           required: true
@@ -365,7 +365,7 @@ paths:
         - "team"
       parameters:
         - in: "path"
-          name: "team"
+          name: "teamID"
           description: "A team UUID or slug"
           type: "string"
           required: true
@@ -404,7 +404,7 @@ paths:
         - "team"
       parameters:
         - in: "path"
-          name: "team"
+          name: "teamID"
           description: "A team UUID or slug"
           type: "string"
           required: true
@@ -443,7 +443,7 @@ paths:
         - "team"
       parameters:
         - in: "path"
-          name: "team"
+          name: "teamID"
           description: "A team UUID or slug"
           type: "string"
           required: true
@@ -531,7 +531,7 @@ paths:
           schema:
             $ref: "#/definitions/general_error"
 
-  /users/{user}:
+  /users/{userID}:
     get:
       summary: "Fetch a specific user"
       operationId: "UserShow"
@@ -539,7 +539,7 @@ paths:
         - "user"
       parameters:
         - in: "path"
-          name: "user"
+          name: "userID"
           description: "A user UUID or slug"
           type: "string"
           required: true
@@ -564,7 +564,7 @@ paths:
         - "user"
       parameters:
         - in: "path"
-          name: "user"
+          name: "userID"
           description: "A user UUID or slug"
           type: "string"
           required: true
@@ -603,7 +603,7 @@ paths:
         - "user"
       parameters:
         - in: "path"
-          name: "user"
+          name: "userID"
           description: "A user UUID or slug"
           type: "string"
           required: true
@@ -625,7 +625,7 @@ paths:
           schema:
             $ref: "#/definitions/general_error"
 
-  /users/{user}/teams:
+  /users/{userID}/teams:
     get:
       summary: "Fetch all teams assigned to user"
       operationId: "UserTeamIndex"
@@ -633,7 +633,7 @@ paths:
         - "user"
       parameters:
         - in: "path"
-          name: "user"
+          name: "userID"
           description: "A user UUID or slug"
           type: "string"
           required: true
@@ -660,7 +660,7 @@ paths:
         - "user"
       parameters:
         - in: "path"
-          name: "user"
+          name: "userID"
           description: "A user UUID or slug"
           type: "string"
           required: true
@@ -699,7 +699,7 @@ paths:
         - "user"
       parameters:
         - in: "path"
-          name: "user"
+          name: "userID"
           description: "A user UUID or slug"
           type: "string"
           required: true
@@ -738,7 +738,7 @@ paths:
         - "user"
       parameters:
         - in: "path"
-          name: "user"
+          name: "userID"
           description: "A user UUID or slug"
           type: "string"
           required: true
