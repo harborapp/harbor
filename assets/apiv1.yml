@@ -24,7 +24,7 @@ paths:
   /auth/verify/{token}:
     get:
       summary: "Verify validity for an authentication token"
-      operationId: "AuthVerify"
+      operationId: "VerifyAuth"
       tags:
         - "auth"
       parameters:
@@ -50,7 +50,7 @@ paths:
   /auth/refresh:
     get:
       summary: "Refresh an auth token before it expires"
-      operationId: "AuthRefresh"
+      operationId: "RefreshAuth"
       tags:
         - "auth"
       responses:
@@ -70,7 +70,7 @@ paths:
   /auth/login:
     post:
       summary: "Authenticate an user by credentials"
-      operationId: "AuthLogin"
+      operationId: "LoginUser"
       tags:
         - "auth"
       parameters:
@@ -105,7 +105,7 @@ paths:
   /profile/token:
     get:
       summary: "Retrieve an unlimited auth token"
-      operationId: "ProfileToken"
+      operationId: "TokenProfile"
       tags:
         - "profile"
       responses:
@@ -129,7 +129,7 @@ paths:
   /profile/self:
     get:
       summary: "Retrieve an unlimited auth token"
-      operationId: "ProfileShow"
+      operationId: "ShowProfile"
       tags:
         - profile
       responses:
@@ -148,7 +148,7 @@ paths:
 
     put:
       summary: "Retrieve an unlimited auth token"
-      operationId: "ProfileUpdate"
+      operationId: "UpdateProfile"
       tags:
         - "profile"
       parameters:
@@ -183,7 +183,7 @@ paths:
   /teams:
     get:
       summary: "Fetch all available teams"
-      operationId: "TeamIndex"
+      operationId: "ListTeams"
       tags:
         - "team"
       responses:
@@ -204,7 +204,7 @@ paths:
 
     post:
       summary: "Create a new team"
-      operationId: "TeamCreate"
+      operationId: "CreateTeam"
       tags:
         - "team"
       parameters:
@@ -239,7 +239,7 @@ paths:
   /teams/{teamID}:
     get:
       summary: "Fetch a specific team"
-      operationId: "TeamShow"
+      operationId: "ShowTeam"
       tags:
         - "team"
       parameters:
@@ -264,7 +264,7 @@ paths:
 
     put:
       summary: "Update a specific team"
-      operationId: "TeamUpdate"
+      operationId: "UpdateTeam"
       tags:
         - "team"
       parameters:
@@ -303,7 +303,7 @@ paths:
 
     delete:
       summary: "Delete a specific team"
-      operationId: "TeamDelete"
+      operationId: "DeleteTeam"
       tags:
         - "team"
       parameters:
@@ -333,7 +333,7 @@ paths:
   /teams/{teamID}/users:
     get:
       summary: "Fetch all users assigned to team"
-      operationId: "TeamUserIndex"
+      operationId: "ListTeamUsers"
       tags:
         - "team"
       parameters:
@@ -360,7 +360,7 @@ paths:
 
     post:
       summary: "Assign a user to team"
-      operationId: "TeamUserAppend"
+      operationId: "AppendTeamToUser"
       tags:
         - "team"
       parameters:
@@ -399,7 +399,7 @@ paths:
 
     put:
       summary: "Update user perms for team"
-      operationId: "TeamUserPerm"
+      operationId: "PermitTeamUser"
       tags:
         - "team"
       parameters:
@@ -438,7 +438,7 @@ paths:
 
     delete:
       summary: "Remove a user from team"
-      operationId: "TeamUserDelete"
+      operationId: "DelteTeamFromUser"
       tags:
         - "team"
       parameters:
@@ -478,7 +478,7 @@ paths:
   /users:
     get:
       summary: "Fetch all available users"
-      operationId: "UserIndex"
+      operationId: "ListUsers"
       tags:
         - "user"
       responses:
@@ -499,7 +499,7 @@ paths:
 
     post:
       summary: "Create a new user"
-      operationId: "UserCreate"
+      operationId: "CreateUser"
       tags:
         - "user"
       parameters:
@@ -534,7 +534,7 @@ paths:
   /users/{userID}:
     get:
       summary: "Fetch a specific user"
-      operationId: "UserShow"
+      operationId: "ShowUser"
       tags:
         - "user"
       parameters:
@@ -559,7 +559,7 @@ paths:
 
     put:
       summary: "Update a specific user"
-      operationId: "UserUpdate"
+      operationId: "UpdateUser"
       tags:
         - "user"
       parameters:
@@ -598,7 +598,7 @@ paths:
 
     delete:
       summary: "Delete a specific user"
-      operationId: "UserDelete"
+      operationId: "DeleteUser"
       tags:
         - "user"
       parameters:
@@ -628,7 +628,7 @@ paths:
   /users/{userID}/teams:
     get:
       summary: "Fetch all teams assigned to user"
-      operationId: "UserTeamIndex"
+      operationId: "ListUserTeams"
       tags:
         - "user"
       parameters:
@@ -655,7 +655,7 @@ paths:
 
     post:
       summary: "Assign a team to user"
-      operationId: "UserTeamAppend"
+      operationId: "AppendUserToTeam"
       tags:
         - "user"
       parameters:
@@ -694,7 +694,7 @@ paths:
 
     put:
       summary: "Update team perms for user"
-      operationId: "UserTeamPerm"
+      operationId: "PermitUserTeam"
       tags:
         - "user"
       parameters:
@@ -733,7 +733,7 @@ paths:
 
     delete:
       summary: "Remove a team from user"
-      operationId: "UserTeamDelete"
+      operationId: "DeleteUserFromTeam"
       tags:
         - "user"
       parameters:
