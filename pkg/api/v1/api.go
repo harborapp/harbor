@@ -10,6 +10,8 @@ import (
 	"github.com/umschlag/umschlag-api/pkg/api/v1/restapi/operations"
 )
 
+//go:generate gorunpkg github.com/go-swagger/go-swagger/cmd/swagger generate server --target . --name Umschlag --spec ../../../openapi/v1.yml --exclude-main --regenerate-configureapi
+
 // API provides the http.Handler for the OpenAPI implementation.
 type API struct {
 	Handler http.Handler

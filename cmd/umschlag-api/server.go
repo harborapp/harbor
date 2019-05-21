@@ -7,10 +7,10 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/umschlag/umschlag-api/pkg/config"
-	"github.com/umschlag/umschlag-api/pkg/router"
 	"github.com/oklog/oklog/pkg/group"
 	"github.com/rs/zerolog/log"
+	"github.com/umschlag/umschlag-api/pkg/config"
+	"github.com/umschlag/umschlag-api/pkg/router"
 	"gopkg.in/urfave/cli.v2"
 )
 
@@ -54,6 +54,13 @@ func serverFlags(cfg *config.Config) []cli.Flag {
 			Usage:       "enable pprof debugging",
 			EnvVars:     []string{"UMSCHLAG_API_SERVER_PPROF"},
 			Destination: &cfg.Server.Pprof,
+		},
+		&cli.BoolFlag{
+			Name:        "server-docs",
+			Value:       true,
+			Usage:       "enable swagger documentation",
+			EnvVars:     []string{"UMSCHLAG_API_SERVER_DOCS"},
+			Destination: &cfg.Server.Docs,
 		},
 		&cli.StringFlag{
 			Name:        "server-host",

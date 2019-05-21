@@ -28,7 +28,7 @@ Make sure you have a working Go environment, for further reference or a guide ta
 git clone https://github.com/umschlag/umschlag-api.git
 cd umschlag-api
 
-make sync generate build
+make generate build
 
 ./bin/umschlag-api -h
 ```
