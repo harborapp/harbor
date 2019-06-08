@@ -1,7 +1,6 @@
 # Umschlag: API server
 
 [![Build Status](https://cloud.drone.io/api/badges/umschlag/umschlag-api/status.svg)](https://cloud.drone.io/umschlag/umschlag-api)
-[![Stories in Ready](https://badge.waffle.io/umschlag/umschlag-api.svg?label=ready&title=Ready)](http://waffle.io/umschlag/umschlag-api)
 [![Join the Matrix chat at https://matrix.to/#/#umschlag:matrix.org](https://img.shields.io/badge/matrix-%23umschlag-7bc9a4.svg)](https://matrix.to/#/#umschlag:matrix.org)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/cbe28cf646c34c98b58967079e9ae990)](https://www.codacy.com/app/umschlag/umschlag-api?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=umschlag/umschlag-api&amp;utm_campaign=Badge_Grade)
 [![Go Doc](https://godoc.org/github.com/umschlag/umschlag-api?status.svg)](http://godoc.org/github.com/umschlag/umschlag-api)
